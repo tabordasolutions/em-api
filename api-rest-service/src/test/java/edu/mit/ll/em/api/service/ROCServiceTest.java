@@ -200,7 +200,7 @@ public class ROCServiceTest {
         assertEquals(newWeather.getAirTemperature(), rocForm.getMessage().getTemperature());
         assertEquals(newWeather.getHumidity(), rocForm.getMessage().getRelHumidity());
         assertEquals(newWeather.getWindSpeed(), rocForm.getMessage().getWindSpeed());
-        assertEquals(newWeather.getWindDirection(), rocForm.getMessage().getWindDirection());
+        assertEquals(newWeather.getDescriptiveWindDirectionAbbreviation(), rocForm.getMessage().getWindDirection());
     }
 
     @Test
@@ -269,7 +269,7 @@ public class ROCServiceTest {
         assertEquals(newWeather.getAirTemperature(), rocForm.getMessage().getTemperature());
         assertEquals(newWeather.getHumidity(), rocForm.getMessage().getRelHumidity());
         assertEquals(newWeather.getWindSpeed(), rocForm.getMessage().getWindSpeed());
-        assertEquals(newWeather.getWindDirection(), rocForm.getMessage().getWindDirection());
+        assertEquals(newWeather.getDescriptiveWindDirectionAbbreviation(), rocForm.getMessage().getWindDirection());
 
         verifyZeroInteractions(geocodeAPIGateway);
         verifyZeroInteractions(jurisdictionDAO);
@@ -294,7 +294,7 @@ public class ROCServiceTest {
         assertEquals(newWeather.getAirTemperature(), rocForm.getMessage().getTemperature());
         assertEquals(newWeather.getHumidity(), rocForm.getMessage().getRelHumidity());
         assertEquals(newWeather.getWindSpeed(), rocForm.getMessage().getWindSpeed());
-        assertEquals(newWeather.getWindDirection(), rocForm.getMessage().getWindDirection());
+        assertEquals(newWeather.getDescriptiveWindDirectionAbbreviation(), rocForm.getMessage().getWindDirection());
 
         verifyZeroInteractions(geocodeAPIGateway);
         verifyZeroInteractions(jurisdictionDAO);
@@ -333,7 +333,7 @@ public class ROCServiceTest {
         assertEquals(newWeather.getAirTemperature(), rocForm.getMessage().getTemperature());
         assertEquals(newWeather.getHumidity(), rocForm.getMessage().getRelHumidity());
         assertEquals(newWeather.getWindSpeed(), rocForm.getMessage().getWindSpeed());
-        assertEquals(newWeather.getWindDirection(), rocForm.getMessage().getWindDirection());
+        assertEquals(newWeather.getDescriptiveWindDirectionAbbreviation(), rocForm.getMessage().getWindDirection());
     }
 
     @After
