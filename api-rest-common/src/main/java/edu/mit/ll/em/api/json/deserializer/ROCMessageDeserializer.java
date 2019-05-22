@@ -129,7 +129,7 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         Float relHumidity = (relHumidityJsonNode == null || relHumidityJsonNode.isNull() || StringUtils.isBlank(relHumidityJsonNode.asText()) ) ? null : Float.parseFloat(relHumidityJsonNode.asText());
         JsonNode windSpeedJsonNode = reportNode.get("windSpeed");
         Float windSpeed = (windSpeedJsonNode == null || windSpeedJsonNode.isNull() || StringUtils.isBlank(windSpeedJsonNode.asText())) ? null : Float.parseFloat(windSpeedJsonNode.asText());
-        Double windDirection = reportNode.get("windDirection") == null ? null : reportNode.get("windDirection").asDouble();
+        String windDirection = reportNode.get("windDirection") == null ? null : reportNode.get("windDirection").asText();
         JsonNode fuelTypesJSN = reportNode.get("fuelTypes") == null ? null : reportNode.get("fuelTypes");
         System.out.println("fuelTypesJSN.isArray() : " +fuelTypesJSN);
         List<String> fuelTypes = fuelTypesJSN==null ? null : getJsonNdeAsList(fuelTypesJSN);

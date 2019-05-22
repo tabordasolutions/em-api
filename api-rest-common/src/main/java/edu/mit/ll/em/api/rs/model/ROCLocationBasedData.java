@@ -44,7 +44,7 @@ public class ROCLocationBasedData {
     private Double temperature;
     private Float relHumidity;
     private Float windSpeed;
-    private Double windDirection;
+    private String windDirection;
 
     public ROCLocationBasedData() {
     }
@@ -85,7 +85,7 @@ public class ROCLocationBasedData {
         return windSpeed;
     }
 
-    public Double getWindDirection() {
+    public String getWindDirection() {
         return windDirection;
     }
 
@@ -125,7 +125,7 @@ public class ROCLocationBasedData {
         this.windSpeed = windSpeed;
     }
 
-    public void setWindDirection(Double windDirection) {
+    public void setWindDirection(String windDirection) {
         this.windDirection = windDirection;
     }
 }

@@ -65,7 +65,7 @@ public class ROCMessageDeserializerTest {
     private Double temperature = 92.0;
     private Float relHumidity = 10.0f;
     private Float windSpeed = 8.0f;
-    private Double windDirection = 180.0;
+    private String windDirection = "South";
     private String fuelTypes = "GRASS";
 //    private String fuelTypes = "\"fuelTypes\":[\"GRASS\",\"BUSH\"]";
     private List<String> fuelTypesList = Arrays.asList(new String[] {"GRASS"});

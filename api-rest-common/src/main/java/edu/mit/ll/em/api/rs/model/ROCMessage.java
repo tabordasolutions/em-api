@@ -67,7 +67,7 @@ public class ROCMessage implements Cloneable, Comparable {
     private Float relHumidity;
     private String evacuations;
     private Float windSpeed;
-    private Double windDirection;
+    private String windDirection;
     private String scope;
     private String percentageContained;
     //Fuel types on vegetation fire
@@ -89,7 +89,7 @@ public class ROCMessage implements Cloneable, Comparable {
     public ROCMessage(Date dateCreated, String reportType, Date date, Date startTime,
                       String location, String generalLocation, String county, String additionalAffectedCounties, String state,
                       String sra, String dpa, String jurisdiction,
-                      Double temperature, Float relHumidity,  Float windSpeed, Double windDirection, String percentageContained,
+                      Double temperature, Float relHumidity,  Float windSpeed, String windDirection, String percentageContained,
                       String scope, List<String> fuelTypes, String otherFuelTypes, String evacuations, List<String> evacList,
                       String structuresThreat, List<String> structuresThreats, String infrastructuresThreat,
                       List<String> infrastructuresThreats, List<String> resourcesAssigned) {
@@ -281,11 +281,11 @@ public class ROCMessage implements Cloneable, Comparable {
         this.windSpeed = windSpeed;
     }
 
-    public Double getWindDirection() {
+    public String getWindDirection() {
         return windDirection;
     }
 
-    public void setWindDirection(Double windDirection) {
+    public void setWindDirection(String windDirection) {
         this.windDirection = windDirection;
     }
 
@@ -320,7 +320,7 @@ public class ROCMessage implements Cloneable, Comparable {
             this.setTemperature(weather.getAirTemperature());
             this.setRelHumidity(weather.getHumidity());
             this.setWindSpeed(weather.getWindSpeed());
-            this.setWindDirection(weather.getWindDirection());
+            this.setWindDirection(weather.getDescriptiveWindDirectionAbbreviation());
         }
     }
 
