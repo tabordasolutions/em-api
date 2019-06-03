@@ -73,6 +73,7 @@ public class RabbitPubSubProducerTest {
 		e.setAssignmentRecipientList(recipients);
 		e.setIncidentId(99);
 		e.setIncidentName("Oil Spill 99");
+		e.setIncidentNumber("Oil Spill 99 Incident Number");
 		e.setMessage("Visit site immediately");
 		e.setTaskAssignmentId(1007);
 		

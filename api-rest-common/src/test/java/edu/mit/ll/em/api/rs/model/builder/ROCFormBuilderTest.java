@@ -44,12 +44,12 @@ import static org.mockito.Mockito.mock;
 import java.util.*;
 
 public class ROCFormBuilderTest {
-    private Incident incident = new Incident(1, "incidentname", -121.987987, 35.09809, new Date(), new Date(), true, "/root/incident/folder");
+    private Incident incident = new Incident(1, "incidentname", "CA-01-UnitTest Test Incident Number", -121.987987, 35.09809, new Date(), new Date(), true, "/root/incident/folder");
     private ROCMessage rocMessage = mock(ROCMessage.class);
 
     @Before
     public void setup() {
-        incident = new Incident(1, "incidentname", -121.987987, 35.09809, new Date(), new Date(), true, "/root/incident/folder");
+        incident = new Incident(1,"incidentname", "CA-02-UnitTest Test Incident Number", -121.987987, 35.09809, new Date(), new Date(), true, "/root/incident/folder");
         Set<IncidentIncidentType> incidentIncidentTypeSet = new HashSet<IncidentIncidentType>();
         incidentIncidentTypeSet.add(new IncidentIncidentType(1, incident, new IncidentType(1, "Planned Event")));
         incidentIncidentTypeSet.add(new IncidentIncidentType(2, incident, new IncidentType(2, "Fun Event")));
@@ -61,6 +61,7 @@ public class ROCFormBuilderTest {
         ROCForm rocForm = new ROCFormBuilder().buildIncidentData(incident).build();
         assertEquals(rocForm.getIncidentId(), incident.getIncidentid());
         assertEquals(rocForm.getIncidentName(), incident.getIncidentname());
+        assertEquals(rocForm.getIncidentNumber(), incident.getIncidentnumber());
         assertEquals(rocForm.getLongitude(), (Double) incident.getLon());
         assertEquals(rocForm.getLatitude(), (Double) incident.getLat());
         assertEquals(incident.getIncidentTypes(), rocForm.getIncidentTypes());
@@ -75,6 +76,7 @@ public class ROCFormBuilderTest {
 
         assertNull(rocForm.getIncidentId());
         assertNull(rocForm.getIncidentName());
+        assertNull(rocForm.getIncidentNumber());
         assertNull(rocForm.getLongitude());
         assertNull(rocForm.getLatitude());
         assertNull(rocForm.getIncidentTypes());
@@ -89,6 +91,7 @@ public class ROCFormBuilderTest {
 
         assertEquals(rocForm.getIncidentId(), incident.getIncidentid());
         assertEquals(rocForm.getIncidentName(), incident.getIncidentname());
+        assertEquals(rocForm.getIncidentNumber(), incident.getIncidentnumber());
         assertEquals(rocForm.getLongitude(), (Double) incident.getLon());
         assertEquals(rocForm.getLatitude(), (Double) incident.getLat());
 

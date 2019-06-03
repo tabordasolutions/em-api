@@ -42,11 +42,13 @@ public class Incident extends APIBean {
 	};
 	
 	private Integer incidentId;
-	
+
 	private Integer userSessionId;
 	
 	private String incidentName;
-	
+
+	private String incidentNumber;
+
 	private Double latitude;
 	
 	private Double longitude;
@@ -81,6 +83,15 @@ public class Incident extends APIBean {
 	public void setIncidentName(String incidentName) {
 		if (incidentName != null && !incidentName.isEmpty())
 		this.incidentName = incidentName;
+	}
+
+	public String getIncidentNumber() {
+		return incidentNumber;
+	}
+
+	public void setIncidentNumber(String incidentNumber) {
+		if (incidentNumber.trim().length() > 0)
+			this.incidentNumber = incidentNumber;
 	}
 
 	public Integer getUserSessionId() {

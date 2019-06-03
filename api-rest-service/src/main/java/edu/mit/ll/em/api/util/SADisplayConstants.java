@@ -97,6 +97,7 @@ public final class SADisplayConstants {
 	
 	//INCIDENT COLUMNS
 	public static final String INCIDENT_NAME = "incidentName";
+	public static final String INCIDENT_NUMBER = "incidentNumber";
 	public static final String INCIDENT_ID = "incidentId";
 	public static final String PARENT_INCIDENT_ID = "parentincidentid";
 	public static final String ACTIVE = "active";
