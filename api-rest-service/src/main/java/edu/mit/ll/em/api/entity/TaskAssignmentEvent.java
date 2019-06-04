@@ -41,6 +41,8 @@ public class TaskAssignmentEvent implements Event {
 	private Set<String> assignmentRecipientList = new HashSet<String>();
 	
 	private String incidentName;
+
+	private String incidentNumber;
 	
 	private String message;
 	
@@ -63,6 +65,17 @@ public class TaskAssignmentEvent implements Event {
 	public void setIncidentName(String incidentName) {
 		this.incidentName = incidentName;
 	}
+
+
+
+	public String getIncidentNumber() {
+		return incidentNumber;
+	}
+
+	public void setIncidentNumber(String incidentNumber) {
+		this.incidentNumber = incidentNumber;
+	}
+
 
 	public String getMessage() {
 		return message;

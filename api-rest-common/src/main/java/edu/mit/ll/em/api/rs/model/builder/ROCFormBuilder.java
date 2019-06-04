@@ -40,6 +40,7 @@ public class ROCFormBuilder {
         if(incident != null) {
             rocForm.setIncidentId(incident.getIncidentid());
             rocForm.setIncidentName(incident.getIncidentname());
+            rocForm.setIncidentNumber(incident.getIncidentnumber());
             rocForm.setLongitude(incident.getLon());
             rocForm.setLatitude(incident.getLat());
             rocForm.setIncidentTypes(incident.getIncidentTypes());

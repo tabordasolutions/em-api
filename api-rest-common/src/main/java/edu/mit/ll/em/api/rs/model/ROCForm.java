@@ -40,6 +40,7 @@ public class ROCForm {
     //Incident Info
     private Integer incidentId;
     private String incidentName;
+    private String incidentNumber;
     private Double longitude;
     private Double latitude;
     private List<IncidentType> incidentTypes;
@@ -55,10 +56,11 @@ public class ROCForm {
         this.message = rocMessage;
     }
 
-    public ROCForm(Integer incidentId, String incidentName, Double longitude, Double latitude,
+    public ROCForm(Integer incidentId, String incidentName, String incidentNumber, Double longitude, Double latitude,
                    List<IncidentType> incidentTypes, ROCMessage rocMessage) {
         this.incidentId = incidentId;
         this.incidentName = incidentName;
+        this.incidentNumber = incidentNumber;
         this.longitude = longitude;
         this.latitude = latitude;
         this.incidentTypes = new ArrayList<>(incidentTypes);
@@ -71,6 +73,10 @@ public class ROCForm {
 
     public String getIncidentName() {
         return incidentName;
+    }
+
+    public String getIncidentNumber() {
+        return incidentNumber;
     }
 
     public Double getLongitude() {
@@ -99,6 +105,10 @@ public class ROCForm {
 
     public void setIncidentName(String incidentName) {
         this.incidentName = incidentName;
+    }
+
+    public void setIncidentNumber(String incidentNumber) {
+        this.incidentNumber = incidentNumber;
     }
 
     public void setLongitude(Double longitude) {

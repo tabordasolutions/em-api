@@ -46,7 +46,7 @@ public class ROCLocationBasedDataBuilderTest {
     private DirectProtectionArea directProtectionArea = new DirectProtectionArea("dpa", "contract county", "unitid", "respondid");
     private Jurisdiction jurisdiction = new Jurisdiction("sra", new DirectProtectionArea("dpa", "contract county", "unitid", "respondid"));
 
-    private Incident incident = new Incident(1, "incidentname", -121.987987, 35.09809, new Date(), new Date(), true, "/root/incident/folder");
+    private Incident incident = new Incident(1, "incidentname", "CA-02-UnitTest Test Incident Number",-121.987987, 35.09809, new Date(), new Date(), true, "/root/incident/folder");
     private Weather weather = new Weather("objectId", "-123, 098", 78.9, 10.0f, 214.0, 2.3f, "OK", 10.0);
     private Location location = new Location("county", "state", "000 exact st, xm city, ca, USA, 90000");
 

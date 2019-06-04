@@ -49,6 +49,8 @@ public class Report extends APIBean {
 	
 	private String incidentName;
 
+	private String incidentNumber;
+
 	public Integer getFormId() {
 		return formId;
 	}
@@ -81,6 +83,10 @@ public class Report extends APIBean {
 		return incidentName;
 	}
 
+	public String getIncidentNumber() {
+		return incidentNumber;
+	}
+
 	public void setFormId(Integer formId) {
 		this.formId = formId;
 	}
@@ -111,6 +117,10 @@ public class Report extends APIBean {
 
 	public void setIncidentName(String incidentName) {
 		this.incidentName = incidentName;
+	}
+
+	public void setIncidentNumber(String incidentNumber) {
+		this.incidentNumber = incidentNumber;
 	}
 
 	public Integer getSenderUserId() {

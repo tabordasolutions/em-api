@@ -66,6 +66,7 @@ public class ROCServiceTest {
 
     private Integer incidentId = 113;
     private String incidentName = "incident name";
+    private String incidentNumber = "incident number";
     private Incident incident = mock(Incident.class);
     private Double longitude = 1.0;
     private Double latitude = 1.0;
@@ -107,6 +108,7 @@ public class ROCServiceTest {
     public void setup() throws Exception {
         when(incident.getIncidentid()).thenReturn(incidentId);
         when(incident.getIncidentname()).thenReturn(incidentName);
+        when(incident.getIncidentnumber()).thenReturn(incidentNumber);
         when(incident.getLon()).thenReturn(longitude);
         when(incident.getLat()).thenReturn(latitude);
         when(incident.getIncidentTypes()).thenReturn(incidentTypes);
@@ -180,6 +182,7 @@ public class ROCServiceTest {
         assertEquals("NEW", rocForm.getReportType());
         assertEquals(incidentId, rocForm.getIncidentId());
         assertEquals(incidentName, rocForm.getIncidentName());
+        assertEquals(incidentNumber, rocForm.getIncidentNumber());
         assertEquals(longitude, rocForm.getLongitude());
         assertEquals(latitude, rocForm.getLongitude());
         assertEquals(incidentTypes, rocForm.getIncidentTypes());
@@ -215,6 +218,7 @@ public class ROCServiceTest {
         assertEquals("FINAL", rocForm.getReportType());
         assertEquals(incidentId, rocForm.getIncidentId());
         assertEquals(incidentName, rocForm.getIncidentName());
+        assertEquals(incidentNumber, rocForm.getIncidentNumber());
         assertEquals(longitude, rocForm.getLongitude());
         assertEquals(latitude, rocForm.getLongitude());
         assertEquals(incidentTypes, rocForm.getIncidentTypes());
@@ -245,6 +249,7 @@ public class ROCServiceTest {
         assertEquals("UPDATE", rocForm.getReportType());
         assertEquals(incidentId, rocForm.getIncidentId());
         assertEquals(incidentName, rocForm.getIncidentName());
+        assertEquals(incidentNumber, rocForm.getIncidentNumber());
         assertEquals(longitude, rocForm.getLongitude());
         assertEquals(latitude, rocForm.getLongitude());
         assertEquals(incidentTypes, rocForm.getIncidentTypes());
@@ -284,6 +289,7 @@ public class ROCServiceTest {
         assertEquals("UPDATE", rocForm.getReportType());
         assertEquals(incidentId, rocForm.getIncidentId());
         assertEquals(incidentName, rocForm.getIncidentName());
+        assertEquals(incidentNumber, rocForm.getIncidentNumber());
         assertEquals(longitude, rocForm.getLongitude());
         assertEquals(latitude, rocForm.getLongitude());
 
@@ -310,6 +316,7 @@ public class ROCServiceTest {
         assertEquals("UPDATE", rocForm.getReportType());
         assertEquals(incidentId, rocForm.getIncidentId());
         assertEquals(incidentName, rocForm.getIncidentName());
+        assertEquals(incidentNumber, rocForm.getIncidentNumber());
         assertEquals(longitude, rocForm.getLongitude());
         assertEquals(latitude, rocForm.getLongitude());
 
