@@ -69,6 +69,7 @@ public class ROCMessage implements Cloneable, Comparable {
     private Float windSpeed;
     private String windDirection;
     private String scope;
+    private String spreadRate;
     private String percentageContained;
     //Fuel types on vegetation fire
 //    private String fuelTypes;
@@ -90,7 +91,7 @@ public class ROCMessage implements Cloneable, Comparable {
                       String location, String generalLocation, String county, String additionalAffectedCounties, String state,
                       String sra, String dpa, String jurisdiction,
                       Double temperature, Float relHumidity,  Float windSpeed, String windDirection, String percentageContained,
-                      String scope, List<String> fuelTypes, String otherFuelTypes, String evacuations, List<String> evacList,
+                      String scope, String spreadRate, List<String> fuelTypes, String otherFuelTypes, String evacuations, List<String> evacList,
                       String structuresThreat, List<String> structuresThreats, String infrastructuresThreat,
                       List<String> infrastructuresThreats, List<String> resourcesAssigned) {
         this.dateCreated = dateCreated;
@@ -111,6 +112,7 @@ public class ROCMessage implements Cloneable, Comparable {
         this.windDirection = windDirection;
         this.percentageContained = percentageContained;
         this.scope = scope;
+        this.spreadRate = spreadRate;
         this.fuelTypes = fuelTypes;
         this.otherFuelTypes = otherFuelTypes;
         this.evacuations = evacuations;
@@ -292,6 +294,10 @@ public class ROCMessage implements Cloneable, Comparable {
     public String getScope() { return scope; }
 
     public void setScope(String scope) { this.scope = scope; }
+
+    public String getSpreadRate() { return spreadRate; }
+
+    public void setSpreadRate(String spreadRate) { this.spreadRate = spreadRate; }
 
     public String getPercentageContained() { return percentageContained; }
 

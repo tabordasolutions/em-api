@@ -260,7 +260,7 @@ public class ReportServiceImpl implements ReportService {
                 ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse(Status.BAD_REQUEST.getStatusCode(), "Invalid input", validationErrors);
                 return Response.ok(validationErrorResponse).build();
             }
-            Response iResponse = incidentService.postIncident(SADisplayConstants.DEFAULT_WORKSPACE_ID, orgId, user.getUserId(), form.getIncident());
+            Response iResponse = incidentService.postIncident(SADisplayConstants.DEFAULT_WORKSPACE_ID, orgId, user.getUserId(), form.getIncident(), form);
             IncidentServiceResponse incidentResponse = (iResponse.getEntity() instanceof IncidentServiceResponse) ? (IncidentServiceResponse) iResponse.getEntity() : null;
 
             if(iResponse.getStatus() == Status.OK.getStatusCode()) {

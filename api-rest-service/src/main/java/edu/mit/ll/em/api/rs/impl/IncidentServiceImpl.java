@@ -39,6 +39,9 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import edu.mit.ll.em.api.json.deserializer.ROCMessageDeserializer;
+import edu.mit.ll.em.api.rs.model.ROCMessage;
 import edu.mit.ll.em.api.util.APIConfig;
 import edu.mit.ll.em.api.util.SADisplayConstants;
 import edu.mit.ll.nics.common.rabbitmq.RabbitFactory;
@@ -63,7 +66,7 @@ import edu.mit.ll.nics.nicsdao.impl.UserOrgDAOImpl;
 import edu.mit.ll.nics.nicsdao.impl.WorkspaceDAOImpl;
 import edu.mit.ll.nics.common.entity.Incident;
 import edu.mit.ll.nics.common.email.JsonEmail;
-
+import edu.mit.ll.nics.common.entity.Form;
 
 /**
  * 
@@ -104,7 +107,7 @@ public class IncidentServiceImpl implements IncidentService {
 	 * @param accessibleByUserId
 	 * 
 	 * @return Response IncidentResponse containing all Incidents with the specified workspace
-	 * @see IncidentResponse
+	 * @see IncidentServiceResponse
 	 */
 	public Response getIncidents(Integer workspaceId, Integer accessibleByUserId) {
 		Response response = null;
@@ -206,15 +209,14 @@ public class IncidentServiceImpl implements IncidentService {
 	 * Read and return all Incident items.
 	 * 
 	 * @param workspaceId
-	 * @param accessibleByUserId
-	 * 
+	 *
 	 * @return Response IncidentResponse containing all Incidents with the specified workspace
-	 * @see IncidentResponse
+	 * @see IncidentServiceResponse
 	 
 	public Response getIncidentsTree(Integer workspaceId, Integer accessibleByUserId) {
 
 	 * @return Response IncidentResponse containing all Incidents with the specified workspace and there children
-	 * @see IncidentResponse
+	 * @see IncidentServiceResponse
 	 */
 	
 	public Response getIncidentsTree(Integer workspaceId) {
@@ -250,10 +252,10 @@ public class IncidentServiceImpl implements IncidentService {
 	 * Updates the incident that was sent
 	 * 
 	 * @param workspaceId
-	 * @param Incident to update
+	 * @param incident to update
 	 * 
 	 * @return Response IncidentResponse containing the updated incident
-	 * @see IncidentResponse
+	 * @see IncidentServiceResponse
 	 */
 	public Response updateIncident(Integer workspaceId, Incident incident) {
 		Response response = null;
@@ -312,7 +314,7 @@ public class IncidentServiceImpl implements IncidentService {
 	 * @param workspaceId ID for Workspace to delete incidents from
 	 *  
 	 * @see Response
-	 * @see IncidentResponse
+	 * @see IncidentServiceResponse
 	 */
 	public Response deleteIncidents(Integer workspaceId) {
 		return makeUnsupportedOpRequestResponse();
@@ -333,7 +335,7 @@ public class IncidentServiceImpl implements IncidentService {
 	 * @return Response IncidentServiceResponse 
 	 *  
 	 * @see Response
-	 * @see IncidentResponse
+	 * @see IncidentServiceResponse
 	 */
 	@Deprecated
 	public Response putIncidents(Integer workspaceId, Collection<Incident> incidents) {
@@ -384,17 +386,16 @@ public class IncidentServiceImpl implements IncidentService {
 	 * @throws DuplicateCollabRoomException 
 	 * @throws DataAccessException 
 	 *  
-	 *  @see IncidentResponse  
+	 *  @see IncidentServiceResponse
 	 *  
 	 */	
 	
-	public Response postIncident(Integer workspaceId, Integer orgId, Integer userId, Incident incident) 
+	public Response postIncident(Integer workspaceId, Integer orgId, Integer userId, Incident incident, Form form)
 			throws DataAccessException, DuplicateCollabRoomException, Exception {
 		
 		IncidentServiceResponse incidentResponse = new IncidentServiceResponse();
 		Response response = null;
-		JsonEmail email = null;
-		
+
 		if(incidentDao.getIncidentByName(incident.getIncidentname(), workspaceId) != null){
 			incidentResponse.setMessage(DUPLICATE_NAME);
 			return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
@@ -443,36 +444,104 @@ public class IncidentServiceImpl implements IncidentService {
 				notifyIncident(newIncident, topic);
 				
 				try {
-					
-					String date = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy").format(new Date());
-					String alertTopic = String.format("iweb.nics.email.alert");
 					String newIncidentUsers = APIConfig.getInstance().getConfiguration().getString(APIConfig.NEW_INCIDENT_USERS_EMAIL);
-					String hostname = InetAddress.getLocalHost().getHostName();
+
 					User creator = userDao.getUserBySessionId(newIncident.getUsersessionid());
 					Org org = orgDao.getLoggedInOrg(creator.getUserId());		
+
 					List<String>  disList = orgDao.getOrgAdmins(org.getOrgId());
-					String toEmails = disList.toString().substring(1, disList.toString().length()-1) + ", " + newIncidentUsers;
-					String siteName = workspaceDao.getWorkspaceName(workspaceId);
-					
-					if(disList.size() > 0){
-						email = new JsonEmail(creator.getUsername(),toEmails,"Alert from NewIncident@" + hostname);
-						email.setBody(date + "\n\n" + "A new incident has been created: " + newIncident.getIncidentname() + "\n" + 
-										"Creator: " + creator.getUsername() + "\n" + 
-										"Location: " + newIncident.getLat() + "," + newIncident.getLon() + "\n" +
-										"Site: " + siteName);
-						
-						notifyNewIncidentEmail(email.toJsonObject().toString(),alertTopic);
+
+					Integer formTypeId = form.getFormtypeid();
+
+					if( formTypeId.equals(1) ) {
+						/* Create and send email for ROC Incidents */
+						createNewROCIncidentEmail(creator,creator.getUsername(), newIncident, workspaceId, form);
+					} else {
+						if(disList.size() > 0){
+							/* Create and send email for non-ROC Incidents */
+							String toEmails = disList.toString().substring(1, disList.toString().length()-1) + ", " + newIncidentUsers;
+							createNewIncidentEmail(creator,toEmails, newIncident, workspaceId);
+						}
 					}
-					
 				} catch (Exception e) {
 					APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
+					incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+					return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 				}
 			} catch (Exception e) {
 				APILogger.getInstance().e(CNAME,"Failed to publish a new Incident message event");
+				incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+				return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 		}
 		
 		return response;
+	}
+
+	private void createNewIncidentEmail(User creator, String toEmails, Incident newIncident, Integer workspaceId) {
+		JsonEmail email = null;
+
+		try{
+			String date = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy").format(new Date());
+			String hostname = InetAddress.getLocalHost().getHostName();
+			String alertTopic = String.format("iweb.nics.email.alert");
+			String siteName = workspaceDao.getWorkspaceName(workspaceId);
+
+			email = new JsonEmail(creator.getUsername(),toEmails,"Alert from NewIncident@" + hostname);
+			email.setBody(date + "\n\n" + "A new incident has been created: " + newIncident.getIncidentname() + "\n" +
+					"Creator: " + creator.getUsername() + "\n" +
+					"Location: " + newIncident.getLat() + "," + newIncident.getLon() + "\n" +
+					"Site: " + siteName);
+
+			notifyNewIncidentEmail(email.toJsonObject().toString(),alertTopic);
+		} catch (Exception e) {
+			APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
+		}
+	}
+
+	private void createNewROCIncidentEmail(User creator, String toEmails, Incident newIncident, Integer workspaceId, Form form) {
+		JsonEmail email = null;
+
+		try{
+			String date = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy").format(new Date());
+			String alertTopic = String.format("iweb.nics.email.alert");
+			String siteName = workspaceDao.getWorkspaceName(workspaceId);
+
+			ROCMessage rocMessage = getROCMessage(form.getMessage());
+
+			/* Start Building Email Here  */
+			String emailSubject = "Vegetation Fire < validation pending > , " + rocMessage.getCounty() + ", NEW";
+
+			email = new JsonEmail(creator.getUsername(), toEmails + ",nikhil.devre@tabordasolutions.com,luis.gutierrez@tabordasolutions.com", emailSubject);
+
+			// ,luis.gutierrez@tabordasolutions.com,michael.ruelas@tabordasolutions.com,jpuli@qualapps.com
+
+
+			/* Email Body Starts Here */
+			email.setBody(
+				"\n\nIntel - for internal use only. Numbers subject to change.\n\n" +
+				rocMessage.getDpa() + ", " + rocMessage.getSra()  + "\n" +
+				"Start Time: " + rocMessage.getStartTime() + "\n\n" +
+				"- " + rocMessage.getScope() + " acres < pending incident type names >, " + rocMessage.getPercentageContained() + "% contained" + "\n" +
+				"- " + rocMessage.getSpreadRate() + "\n" +
+				"- " + rocMessage.getTemperature() + " degrees, " +  rocMessage.getRelHumidity() + " RH, " + " wind " + rocMessage.getWindDirection() + " @ " + rocMessage.getWindSpeed() + ", < wind gusts pending > " + "\n" +
+				"- < pending Structures Threatened > " + "\n" +
+				"- < pending commitment of CAL FIRE air and ground resources > "
+			);
+
+			notifyNewIncidentEmail(email.toJsonObject().toString(),alertTopic);
+		} catch (Exception e) {
+			APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
+		}
+	}
+
+	private ROCMessage getROCMessage(String message) throws IOException{
+		com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+		SimpleModule simpleModule = new SimpleModule();
+		simpleModule.addDeserializer(ROCMessage.class, new ROCMessageDeserializer());
+		objectMapper.registerModule(simpleModule);
+
+		return objectMapper.readValue(message, ROCMessage.class);
 	}
 	
 	private CollabRoom createDefaultCollabRoom(int userSessionId, String name){
@@ -512,7 +581,7 @@ public class IncidentServiceImpl implements IncidentService {
 	 *  @param incidentId Incident ID to be read
 	 *  
 	 *  @return Response IncidentResponse containing the requested Incident
-	 *  @see IncidentResponse
+	 *  @see IncidentServiceResponse
 	 */
 	public Response getIncident(@Deprecated Integer workspaceId, int incidentId) {
 		Response response = null;
@@ -619,7 +688,7 @@ public class IncidentServiceImpl implements IncidentService {
 	 *  @param incidentId ID of Incident item to be read.
 	 *  
 	 *  @return Response
-	 *  @see IncidentResponse
+	 *  @see IncidentServiceResponse
 	 */	
 	public Response deleteIncident(@Deprecated Integer workspaceId, int incidentId) {
 		return makeUnsupportedOpRequestResponse();
@@ -658,7 +727,7 @@ public class IncidentServiceImpl implements IncidentService {
 	 *  @param incident The incident entity to be used to update the existing one
 	 *  
 	 *  @return Response
-	 *  @see IncidentResponse
+	 *  @see IncidentServiceResponse
 	 */	
 	public Response putIncident(Integer workspaceId, int incidentId, Incident incident) {
 		// TODO: mobile never used this, implement when web needs it
@@ -704,7 +773,7 @@ public class IncidentServiceImpl implements IncidentService {
 	 *  @param workspaceId ID of workspace to get incident count from
 	 *    
 	 *  @return Response An IncidentResponse with the count field set to the count of incidents
-	 *  @see IncidentResponse
+	 *  @see IncidentServiceResponse
 	 */		
 	public Response getIncidentCount(Integer workspaceId) {
 		Response response;
@@ -728,7 +797,7 @@ public class IncidentServiceImpl implements IncidentService {
 	 *  Search the Incident items stored. 
 	 *  
 	 *  @return Response
-	 *  @see IncidentResponse
+	 *  @see IncidentServiceResponse
 	 */		
 	public Response searchIncidentResources() {
 		return makeUnsupportedOpRequestResponse();
