@@ -139,7 +139,7 @@ public class ReportServiceImplPostROCReportAndIncidentTest {
         Response response = Response.ok(apiResponse).build();
 
         when(userDao.getUserBySessionId(form.getUsersessionid())).thenReturn(user);
-        when(incidentService.postIncident(workspaceId, orgId, userId, incident)).thenReturn(Response.ok(incidentServiceResponse).status(Response.Status.INTERNAL_SERVER_ERROR).build());
+        when(incidentService.postIncident(workspaceId, orgId, userId, incident, form)).thenReturn(Response.ok(incidentServiceResponse).status(Response.Status.INTERNAL_SERVER_ERROR).build());
         Response returnedResponse = reportServiceImpl.postIncidentAndROC(orgId, form);
         assertEquals(response.getStatus(), returnedResponse.getStatus());
         assertEquals(apiResponse, (APIResponse)returnedResponse.getEntity());
@@ -156,7 +156,7 @@ public class ReportServiceImplPostROCReportAndIncidentTest {
         Response incidentResponse = Response.ok(incidentServiceResponse).build();
 
         when(userDao.getUserBySessionId(form.getUsersessionid())).thenReturn(user);
-        when(incidentService.postIncident(workspaceId, orgId, userId, incident)).thenReturn(incidentResponse);
+        when(incidentService.postIncident(workspaceId, orgId, userId, incident, form)).thenReturn(incidentResponse);
         Exception exception = new Exception("Test Exception");
         when(formDao.persistForm(form)).thenThrow(exception);
         String expectedErrorMessage = "Successfully created new incident with name " + form.getIncident().getIncidentname() + ", but failed to persist ROC, Error: " + exception.getMessage();
@@ -179,7 +179,7 @@ public class ReportServiceImplPostROCReportAndIncidentTest {
         Response incidentResponse = Response.ok(incidentServiceResponse).build();
 
         when(userDao.getUserBySessionId(form.getUsersessionid())).thenReturn(user);
-        when(incidentService.postIncident(workspaceId, orgId, userId, incident)).thenReturn(incidentResponse);
+        when(incidentService.postIncident(workspaceId, orgId, userId, incident, form)).thenReturn(incidentResponse);
         Form persistedForm =  new Form();
         when(formDao.persistForm(form)).thenReturn(persistedForm);
 
@@ -206,7 +206,7 @@ public class ReportServiceImplPostROCReportAndIncidentTest {
         Response incidentResponse = Response.ok(incidentServiceResponse).build();
 
         when(userDao.getUserBySessionId(form.getUsersessionid())).thenReturn(user);
-        when(incidentService.postIncident(workspaceId, orgId, userId, incident)).thenReturn(incidentResponse);
+        when(incidentService.postIncident(workspaceId, orgId, userId, incident, form)).thenReturn(incidentResponse);
         Form persistedForm =  new Form();
         when(formDao.persistForm(form)).thenReturn(persistedForm);
         String topic = String.format("iweb.NICS.incident.%d.report.%s.new", form.getIncidentid(), reportType.toUpperCase());

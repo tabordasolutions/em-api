@@ -48,6 +48,7 @@ import org.springframework.dao.DataAccessException;
 
 import edu.mit.ll.em.api.exception.DuplicateCollabRoomException;
 import edu.mit.ll.nics.common.entity.Incident;
+import edu.mit.ll.nics.common.entity.Form;
 
 @Path("/incidents/{workspaceId}")
 public interface IncidentService {
@@ -134,7 +135,8 @@ public interface IncidentService {
 			@PathParam("workspaceId") Integer workspaceId,
 			@QueryParam("orgId") Integer orgId,
 			@QueryParam("userId") Integer userId,
-			Incident incident)
+			Incident incident,
+			Form form)
 			throws DataAccessException, DuplicateCollabRoomException, Exception;
 	
 	@GET

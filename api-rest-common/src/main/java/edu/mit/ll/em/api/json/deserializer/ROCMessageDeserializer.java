@@ -96,18 +96,15 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         String sra = reportNode.get("sra") == null ? null : reportNode.get("sra").asText();
         String dpa = reportNode.get("dpa") == null ? null : reportNode.get("dpa").asText();
         String scope = reportNode.get("scope") == null ? null : reportNode.get("scope").asText();
+        String spreadRate = reportNode.get("spreadRate") == null ? null : reportNode.get("spreadRate").asText();
         String percentageContained = reportNode.get("percentContained") == null ? null : reportNode.get("percentContained").asText();
         String evacuations = reportNode.get("evacuations") == null ? null : reportNode.get("evacuations").asText();
 
-        System.out.println("SINU-SCOPE ::::::::" + scope);
-        System.out.println("SINU-PERCENT ::::::::" + percentageContained);
-        System.out.println("SINU-EVACUATIONS::::::::" + evacuations);
 
         JsonNode evacProgress = reportNode.get("evacuationsInProgress") == null ? null : reportNode.get("evacuationsInProgress");
-//        System.out.println("SINU SINU SIUN-EVACPROGRESS-JSON ::: " + evacProgress.toString());
         JsonNode evacuationsPorgess = (evacProgress == null) || evacProgress.get("evacuations") == null ? null : evacProgress.get("evacuations");
         List<String> evacList =  evacuationsPorgess==null ? null : getJsonNdeAsList(evacuationsPorgess);
-//        System.out.println("SINU SINU SIUN-EVACPROGRESS2 ::: " + evacProgress.get("evacuationsPorgess"));
+
 
         String structuresThreat = reportNode.get("evacuations") == null ? null : reportNode.get("structuresThreat").asText();
         JsonNode structuresThreatInProgress = reportNode.get("structuresThreatInProgress") == null ? null : reportNode.get("structuresThreatInProgress");
@@ -131,14 +128,13 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         Float windSpeed = (windSpeedJsonNode == null || windSpeedJsonNode.isNull() || StringUtils.isBlank(windSpeedJsonNode.asText())) ? null : Float.parseFloat(windSpeedJsonNode.asText());
         String windDirection = reportNode.get("windDirection") == null ? null : reportNode.get("windDirection").asText();
         JsonNode fuelTypesJSN = reportNode.get("fuelTypes") == null ? null : reportNode.get("fuelTypes");
-        System.out.println("fuelTypesJSN.isArray() : " +fuelTypesJSN);
         List<String> fuelTypes = fuelTypesJSN==null ? null : getJsonNdeAsList(fuelTypesJSN);
-        System.out.println("SINU-FUEL-TYPES : " + fuelTypes);
+
 
         String otherFuelTypes = reportNode.get("otherFuelTypes") == null ? null : reportNode.get("otherFuelTypes").asText();
         return new ROCMessage(dateCreated, reportType, date, startTime,
                 location, generalLocation, county, additionalAffectedCounties, state,
-                sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windDirection, percentageContained, scope,
+                sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windDirection, percentageContained, scope, spreadRate,
                 fuelTypes, otherFuelTypes, evacuations,evacList, structuresThreat,
                 structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst);
     }

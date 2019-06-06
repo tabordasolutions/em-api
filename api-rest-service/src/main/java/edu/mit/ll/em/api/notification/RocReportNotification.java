@@ -29,30 +29,22 @@
  */
 package edu.mit.ll.em.api.notification;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
 import edu.mit.ll.em.api.json.deserializer.ROCMessageDeserializer;
 import edu.mit.ll.em.api.rs.model.ROCMessage;
 import edu.mit.ll.em.api.util.APIConfig;
 import edu.mit.ll.em.api.util.APILogger;
 import edu.mit.ll.nics.common.email.JsonEmail;
-import edu.mit.ll.nics.common.entity.Org;
-import edu.mit.ll.nics.common.entity.User;
-import edu.mit.ll.nics.common.messages.NICSMessage;
-import edu.mit.ll.nics.common.messages.parser.SADisplayMessageParser;
+
 import edu.mit.ll.nics.common.rabbitmq.RabbitFactory;
 import edu.mit.ll.nics.common.rabbitmq.RabbitPubSubProducer;
-import edu.mit.ll.nics.nicsdao.impl.OrgDAOImpl;
 import edu.mit.ll.nics.common.entity.Form;
 
 import org.apache.commons.configuration.Configuration;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.io.StringReader;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -76,7 +68,7 @@ public class RocReportNotification {
         String newRegisteredUserEmailAddresses = emApiConfiguration.getString(APIConfig.NEW_REGISTERED_USER_EMAIL);
         try {
             String hostname = InetAddress.getLocalHost().getHostName();
-            String toEmails = "anish.bokka@tabordasolutions.com";
+            String toEmails = "testing@tabordasolutions.com";
             JsonEmail email = new JsonEmail(this.getFromEmail(),toEmails, getSubject(form));
             email.setBody(getEmailBody(form));
             log.i("Sinu-Test sending roc email to: " , this.getAlertTopic());
