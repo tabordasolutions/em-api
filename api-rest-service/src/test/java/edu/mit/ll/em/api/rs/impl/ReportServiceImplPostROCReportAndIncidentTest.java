@@ -40,8 +40,8 @@ import edu.mit.ll.nics.common.entity.Incident;
 import edu.mit.ll.nics.common.entity.User;
 import edu.mit.ll.nics.common.rabbitmq.RabbitPubSubProducer;
 import edu.mit.ll.nics.nicsdao.impl.*;
-import edu.mit.ll.em.api.notification.RocReportNotification;
-import org.apache.commons.configuration.Configuration;
+
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,8 +68,7 @@ public class ReportServiceImplPostROCReportAndIncidentTest {
     private RabbitPubSubProducer rabbitProducer = mock(RabbitPubSubProducer.class);
     private ReportValidator reportValidator = mock(ReportValidator.class);
     private Configuration emApConfiguration = mock(Configuration.class);
-    public  RocReportNotification rocReportNotification = new RocReportNotification(emApConfiguration, rabbitProducer);
-    public ReportServiceImpl reportServiceImpl = new ReportServiceImpl(incidentDao, userDao, formDao, userSessionDao, uxoreportDao, incidentService, rabbitProducer, reportValidator, rocReportNotification);
+    public ReportServiceImpl reportServiceImpl = new ReportServiceImpl(incidentDao, userDao, formDao, userSessionDao, uxoreportDao, incidentService, rabbitProducer, reportValidator);
     private int userSessionId = 1;
     private Form form = null;
     private int formTypeId =  1;
