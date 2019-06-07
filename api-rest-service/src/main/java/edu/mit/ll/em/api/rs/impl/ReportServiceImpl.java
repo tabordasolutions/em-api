@@ -1139,7 +1139,7 @@ public class ReportServiceImpl implements ReportService {
         if (form != null) {
             ObjectMapper mapper = new ObjectMapper();
             String message = mapper.writeValueAsString(form);
-            notifyReportCreation(form);
+            // notifyReportCreation(form);
             getRabbitProducer().produce(topic, message);
         }
     }
