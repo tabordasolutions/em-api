@@ -81,12 +81,10 @@ public class ReportServiceImpl implements ReportService {
     private IncidentService incidentService = null;
     private RabbitPubSubProducer rabbitProducer = null;
     private ReportValidator reportValidator = null;
-    private RocReportNotification rocReportNotification = null;
 
     public ReportServiceImpl(IncidentDAOImpl incidentDao, UserDAOImpl userDao, FormDAOImpl formDao, UserSessionDAOImpl userSessionDao,
                              UxoreportDAO uxoReportDao, IncidentService incidentService,
-                             RabbitPubSubProducer rabbitProducer, ReportValidator reportValidator,
-                             RocReportNotification rocReportNotification) {
+                             RabbitPubSubProducer rabbitProducer, ReportValidator reportValidator) {
         this.incidentDao = incidentDao;
         this.userDao = userDao;
         this.formDao = formDao;
@@ -95,7 +93,7 @@ public class ReportServiceImpl implements ReportService {
         this.incidentService = incidentService;
         this.rabbitProducer = rabbitProducer;
         this.reportValidator = reportValidator;
-        this.rocReportNotification = rocReportNotification;
+        // this.rocReportNotification = rocReportNotification;
     }
     /**
      * Read and return all Report items.
@@ -1148,7 +1146,7 @@ public class ReportServiceImpl implements ReportService {
         if (form != null) {
             ObjectMapper mapper = new ObjectMapper();
             String message = mapper.writeValueAsString(form);
-            rocReportNotification.notify(form);
+            // rocReportNotification.notify(form);
         }
     }
 
