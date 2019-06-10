@@ -47,7 +47,7 @@ import edu.mit.ll.nics.common.rabbitmq.RabbitFactory;
 import edu.mit.ll.nics.common.rabbitmq.RabbitPubSubProducer;
 import edu.mit.ll.nics.nicsdao.UxoreportDAO;
 import edu.mit.ll.nics.nicsdao.impl.*;
-import edu.mit.ll.em.api.notification.RocReportNotification;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
@@ -93,7 +93,6 @@ public class ReportServiceImpl implements ReportService {
         this.incidentService = incidentService;
         this.rabbitProducer = rabbitProducer;
         this.reportValidator = reportValidator;
-        // this.rocReportNotification = rocReportNotification;
     }
     /**
      * Read and return all Report items.
@@ -1146,7 +1145,6 @@ public class ReportServiceImpl implements ReportService {
         if (form != null) {
             ObjectMapper mapper = new ObjectMapper();
             String message = mapper.writeValueAsString(form);
-            // rocReportNotification.notify(form);
         }
     }
 

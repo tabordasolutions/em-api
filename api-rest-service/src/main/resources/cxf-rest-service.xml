@@ -112,7 +112,6 @@
                 </constructor-arg>
                 <constructor-arg ref="rabbitProducer"/>
                 <constructor-arg ref="reportValidator"/>
-                <constructor-arg ref="rocReportNotification"/>
 
             </bean>
 			<bean class="edu.mit.ll.em.api.rs.impl.SSOManagementServiceImpl" />
