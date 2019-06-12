@@ -48,7 +48,7 @@ import edu.mit.ll.nics.nicsdao.DatalayerDAO;
 import edu.mit.ll.nics.nicsdao.DocumentDAO;
 import edu.mit.ll.nics.nicsdao.FolderDAO;
 import edu.mit.ll.nics.nicsdao.impl.*;
-import edu.mit.ll.em.api.notification.RocReportNotification;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -192,11 +192,6 @@ public class SpringConfiguration {
     @Bean
     public UserRegistrationService registrationService() throws IOException {
         return new UserRegistrationService(logger(), userDao(), orgDao(), userOrgDao(), workspaceDao(), openAmGatewayFactory(), successfulUserRegistrationNotification(), failedUserRegistrationNotification());
-    }
-
-    @Bean
-    public RocReportNotification rocReportNotification() throws IOException {
-        return new RocReportNotification(emApiConfiguration(),rabbitProducer());
     }
 
     @Bean
