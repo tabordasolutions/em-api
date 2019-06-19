@@ -76,7 +76,7 @@ public class ROCMessage implements Cloneable, Comparable {
     private List<String> fuelTypes;
     private String otherFuelTypes;
     private String  evacuationsInProgress;
-    private List<String> evacList;
+    private List<String> evacuationsList;
     private String structuresThreat;
     private List<String> structuresThreats;
     private String infrastructuresThreat;
@@ -84,14 +84,13 @@ public class ROCMessage implements Cloneable, Comparable {
     private List<String> resourcesAssigned;
 
 
-    public ROCMessage() {
-    }
+    public ROCMessage() { }
 
     public ROCMessage(Date dateCreated, String reportType, Date date, Date startTime,
             String location, String generalLocation, String county, String additionalAffectedCounties, String state,
             String sra, String dpa, String jurisdiction,
             Double temperature, Float relHumidity,  Float windSpeed, String windDirection, String percentageContained,
-            String scope, String spreadRate, List<String> fuelTypes, String otherFuelTypes, String evacuations, List<String> evacList,
+            String scope, String spreadRate, List<String> fuelTypes, String otherFuelTypes, String evacuations, List<String> evacuationsList,
             String structuresThreat, List<String> structuresThreats, String infrastructuresThreat,
             List<String> infrastructuresThreats, List<String> resourcesAssigned) {
         this.dateCreated = dateCreated;
@@ -116,7 +115,7 @@ public class ROCMessage implements Cloneable, Comparable {
         this.fuelTypes = fuelTypes;
         this.otherFuelTypes = otherFuelTypes;
         this.evacuations = evacuations;
-        this.evacList = evacList;
+        this.evacuationsList = evacuationsList;
         this.structuresThreat=structuresThreat;
         this.structuresThreats=structuresThreats;
         this.infrastructuresThreat=infrastructuresThreat;
@@ -247,9 +246,9 @@ public class ROCMessage implements Cloneable, Comparable {
     public String getEvacuationsInProgress() { return evacuationsInProgress; }
 
     public void setEvacuationsInProgress(String evacuationsInProgress) { this.evacuationsInProgress = evacuationsInProgress; }
-    public List<String> getEvacList() { return evacList; }
+    public List<String> getEvacuationsList() { return evacuationsList; }
 
-    public void setEvacList(List<String> evacList) { this.evacList = evacList; }
+    public void setEvacuationsList(List<String> evacuationsList) { this.evacuationsList = evacuationsList; }
 
     public String getStructuresThreat() {
         return structuresThreat;
