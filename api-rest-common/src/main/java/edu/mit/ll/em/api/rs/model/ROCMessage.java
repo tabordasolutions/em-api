@@ -88,12 +88,12 @@ public class ROCMessage implements Cloneable, Comparable {
     }
 
     public ROCMessage(Date dateCreated, String reportType, Date date, Date startTime,
-                      String location, String generalLocation, String county, String additionalAffectedCounties, String state,
-                      String sra, String dpa, String jurisdiction,
-                      Double temperature, Float relHumidity,  Float windSpeed, String windDirection, String percentageContained,
-                      String scope, String spreadRate, List<String> fuelTypes, String otherFuelTypes, String evacuations, List<String> evacList,
-                      String structuresThreat, List<String> structuresThreats, String infrastructuresThreat,
-                      List<String> infrastructuresThreats, List<String> resourcesAssigned) {
+            String location, String generalLocation, String county, String additionalAffectedCounties, String state,
+            String sra, String dpa, String jurisdiction,
+            Double temperature, Float relHumidity,  Float windSpeed, String windDirection, String percentageContained,
+            String scope, String spreadRate, List<String> fuelTypes, String otherFuelTypes, String evacuations, List<String> evacList,
+            String structuresThreat, List<String> structuresThreats, String infrastructuresThreat,
+            List<String> infrastructuresThreats, List<String> resourcesAssigned) {
         this.dateCreated = dateCreated;
         this.reportType = reportType;
         this.date = date;

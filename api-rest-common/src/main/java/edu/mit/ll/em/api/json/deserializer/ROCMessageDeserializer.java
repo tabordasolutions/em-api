@@ -106,7 +106,7 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         List<String> evacList =  evacuationsPorgess==null ? null : getJsonNdeAsList(evacuationsPorgess);
 
 
-        String structuresThreat = reportNode.get("evacuations") == null ? null : reportNode.get("structuresThreat").asText();
+        String structuresThreat = reportNode.get("structuresThreat") == null ? null : reportNode.get("structuresThreat").asText();
         JsonNode structuresThreatInProgress = reportNode.get("structuresThreatInProgress") == null ? null : reportNode.get("structuresThreatInProgress");
         JsonNode structuresThreats = (structuresThreatInProgress == null) || structuresThreatInProgress.get("structuresThreat") == null ? null : structuresThreatInProgress.get("structuresThreat");
         List<String> structuresThreatsLst =  structuresThreats==null ? null : getJsonNdeAsList(structuresThreats);
@@ -117,8 +117,9 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         List<String> infrastructuresThreatsLst =  structuresThreats==null ? null : getJsonNdeAsList(infrastructuresThreats);
 
         JsonNode resourcesAssignedRoot = reportNode.get("resourcesAssigned") == null ? null : reportNode.get("resourcesAssigned");
-        JsonNode resourcesAssignedChild = (resourcesAssignedRoot == null) || resourcesAssignedRoot.get("resourcesAssigned") == null ? null : resourcesAssignedRoot.get("resourcesAssignedRoot");
+        JsonNode resourcesAssignedChild = (resourcesAssignedRoot == null) || resourcesAssignedRoot.get("resourcesAssigned") == null ? null : resourcesAssignedRoot.get("resourcesAssigned");
         List<String> resourcesAssignedLst =  resourcesAssignedChild==null ? null : getJsonNdeAsList(resourcesAssignedChild);
+
 
         String jurisdiction = reportNode.get("jurisdiction") == null ? null : reportNode.get("jurisdiction").asText();
         Double temperature = reportNode.get("temperature") == null ? null : reportNode.get("temperature").asDouble();

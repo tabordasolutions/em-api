@@ -132,8 +132,13 @@ public class ROCService {
 
     private ROCForm buildROCForm(Incident incident, ROCMessage existingROCMessage, ROCLocationBasedData rocLocationBasedData) {
         ROCMessage rocMessage = new ROCMessageBuilder()
-                .buildReportDetails(existingROCMessage.getReportType(), existingROCMessage.getAdditionalAffectedCounties(), existingROCMessage.getGeneralLocation(),
-                        existingROCMessage.getFuelTypes(), existingROCMessage.getOtherFuelTypes())
+                .buildReportDetails(
+                        existingROCMessage.getReportType(),
+                        existingROCMessage.getAdditionalAffectedCounties(),
+                        existingROCMessage.getGeneralLocation(),
+                        existingROCMessage.getFuelTypes(),
+                        existingROCMessage.getOtherFuelTypes()
+                )
                 .buildReportDates(new Date(), existingROCMessage.getDate(), existingROCMessage.getStartTime())
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();

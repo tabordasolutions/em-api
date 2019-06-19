@@ -47,6 +47,8 @@ import edu.mit.ll.em.api.util.SADisplayConstants;
 import edu.mit.ll.nics.common.rabbitmq.RabbitFactory;
 import edu.mit.ll.nics.common.rabbitmq.RabbitPubSubProducer;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.dao.DataAccessException;
 
@@ -268,7 +270,7 @@ public class IncidentServiceImpl implements IncidentService {
 			incidentResponse.setMessage(DUPLICATE_NAME);
 			return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-		
+
 		try {
 			updatedIncident = incidentDao.updateIncident(workspaceId,incident); 
 			
@@ -282,7 +284,6 @@ public class IncidentServiceImpl implements IncidentService {
 				incidentResponse.setCount(0);
 				response = Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 			}
-						
 		} catch (Exception e) {
 			incidentResponse.setMessage("updateIncident failed: " + e.getMessage());
 			APILogger.getInstance().e(CNAME, "Data access exception while updating Incident"
@@ -465,6 +466,7 @@ public class IncidentServiceImpl implements IncidentService {
 					}
 				} catch (Exception e) {
 					APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
+					APILogger.getInstance().e(CNAME, e.getMessage());
 					incidentResponse.setMessage("postIncident failed: " + e.getMessage());
 					return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 				}
@@ -503,35 +505,154 @@ public class IncidentServiceImpl implements IncidentService {
 		JsonEmail email = null;
 
 		try{
-			String date = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy").format(new Date());
 			String alertTopic = String.format("iweb.nics.email.alert");
-			String siteName = workspaceDao.getWorkspaceName(workspaceId);
-
 			ROCMessage rocMessage = getROCMessage(form.getMessage());
 
 			/* Start Building Email Here  */
-			String emailSubject = "Vegetation Fire < validation pending > , " + rocMessage.getCounty() + ", NEW";
+			String emailSubject = newIncident.getIncidentname() + " , " + ", " + newIncident.getIncidentTypes() + rocMessage.getCounty() + " County, " + rocMessage.getReportType();
 
-			email = new JsonEmail(creator.getUsername(), toEmails + ",nikhil.devre@tabordasolutions.com,luis.gutierrez@tabordasolutions.com", emailSubject);
+			email = new JsonEmail(creator.getUsername(), toEmails + ",nikhil.devre@tabordasolutions.com", emailSubject);
 
-			// ,luis.gutierrez@tabordasolutions.com,michael.ruelas@tabordasolutions.com,jpuli@qualapps.com
+			/* Email Body String building Starts Here */
+			String emailBodyString = "\n\nIntel - for internal use only. Numbers subject to change.\n\n";
+
+			// DPA
+			if (rocMessage.getDpa().trim().length() > 0) {
+				emailBodyString = emailBodyString + "- " + rocMessage.getDpa() + " DPA";
+			}
+
+			// SRA
+			if (rocMessage.getSra().trim().length() > 0) {
+				emailBodyString = emailBodyString + ", " + rocMessage.getSra()  + "\n\n";
+			}
+
+			// Start Time
+			emailBodyString = emailBodyString + "- Start Time: " + rocMessage.getStartTime() + "\n\n";
+
+			// Scope
+			if (rocMessage.getScope().trim().length() > 0) {
+				emailBodyString = emailBodyString + "- "
+					+ rocMessage.getScope() + " acres < pending incident type names >, "
+					+ rocMessage.getPercentageContained() + "% contained" + "\n";
+			}
+
+			// Spread Rate
+			if (rocMessage.getSpreadRate().trim().length() > 0) {
+				emailBodyString = emailBodyString + "- " + rocMessage.getSpreadRate() + "\n";
+			}
+
+			emailBodyString = emailBodyString + "- " + rocMessage.getTemperature() + " degrees";
+
+			// Humidity
+			if(rocMessage.getRelHumidity() > 0) {
+				emailBodyString = emailBodyString + ", " +  rocMessage.getRelHumidity() + " RH";
+			}
+
+			// Wind Direction
+			if(rocMessage.getWindDirection().trim().length() > 0) {
+				emailBodyString = emailBodyString + ", " + " wind " + rocMessage.getWindDirection();
+			}
+
+			// Wind Speed
+			if(rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ) {
+				emailBodyString = emailBodyString + " @ " + rocMessage.getWindSpeed() + ", < wind gusts pending > " + "\n";
+			}
+
+			// Structures Threats
+			if(rocMessage.getStructuresThreats() != null && !rocMessage.getStructuresThreats().equals("null")) {
+				emailBodyString = emailBodyString + "- Structure Threats: ";
+                StringBuilder structuresThreatsString = new StringBuilder();
+
+				for (int i = 0; i < rocMessage.getStructuresThreats().size(); i++) {
+					structuresThreatsString.append(rocMessage.getStructuresThreats().get(i) + ", ");
+				}
+			}
+
+			// Infrastructures Threats
+			if(rocMessage.getInfrastructuresThreats() != null && !rocMessage.getInfrastructuresThreats().equals("null")) {
+                StringBuilder infrastructuresThreatsString = new StringBuilder();
+				for (int i = 0; i < rocMessage.getInfrastructuresThreats().size(); i++) {
+					infrastructuresThreatsString.append(rocMessage.getInfrastructuresThreats().get(i) + ", ");
+		        }
+				emailBodyString = emailBodyString + infrastructuresThreatsString;
+			}
+
+			/*
+			emailBodyString = emailBodyString + "Trying to find last character: \"" + emailBodyString.substring(emailBodyString.trim().length() - 1) + "\"";
+
+			emailBodyString = emailBodyString + "Trying to find last character: \"" + emailBodyString.substring(0, emailBodyString.length() - 1) + "\"";
+			emailBodyString = emailBodyString + "\n\n";
+			emailBodyString = emailBodyString + "\n\n";
 
 
-			/* Email Body Starts Here */
-			email.setBody(
-				"\n\nIntel - for internal use only. Numbers subject to change.\n\n" +
-				rocMessage.getDpa() + ", " + rocMessage.getSra()  + "\n" +
-				"Start Time: " + rocMessage.getStartTime() + "\n\n" +
-				"- " + rocMessage.getScope() + " acres < pending incident type names >, " + rocMessage.getPercentageContained() + "% contained" + "\n" +
-				"- " + rocMessage.getSpreadRate() + "\n" +
-				"- " + rocMessage.getTemperature() + " degrees, " +  rocMessage.getRelHumidity() + " RH, " + " wind " + rocMessage.getWindDirection() + " @ " + rocMessage.getWindSpeed() + ", < wind gusts pending > " + "\n" +
-				"- < pending Structures Threatened > " + "\n" +
-				"- < pending commitment of CAL FIRE air and ground resources > "
-			);
 
+			if(emailBodyString.substring(emailBodyString.trim().length() - 1).equals(",")) {
+				// emailBodyString = emailBodyString.substring(emailBodyString.trim().length() - 1);
+				emailBodyString = StringUtils.substring(emailBodyString, 0, (emailBodyString.length() - 1));
+			}
+
+			*/
+
+			emailBodyString = emailBodyString + "\n\n";
+
+			// Evacuations In Progress
+			if(rocMessage.getEvacuationsInProgress() != null && !rocMessage.getEvacuationsInProgress().equals("null")) {
+				emailBodyString = emailBodyString + "- Evacuations In Progress: " + rocMessage.getEvacuationsInProgress() + "\n\n";
+			}
+
+			if(rocMessage.getEvacuations() != null && !rocMessage.getEvacuations().equals("null")) {
+				emailBodyString = emailBodyString + "- Evacuations: " + rocMessage.getEvacuations() + "\n\n";
+			}
+
+			// Resources Assigned
+			if(rocMessage.getResourcesAssigned() != null && !rocMessage.getResourcesAssigned().equals("null")) {
+				emailBodyString = emailBodyString + "- Resources Assigned: ";
+
+				StringBuilder resourcesAssignedString = new StringBuilder();
+				for (int i = 0; i < rocMessage.getResourcesAssigned().size(); i++) {
+					resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i) + ", ");
+				}
+				emailBodyString = emailBodyString + resourcesAssignedString;
+			}
+
+			/* Set email body */
+			email.setBody(emailBodyString);
 			notifyNewIncidentEmail(email.toJsonObject().toString(),alertTopic);
+
+
+
+
+
+
+			// Affected Counties
+			/*
+			if(rocMessage.getAdditionalAffectedCounties() != null) {
+				emailBodyString = emailBodyString + "- Additional affected counties: " + rocMessage.getAdditionalAffectedCounties() + "\n\n";
+			}
+			*/
+
+			// Fuel Types
+			/*
+			if(rocMessage.getFuelTypes() != null) {
+				// emailBodyString = emailBodyString + "- " + rocMessage.getFuelTypes() + "\n\n";
+				emailBodyString = emailBodyString + "- Fuel Types: ";
+                StringBuilder fuelTypesString = new StringBuilder();
+
+				for (int i = 0; i < rocMessage.getFuelTypes().size(); i++) {
+                    fuelTypesString.append(rocMessage.getFuelTypes().get(i) + ", ");
+                }
+				emailBodyString = emailBodyString + fuelTypesString + "\n";
+			}
+			*/
+
+
+
+
+
+
 		} catch (Exception e) {
 			APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
+			APILogger.getInstance().e(CNAME, ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -562,7 +683,6 @@ public class IncidentServiceImpl implements IncidentService {
 	private void notifyIncident(int incidentId, String topic) throws IOException {
 		getRabbitProducer().produce(topic, (new Integer(incidentId).toString()));
 	}
-	
 	
 	private void notifyNewIncidentEmail(String email, String topic) throws IOException {
 		if (email != null) {
