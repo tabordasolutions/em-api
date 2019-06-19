@@ -76,13 +76,13 @@ public class ROCMessageDeserializerTest {
 
 //    private String evacuationsInProgress = "Evacuation orders in place";
     private String evacuationsInProgress = "Evacuation orders in place,Evacuation center has been established,Evaculation orders remain in place";
-    public static ArrayList<String> evacList;
+    public static ArrayList<String> evacuationsList;
 
     static {
-        evacList = new ArrayList<String>();
-        evacList.add("Evacuation orders in place");
-        evacList.add("Evacuation center has been established");
-        evacList.add("Evaculation orders remain in place");
+        evacuationsList = new ArrayList<String>();
+        evacuationsList.add("Evacuation orders in place");
+        evacuationsList.add("Evacuation center has been established");
+        evacuationsList.add("Evaculation orders remain in place");
 
     }
     private List<String> structuresThreats = Arrays.asList(new String[] {"Structures threatened","Damage inspection is on going"});
@@ -178,8 +178,7 @@ public class ROCMessageDeserializerTest {
         assertEquals(rocMessage.getWindSpeed(), windSpeed);
         assertEquals(rocMessage.getWindDirection(), windDirection);
         assertEquals(rocMessage.getEvacuations(), evacuations);
-        assertEquals(rocMessage.getEvacList(), evacList);
-
+        assertEquals(rocMessage.getEvacuationsList(), evacuationsList);
     }
 
     @Test

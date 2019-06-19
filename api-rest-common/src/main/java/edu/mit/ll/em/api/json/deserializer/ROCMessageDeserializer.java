@@ -101,10 +101,10 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         String evacuations = reportNode.get("evacuations") == null ? null : reportNode.get("evacuations").asText();
 
 
-        JsonNode evacProgress = reportNode.get("evacuationsInProgress") == null ? null : reportNode.get("evacuationsInProgress");
-        JsonNode evacuationsPorgess = (evacProgress == null) || evacProgress.get("evacuations") == null ? null : evacProgress.get("evacuations");
-        List<String> evacList =  evacuationsPorgess==null ? null : getJsonNdeAsList(evacuationsPorgess);
 
+        JsonNode evacuationsInProgress = reportNode.get("evacuationsInProgress") == null ? null : reportNode.get("evacuationsInProgress");
+        JsonNode evacuationsArray = (evacuationsInProgress == null) || evacuationsInProgress.get("evacuations") == null ? null : evacuationsInProgress.get("evacuations");
+        List<String> evacuationsList =  evacuationsArray==null ? null : getJsonNdeAsList(evacuationsArray);
 
         String structuresThreat = reportNode.get("structuresThreat") == null ? null : reportNode.get("structuresThreat").asText();
         JsonNode structuresThreatInProgress = reportNode.get("structuresThreatInProgress") == null ? null : reportNode.get("structuresThreatInProgress");
@@ -136,7 +136,7 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         return new ROCMessage(dateCreated, reportType, date, startTime,
                 location, generalLocation, county, additionalAffectedCounties, state,
                 sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windDirection, percentageContained, scope, spreadRate,
-                fuelTypes, otherFuelTypes, evacuations,evacList, structuresThreat,
+                fuelTypes, otherFuelTypes, evacuations,evacuationsList, structuresThreat,
                 structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst);
     }
 

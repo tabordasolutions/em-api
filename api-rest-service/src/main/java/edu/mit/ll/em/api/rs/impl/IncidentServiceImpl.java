@@ -600,8 +600,14 @@ public class IncidentServiceImpl implements IncidentService {
 				emailBodyString = emailBodyString + "- Evacuations In Progress: " + rocMessage.getEvacuationsInProgress() + "\n\n";
 			}
 
-			if(rocMessage.getEvacuations() != null && !rocMessage.getEvacuations().equals("null")) {
-				emailBodyString = emailBodyString + "- Evacuations: " + rocMessage.getEvacuations() + "\n\n";
+			if(rocMessage.getEvacuationsList() != null && !rocMessage.getEvacuationsList().equals("null")) {
+				emailBodyString = emailBodyString + "- Evacuations List: ";
+
+				StringBuilder evacuationsListString = new StringBuilder();
+				for (int i = 0; i < rocMessage.getEvacuationsList().size(); i++) {
+					evacuationsListString.append(rocMessage.getEvacuationsList().get(i) + ", ");
+				}
+				emailBodyString = emailBodyString + evacuationsListString + "\n\n";
 			}
 
 			// Resources Assigned
