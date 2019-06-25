@@ -55,6 +55,11 @@ public class ROCMessage implements Cloneable, Comparable {
     private String generalLocation; //general location
     private String county;
     private String additionalAffectedCounties;
+    private String street;
+    private String crossStreet;
+    private String nearestCommunity;
+    private String milesFromNearestCommunity;
+    private String directionFromNearestCommunity;
     private String state;
 
     //Jurisdiction info pre populated based on incident location
@@ -87,7 +92,8 @@ public class ROCMessage implements Cloneable, Comparable {
     public ROCMessage() { }
 
     public ROCMessage(Date dateCreated, String reportType, Date date, Date startTime,
-            String location, String generalLocation, String county, String additionalAffectedCounties, String state,
+            String location, String generalLocation, String county, String additionalAffectedCounties, String street, String crossStreet,
+            String nearestCommunity, String milesFromNearestCommunity, String directionFromNearestCommunity, String state,
             String sra, String dpa, String jurisdiction,
             Double temperature, Float relHumidity,  Float windSpeed, String windDirection, String percentageContained,
             String scope, String spreadRate, List<String> fuelTypes, String otherFuelTypes, String evacuations, List<String> evacuationsList,
@@ -101,6 +107,11 @@ public class ROCMessage implements Cloneable, Comparable {
         this.generalLocation = generalLocation;
         this.county = county;
         this.additionalAffectedCounties = additionalAffectedCounties;
+        this.street = street;
+        this.crossStreet = crossStreet;
+        this.nearestCommunity = nearestCommunity;
+        this.milesFromNearestCommunity = milesFromNearestCommunity;
+        this.directionFromNearestCommunity = directionFromNearestCommunity;
         this.state = state;
         this.sra = sra;
         this.dpa = dpa;
@@ -191,6 +202,46 @@ public class ROCMessage implements Cloneable, Comparable {
 
     public void setAdditionalAffectedCounties(String additionalAffectedCounties) {
         this.additionalAffectedCounties = additionalAffectedCounties;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCrossStreet() {
+        return crossStreet;
+    }
+
+    public void setCrossStreet(String crossStreet) {
+        this.crossStreet = crossStreet;
+    }
+
+    public String getNearestCommunity() {
+        return nearestCommunity;
+    }
+
+    public void setNearestCommunity(String nearestCommunity) {
+        this.nearestCommunity = nearestCommunity;
+    }
+
+    public String getMilesFromNearestCommunity() {
+        return milesFromNearestCommunity;
+    }
+
+    public void setMilesFromNearestCommunity(String milesFromNearestCommunity) {
+        this.milesFromNearestCommunity = milesFromNearestCommunity;
+    }
+
+    public String getDirectionFromNearestCommunity() {
+        return directionFromNearestCommunity;
+    }
+
+    public void setDirectionFromNearestCommunity(String directionFromNearestCommunity) {
+        this.directionFromNearestCommunity = directionFromNearestCommunity;
     }
 
     public String getState() {

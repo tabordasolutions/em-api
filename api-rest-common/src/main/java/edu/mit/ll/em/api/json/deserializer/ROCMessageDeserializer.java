@@ -92,6 +92,11 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         String generalLocation = reportNode.get("generalLocation") == null ? null : reportNode.get("generalLocation").asText();
         String county = reportNode.get("county") == null ? null : reportNode.get("county").asText();
         String additionalAffectedCounties = reportNode.get("additionalAffectedCounties") == null ? null : reportNode.get("additionalAffectedCounties").asText();
+        String street = reportNode.get("street") == null ? null : reportNode.get("street").asText();
+        String crossStreet = reportNode.get("crossStreet") == null ? null : reportNode.get("crossStreet").asText();
+        String nearestCommunity = reportNode.get("nearestCommunity") == null ? null : reportNode.get("nearestCommunity").asText();
+        String milesFromNearestCommunity = reportNode.get("milesFromNearestCommunity") == null ? null : reportNode.get("milesFromNearestCommunity").asText();
+        String directionFromNearestCommunity = reportNode.get("directionFromNearestCommunity") == null ? null : reportNode.get("directionFromNearestCommunity").asText();
         String state = reportNode.get("state") == null ? null : reportNode.get("state").asText();
         String sra = reportNode.get("sra") == null ? null : reportNode.get("sra").asText();
         String dpa = reportNode.get("dpa") == null ? null : reportNode.get("dpa").asText();
@@ -134,7 +139,7 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
 
         String otherFuelTypes = reportNode.get("otherFuelTypes") == null ? null : reportNode.get("otherFuelTypes").asText();
         return new ROCMessage(dateCreated, reportType, date, startTime,
-                location, generalLocation, county, additionalAffectedCounties, state,
+                location, generalLocation, county, additionalAffectedCounties, street, crossStreet, nearestCommunity, milesFromNearestCommunity, directionFromNearestCommunity, state,
                 sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windDirection, percentageContained, scope, spreadRate,
                 fuelTypes, otherFuelTypes, evacuations,evacuationsList, structuresThreat,
                 structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst);
