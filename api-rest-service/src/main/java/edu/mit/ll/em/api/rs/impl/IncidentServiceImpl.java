@@ -613,6 +613,19 @@ public class IncidentServiceImpl implements IncidentService {
 				emailBodyString = emailBodyString + evacuationsListString + "\n\n";
 			}
 
+			// Other Significant Info
+
+			if(rocMessage.getOtherSignificantInfo() != null && !rocMessage.getOtherSignificantInfo().equals("null")) {
+				emailBodyString = emailBodyString + "- Other Significant Info: ";
+
+				StringBuilder otherSignificantInfoString = new StringBuilder();
+				for (int i = 0; i < rocMessage.getOtherSignificantInfo().size(); i++) {
+					otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ", ");
+				}
+				emailBodyString = emailBodyString + otherSignificantInfoString;
+			}
+
+
 			// Resources Assigned
 			if(rocMessage.getResourcesAssigned() != null && !rocMessage.getResourcesAssigned().equals("null")) {
 				emailBodyString = emailBodyString + "- Resources Assigned: ";
