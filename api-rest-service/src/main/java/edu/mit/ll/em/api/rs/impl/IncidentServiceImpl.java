@@ -559,6 +559,7 @@ public class IncidentServiceImpl implements IncidentService {
 			}
 
 			// Structures Threats
+			// TODO : Incldue empty string in the IF CONDITION
 			if(rocMessage.getStructuresThreats() != null && !rocMessage.getStructuresThreats().equals("null")) {
 				emailBodyString = emailBodyString + "- Structure Threats: ";
                 StringBuilder structuresThreatsString = new StringBuilder();
@@ -569,6 +570,7 @@ public class IncidentServiceImpl implements IncidentService {
 			}
 
 			// Infrastructures Threats
+			// TODO : Incldue empty string in the IF CONDITION
 			if(rocMessage.getInfrastructuresThreats() != null && !rocMessage.getInfrastructuresThreats().equals("null")) {
                 StringBuilder infrastructuresThreatsString = new StringBuilder();
 				for (int i = 0; i < rocMessage.getInfrastructuresThreats().size(); i++) {
@@ -600,6 +602,7 @@ public class IncidentServiceImpl implements IncidentService {
 				emailBodyString = emailBodyString + "- Evacuations In Progress: " + rocMessage.getEvacuationsInProgress() + "\n\n";
 			}
 
+			// TODO : Incldue empty string in the IF CONDITION
 			if(rocMessage.getEvacuationsList() != null && !rocMessage.getEvacuationsList().equals("null")) {
 				emailBodyString = emailBodyString + "- Evacuations List: ";
 
@@ -609,6 +612,19 @@ public class IncidentServiceImpl implements IncidentService {
 				}
 				emailBodyString = emailBodyString + evacuationsListString + "\n\n";
 			}
+
+			// Other Significant Info
+
+			if(rocMessage.getOtherSignificantInfo() != null && !rocMessage.getOtherSignificantInfo().equals("null")) {
+				emailBodyString = emailBodyString + "- Other Significant Info: ";
+
+				StringBuilder otherSignificantInfoString = new StringBuilder();
+				for (int i = 0; i < rocMessage.getOtherSignificantInfo().size(); i++) {
+					otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ", ");
+				}
+				emailBodyString = emailBodyString + otherSignificantInfoString;
+			}
+
 
 			// Resources Assigned
 			if(rocMessage.getResourcesAssigned() != null && !rocMessage.getResourcesAssigned().equals("null")) {

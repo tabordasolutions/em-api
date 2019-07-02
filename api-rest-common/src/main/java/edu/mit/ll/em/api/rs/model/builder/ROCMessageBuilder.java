@@ -38,12 +38,20 @@ import java.util.List;
 public class ROCMessageBuilder {
     private ROCMessage rocMessage = new ROCMessage();
 
-    public ROCMessageBuilder buildReportDetails(String reportType, String additionalAffectedCounties, String generalLocation, List<String> fuelTypes, String otherFuelTypes) {
+    public ROCMessageBuilder buildReportDetails(String reportType, String additionalAffectedCounties, String street, String crossStreet,
+                                                String nearestCommunity, String milesFromNearestCommunity, String directionFromNearestCommunity,
+                                                String generalLocation, List<String> fuelTypes, String otherFuelTypes, List<String> otherSignificantInfo) {
         this.rocMessage.setReportType(reportType);
         this.rocMessage.setAdditionalAffectedCounties(additionalAffectedCounties);
+        this.rocMessage.setStreet(street);
+        this.rocMessage.setCrossStreet(crossStreet);
+        this.rocMessage.setNearestCommunity(nearestCommunity);
+        this.rocMessage.setMilesFromNearestCommunity(milesFromNearestCommunity);
+        this.rocMessage.setDirectionFromNearestCommunity(directionFromNearestCommunity);
         this.rocMessage.setGeneralLocation(generalLocation);
         this.rocMessage.setFuelTypes(fuelTypes);
         this.rocMessage.setOtherFuelTypes(otherFuelTypes);
+        this.rocMessage.setOtherSignificantInfo(otherSignificantInfo);
         return this;
     }
 

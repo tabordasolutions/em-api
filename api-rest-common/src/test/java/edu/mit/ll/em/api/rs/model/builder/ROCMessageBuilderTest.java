@@ -46,7 +46,22 @@ public class ROCMessageBuilderTest {
     private String reportType = "UPDATE";
 //    private String fuelTypes = "cause";
     private List<String> fuelTypes = Arrays.asList(new String[] {"GRASS", "BUSH"});
+    private List<String> otherSignificantInfo = Arrays.asList(new String[] {
+            "Extensive mop up in oak woodlands",
+            "Ground resources continue to mop-up and strengthen control line",
+            "Suppression repair is under way",
+            "Fire is in remote location with difficult access",
+            "Access and terrain continue to hamper control efforts",
+            "Short range spotting causing erratic fire behavior",
+            "Long range spotting observed"
+    });
+
     private String additionalFuelTypes = "other fuel types";
+    private String street = "";
+    private String crossStreet = "";
+    private String nearestCommunity = "";
+    private String milesFromNearestCommunity = "";
+    private String directionFromNearestCommunity = "";
     private String generalLocation = "5 miles from xy";
     private Date startDateTime = new Date();
     private String sra = "sra";
@@ -57,10 +72,15 @@ public class ROCMessageBuilderTest {
 
     @Test
     public void buildsROCMessageWithGivenReportDetailsAndLeavesOtherFieldsBlank() {
-        ROCMessage rocMessage = new ROCMessageBuilder().buildReportDetails(reportType, additionalAffectedCounties, generalLocation, fuelTypes, additionalFuelTypes)
+        ROCMessage rocMessage = new ROCMessageBuilder().buildReportDetails(reportType, additionalAffectedCounties, street, crossStreet, nearestCommunity, milesFromNearestCommunity, directionFromNearestCommunity, generalLocation, fuelTypes, additionalFuelTypes, otherSignificantInfo)
                 .build();
         assertEquals(reportType, rocMessage.getReportType());
         assertEquals(additionalAffectedCounties, rocMessage.getAdditionalAffectedCounties());
+        assertEquals(street, rocMessage.getStreet());
+        assertEquals(crossStreet, rocMessage.getCrossStreet());
+        assertEquals(nearestCommunity, rocMessage.getNearestCommunity());
+        assertEquals(milesFromNearestCommunity, rocMessage.getMilesFromNearestCommunity());
+        assertEquals(directionFromNearestCommunity, rocMessage.getDirectionFromNearestCommunity());
         assertEquals(generalLocation, rocMessage.getGeneralLocation());
         assertEquals(fuelTypes, rocMessage.getFuelTypes());
         assertEquals(additionalFuelTypes, rocMessage.getOtherFuelTypes());
@@ -91,6 +111,11 @@ public class ROCMessageBuilderTest {
 
         assertNull(rocMessage.getReportType());
         assertNull(rocMessage.getAdditionalAffectedCounties());
+        assertNull(rocMessage.getStreet());
+        assertNull(rocMessage.getCrossStreet());
+        assertNull(rocMessage.getNearestCommunity());
+        assertNull(rocMessage.getMilesFromNearestCommunity());
+        assertNull(rocMessage.getDirectionFromNearestCommunity());
         assertNull(rocMessage.getGeneralLocation());
         assertNull(rocMessage.getFuelTypes());
         assertNull(rocMessage.getOtherFuelTypes());
@@ -128,6 +153,11 @@ public class ROCMessageBuilderTest {
 
         assertNull(rocMessage.getReportType());
         assertNull(rocMessage.getAdditionalAffectedCounties());
+        assertNull(rocMessage.getStreet());
+        assertNull(rocMessage.getCrossStreet());
+        assertNull(rocMessage.getNearestCommunity());
+        assertNull(rocMessage.getMilesFromNearestCommunity());
+        assertNull(rocMessage.getDirectionFromNearestCommunity());
         assertNull(rocMessage.getGeneralLocation());
         assertNull(rocMessage.getFuelTypes());
         assertNull(rocMessage.getOtherFuelTypes());
@@ -161,12 +191,17 @@ public class ROCMessageBuilderTest {
                 .build();
 
         ROCMessage rocMessage = new ROCMessageBuilder()
-                .buildReportDetails(reportType, additionalAffectedCounties, generalLocation, fuelTypes, additionalFuelTypes)
+                .buildReportDetails(reportType, additionalAffectedCounties, street, crossStreet, nearestCommunity, milesFromNearestCommunity, directionFromNearestCommunity, generalLocation, fuelTypes, additionalFuelTypes, otherSignificantInfo)
                 .buildReportDates(startDateTime, startDateTime, startDateTime)
                 .buildLocationBasedData(rocLocationBasedData).build();
 
         assertEquals(reportType, rocMessage.getReportType());
         assertEquals(additionalAffectedCounties, rocMessage.getAdditionalAffectedCounties());
+        assertEquals(street, rocMessage.getStreet());
+        assertEquals(crossStreet, rocMessage.getCrossStreet());
+        assertEquals(nearestCommunity, rocMessage.getNearestCommunity());
+        assertEquals(milesFromNearestCommunity, rocMessage.getMilesFromNearestCommunity());
+        assertEquals(directionFromNearestCommunity, rocMessage.getDirectionFromNearestCommunity());
         assertEquals(generalLocation, rocMessage.getGeneralLocation());
         assertEquals(fuelTypes, rocMessage.getFuelTypes());
         assertEquals(additionalFuelTypes, rocMessage.getOtherFuelTypes());

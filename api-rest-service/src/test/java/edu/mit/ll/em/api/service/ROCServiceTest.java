@@ -104,6 +104,16 @@ public class ROCServiceTest {
     private Date rocUpdate2CreateDate = new Date(rocUpdate1CreateDate.getTime() + 1000);
     private Date rocFinalCreateDate = new Date(rocUpdate2CreateDate.getTime() + 1000);
 
+    private List<String> otherSignificantInfo = Arrays.asList(new String[] {
+        "Extensive mop up in oak woodlands",
+        "Ground resources continue to mop-up and strengthen control line",
+        "Suppression repair is under way",
+        "Fire is in remote location with difficult access",
+        "Access and terrain continue to hamper control efforts",
+        "Short range spotting causing erratic fire behavior",
+        "Long range spotting observed"
+    });
+
     @Before
     public void setup() throws Exception {
         when(incident.getIncidentid()).thenReturn(incidentId);
@@ -122,22 +132,22 @@ public class ROCServiceTest {
                     .buildJurisdictionData(jurisdiction)
                     .build();
 
-        rocMessageNew = new ROCMessageBuilder().buildReportDetails("NEW", "addtl counties", "general location", fuelTypes, otherFuelTypes)
+        rocMessageNew = new ROCMessageBuilder().buildReportDetails("NEW", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
                     .buildReportDates(startDate, startDate, startDate)
                     .buildLocationBasedData(rocLocationBasedData)
                     .build();
 
-        rocMessageUpdate1 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "general location", fuelTypes, otherFuelTypes)
+        rocMessageUpdate1 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
                 .buildReportDates(rocUpdate1CreateDate, startDate, startDate)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
 
-        rocMessageUpdate2 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "general location", fuelTypes, otherFuelTypes)
+        rocMessageUpdate2 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
                 .buildReportDates(rocUpdate2CreateDate, startDate, startDate)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
 
-        rocMessageFinal = new ROCMessageBuilder().buildReportDetails("FINAL", "addtl counties", "general location", fuelTypes, otherFuelTypes)
+        rocMessageFinal = new ROCMessageBuilder().buildReportDetails("FINAL", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
                 .buildReportDates(rocFinalCreateDate, startDate, startDate)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
@@ -188,6 +198,12 @@ public class ROCServiceTest {
         assertEquals(incidentTypes, rocForm.getIncidentTypes());
 
         assertNull(rocForm.getMessage().getAdditionalAffectedCounties());
+        assertNull(rocForm.getMessage().getStreet());
+        assertNull(rocForm.getMessage().getCrossStreet());
+        assertNull(rocForm.getMessage().getNearestCommunity());
+        assertNull(rocForm.getMessage().getMilesFromNearestCommunity());
+        assertNull(rocForm.getMessage().getDirectionFromNearestCommunity());
+
         assertNull(rocForm.getMessage().getGeneralLocation());
         assertNull(rocForm.getMessage().getFuelTypes());
         assertNull(rocForm.getMessage().getOtherFuelTypes());
@@ -224,6 +240,12 @@ public class ROCServiceTest {
         assertEquals(incidentTypes, rocForm.getIncidentTypes());
 
         assertEquals(rocMessageFinal.getAdditionalAffectedCounties(), rocForm.getMessage().getAdditionalAffectedCounties());
+        assertEquals(rocMessageFinal.getStreet(), rocForm.getMessage().getStreet());
+        assertEquals(rocMessageFinal.getCrossStreet(), rocForm.getMessage().getCrossStreet());
+        assertEquals(rocMessageFinal.getNearestCommunity(), rocForm.getMessage().getNearestCommunity());
+        assertEquals(rocMessageFinal.getMilesFromNearestCommunity(), rocForm.getMessage().getMilesFromNearestCommunity());
+        assertEquals(rocMessageFinal.getDirectionFromNearestCommunity(), rocForm.getMessage().getDirectionFromNearestCommunity());
+
         assertEquals(rocMessageFinal.getGeneralLocation(), rocForm.getMessage().getGeneralLocation());
         assertEquals(rocMessageFinal.getFuelTypes(), rocForm.getMessage().getFuelTypes());
         assertEquals(rocMessageFinal.getOtherFuelTypes(), rocForm.getMessage().getOtherFuelTypes());
@@ -255,6 +277,12 @@ public class ROCServiceTest {
         assertEquals(incidentTypes, rocForm.getIncidentTypes());
 
         assertEquals(rocMessageUpdate2.getAdditionalAffectedCounties(), rocForm.getMessage().getAdditionalAffectedCounties());
+        assertEquals(rocMessageUpdate2.getStreet(), rocForm.getMessage().getStreet());
+        assertEquals(rocMessageUpdate2.getCrossStreet(), rocForm.getMessage().getCrossStreet());
+        assertEquals(rocMessageUpdate2.getNearestCommunity(), rocForm.getMessage().getNearestCommunity());
+        assertEquals(rocMessageUpdate2.getMilesFromNearestCommunity(), rocForm.getMessage().getMilesFromNearestCommunity());
+        assertEquals(rocMessageUpdate2.getDirectionFromNearestCommunity(), rocForm.getMessage().getDirectionFromNearestCommunity());
+
         assertEquals(rocMessageUpdate2.getGeneralLocation(), rocForm.getMessage().getGeneralLocation());
         assertEquals(rocMessageUpdate2.getFuelTypes(), rocForm.getMessage().getFuelTypes());
         assertEquals(rocMessageFinal.getOtherFuelTypes(), rocForm.getMessage().getOtherFuelTypes());
@@ -325,6 +353,11 @@ public class ROCServiceTest {
         assertEquals(startDate, rocForm.getMessage().getStartTime());
 
         assertEquals(rocMessageNew.getAdditionalAffectedCounties(), rocForm.getMessage().getAdditionalAffectedCounties());
+        assertEquals(rocMessageNew.getStreet(), rocForm.getMessage().getStreet());
+        assertEquals(rocMessageNew.getCrossStreet(), rocForm.getMessage().getCrossStreet());
+        assertEquals(rocMessageNew.getNearestCommunity(), rocForm.getMessage().getNearestCommunity());
+        assertEquals(rocMessageNew.getMilesFromNearestCommunity(), rocForm.getMessage().getMilesFromNearestCommunity());
+        assertEquals(rocMessageNew.getDirectionFromNearestCommunity(), rocForm.getMessage().getDirectionFromNearestCommunity());
         assertEquals(rocMessageNew.getGeneralLocation(), rocForm.getMessage().getGeneralLocation());
         assertEquals(rocMessageFinal.getFuelTypes(), rocForm.getMessage().getFuelTypes());
         assertEquals(rocMessageFinal.getOtherFuelTypes(), rocForm.getMessage().getOtherFuelTypes());

@@ -135,9 +135,15 @@ public class ROCService {
                 .buildReportDetails(
                         existingROCMessage.getReportType(),
                         existingROCMessage.getAdditionalAffectedCounties(),
+                        existingROCMessage.getStreet(),
+                        existingROCMessage.getCrossStreet(),
+                        existingROCMessage.getNearestCommunity(),
+                        existingROCMessage.getMilesFromNearestCommunity(),
+                        existingROCMessage.getDirectionFromNearestCommunity(),
                         existingROCMessage.getGeneralLocation(),
                         existingROCMessage.getFuelTypes(),
-                        existingROCMessage.getOtherFuelTypes()
+                        existingROCMessage.getOtherFuelTypes(),
+                        existingROCMessage.getOtherSignificantInfo()
                 )
                 .buildReportDates(new Date(), existingROCMessage.getDate(), existingROCMessage.getStartTime())
                 .buildLocationBasedData(rocLocationBasedData)
@@ -151,7 +157,7 @@ public class ROCService {
     private ROCForm buildNewROCForm(Incident incident, ROCLocationBasedData rocLocationBasedData) {
         Date dateCreated = new Date();
         ROCMessage rocMessage = new ROCMessageBuilder()
-                .buildReportDetails("NEW", null, null, null, null)
+                .buildReportDetails("NEW", null, null, null, null, null, null, null, null,null, null)
                 .buildReportDates(dateCreated, dateCreated, dateCreated)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
