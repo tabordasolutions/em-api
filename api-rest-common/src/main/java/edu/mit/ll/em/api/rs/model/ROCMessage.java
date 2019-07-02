@@ -87,6 +87,7 @@ public class ROCMessage implements Cloneable, Comparable {
     private String infrastructuresThreat;
     private List<String> infrastructuresThreats;
     private List<String> resourcesAssigned;
+    private List<String> otherSignificantInfo;
 
 
     public ROCMessage() { }
@@ -96,7 +97,7 @@ public class ROCMessage implements Cloneable, Comparable {
             String nearestCommunity, String milesFromNearestCommunity, String directionFromNearestCommunity, String state,
             String sra, String dpa, String jurisdiction,
             Double temperature, Float relHumidity,  Float windSpeed, String windDirection, String percentageContained,
-            String scope, String spreadRate, List<String> fuelTypes, String otherFuelTypes, String evacuations, List<String> evacuationsList,
+            String scope, String spreadRate, List<String> fuelTypes, List<String> otherSignificantInfo, String otherFuelTypes, String evacuations, List<String> evacuationsList,
             String structuresThreat, List<String> structuresThreats, String infrastructuresThreat,
             List<String> infrastructuresThreats, List<String> resourcesAssigned) {
         this.dateCreated = dateCreated;
@@ -132,6 +133,7 @@ public class ROCMessage implements Cloneable, Comparable {
         this.infrastructuresThreat=infrastructuresThreat;
         this.infrastructuresThreats=infrastructuresThreats;
         this.resourcesAssigned = resourcesAssigned;
+        this.otherSignificantInfo = otherSignificantInfo;
     }
 
     @JsonFormat
@@ -357,6 +359,12 @@ public class ROCMessage implements Cloneable, Comparable {
 
     public void setFuelTypes(List<String> fuelTypes) {
         this.fuelTypes = fuelTypes;
+    }
+
+    public List<String> getOtherSignificantInfo() { return otherSignificantInfo; }
+
+    public void setOtherSignificantInfo(List<String> otherSignificantInfo) {
+        this.otherSignificantInfo = otherSignificantInfo;
     }
 
     public String getOtherFuelTypes() {

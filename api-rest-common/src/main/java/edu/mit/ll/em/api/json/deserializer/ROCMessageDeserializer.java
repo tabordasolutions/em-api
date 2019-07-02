@@ -136,12 +136,15 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         JsonNode fuelTypesJSN = reportNode.get("fuelTypes") == null ? null : reportNode.get("fuelTypes");
         List<String> fuelTypes = fuelTypesJSN==null ? null : getJsonNdeAsList(fuelTypesJSN);
 
+        JsonNode otherSignificantInfoJSON = reportNode.get("otherSignificantInfo") == null ? null : reportNode.get("otherSignificantInfo");
+        List<String> otherSignificantInfo = otherSignificantInfoJSON == null ? null : getJsonNdeAsList(otherSignificantInfoJSON);
+
 
         String otherFuelTypes = reportNode.get("otherFuelTypes") == null ? null : reportNode.get("otherFuelTypes").asText();
         return new ROCMessage(dateCreated, reportType, date, startTime,
                 location, generalLocation, county, additionalAffectedCounties, street, crossStreet, nearestCommunity, milesFromNearestCommunity, directionFromNearestCommunity, state,
                 sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windDirection, percentageContained, scope, spreadRate,
-                fuelTypes, otherFuelTypes, evacuations,evacuationsList, structuresThreat,
+                fuelTypes, otherSignificantInfo, otherFuelTypes, evacuations,evacuationsList, structuresThreat,
                 structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst);
     }
 

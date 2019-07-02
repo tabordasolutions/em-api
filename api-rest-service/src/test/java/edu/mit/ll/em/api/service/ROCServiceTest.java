@@ -104,6 +104,16 @@ public class ROCServiceTest {
     private Date rocUpdate2CreateDate = new Date(rocUpdate1CreateDate.getTime() + 1000);
     private Date rocFinalCreateDate = new Date(rocUpdate2CreateDate.getTime() + 1000);
 
+    private List<String> otherSignificantInfo = Arrays.asList(new String[] {
+        "Extensive mop up in oak woodlands",
+        "Ground resources continue to mop-up and strengthen control line",
+        "Suppression repair is under way",
+        "Fire is in remote location with difficult access",
+        "Access and terrain continue to hamper control efforts",
+        "Short range spotting causing erratic fire behavior",
+        "Long range spotting observed"
+    });
+
     @Before
     public void setup() throws Exception {
         when(incident.getIncidentid()).thenReturn(incidentId);
@@ -122,22 +132,22 @@ public class ROCServiceTest {
                     .buildJurisdictionData(jurisdiction)
                     .build();
 
-        rocMessageNew = new ROCMessageBuilder().buildReportDetails("NEW", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes)
+        rocMessageNew = new ROCMessageBuilder().buildReportDetails("NEW", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
                     .buildReportDates(startDate, startDate, startDate)
                     .buildLocationBasedData(rocLocationBasedData)
                     .build();
 
-        rocMessageUpdate1 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes)
+        rocMessageUpdate1 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
                 .buildReportDates(rocUpdate1CreateDate, startDate, startDate)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
 
-        rocMessageUpdate2 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes)
+        rocMessageUpdate2 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
                 .buildReportDates(rocUpdate2CreateDate, startDate, startDate)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
 
-        rocMessageFinal = new ROCMessageBuilder().buildReportDetails("FINAL", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes)
+        rocMessageFinal = new ROCMessageBuilder().buildReportDetails("FINAL", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
                 .buildReportDates(rocFinalCreateDate, startDate, startDate)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();

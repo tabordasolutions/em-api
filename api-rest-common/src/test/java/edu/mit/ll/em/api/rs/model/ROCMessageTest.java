@@ -59,23 +59,23 @@ public class ROCMessageTest {
     @Before
     public void setup() {
         rocMessageFirstFinal = new ROCMessageBuilder()
-                .buildReportDetails("FINAL", null, "", "", "", "", "", "generalLocation", Arrays.asList(new String[] {"brass"}), "other fuel type")
+                .buildReportDetails("FINAL", null, "", "", "", "", "", "generalLocation", Arrays.asList(new String[] {"brass"}), "other fuel type", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))
                 .buildReportDates(dateCreatedFirstFinal, rocStartDate, rocStartDate)
                 .build();
         rocMessageSecondFinal = new ROCMessageBuilder()
-                .buildReportDetails("FINAL", "county1, county2", "", "", "", "", "", "general location1", Arrays.asList(new String[] {"brass"}), "other fuel type1")
+                .buildReportDetails("FINAL", "county1, county2", "", "", "", "", "", "general location1", Arrays.asList(new String[] {"brass"}), "other fuel type1", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))
                 .buildReportDates(dateCreatedSecondFinal, rocStartDate, rocStartDate)
                 .build();
         rocMessageFirstUpdate = new ROCMessageBuilder()
-                .buildReportDetails("UPDATE", "county1, county2", "", "", "", "", "", "general location2", Arrays.asList(new String[] {"brass"}), "other fuel type2")
+                .buildReportDetails("UPDATE", "county1, county2", "", "", "", "", "", "general location2", Arrays.asList(new String[] {"brass"}), "other fuel type2", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))
                 .buildReportDates(dateCreatedFirstUpdate, rocStartDate, rocStartDate)
                 .build();
         rocMessageSecondUpdate = new ROCMessageBuilder()
-                .buildReportDetails("UPDATE", "county1, county2", "", "", "", "", "", "general location3", Arrays.asList(new String[] {"brass"}), "other fuel type3")
+                .buildReportDetails("UPDATE", "county1, county2", "", "", "", "", "", "general location3", Arrays.asList(new String[] {"brass"}), "other fuel type3", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))
                 .buildReportDates(dateCreatedSecondUpdate, rocStartDate, rocStartDate)
                 .build();
         rocMessageNullCreateDate = new ROCMessageBuilder()
-                .buildReportDetails("UPDATE", "county1, county2", "", "", "", "", "", "general location4", Arrays.asList(new String[] {"brass"}), "other fuel type4")
+                .buildReportDetails("UPDATE", "county1, county2", "", "", "", "", "", "general location4", Arrays.asList(new String[] {"brass"}), "other fuel type4", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))
                 .buildReportDates(null, null, null)
                 .build();
         rocMessageNullCreateDate.setDateCreated(null);

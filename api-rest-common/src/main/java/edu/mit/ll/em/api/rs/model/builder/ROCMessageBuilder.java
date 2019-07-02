@@ -40,7 +40,7 @@ public class ROCMessageBuilder {
 
     public ROCMessageBuilder buildReportDetails(String reportType, String additionalAffectedCounties, String street, String crossStreet,
                                                 String nearestCommunity, String milesFromNearestCommunity, String directionFromNearestCommunity,
-                                                String generalLocation, List<String> fuelTypes, String otherFuelTypes) {
+                                                String generalLocation, List<String> fuelTypes, String otherFuelTypes, List<String> otherSignificantInfo) {
         this.rocMessage.setReportType(reportType);
         this.rocMessage.setAdditionalAffectedCounties(additionalAffectedCounties);
         this.rocMessage.setStreet(street);
@@ -51,6 +51,7 @@ public class ROCMessageBuilder {
         this.rocMessage.setGeneralLocation(generalLocation);
         this.rocMessage.setFuelTypes(fuelTypes);
         this.rocMessage.setOtherFuelTypes(otherFuelTypes);
+        this.rocMessage.setOtherSignificantInfo(otherSignificantInfo);
         return this;
     }
 
