@@ -622,7 +622,7 @@ public class IncidentServiceImpl implements IncidentService {
 				for (int i = 0; i < rocMessage.getOtherSignificantInfo().size(); i++) {
 					otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ", ");
 				}
-				emailBodyString = emailBodyString + otherSignificantInfoString;
+				emailBodyString = emailBodyString + otherSignificantInfoString + "\n\n";
 			}
 
 
