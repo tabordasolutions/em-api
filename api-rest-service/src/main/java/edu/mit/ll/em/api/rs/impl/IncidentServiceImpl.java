@@ -563,9 +563,14 @@ public class IncidentServiceImpl implements IncidentService {
 			if(rocMessage.getStructuresThreats() != null && !rocMessage.getStructuresThreats().equals("null")) {
 				emailBodyString = emailBodyString + "- Structure Threats: ";
                 StringBuilder structuresThreatsString = new StringBuilder();
+                int structureThreatArraySize = rocMessage.getStructuresThreats().size();
 
-				for (int i = 0; i < rocMessage.getStructuresThreats().size(); i++) {
-					structuresThreatsString.append(rocMessage.getStructuresThreats().get(i) + ", ");
+				for (int i = 0; i < structureThreatArraySize; i++) {
+					if( i == structureThreatArraySize-1) {
+						structuresThreatsString.append(rocMessage.getStructuresThreats().get(i) + ".");
+					} else {
+						structuresThreatsString.append(rocMessage.getStructuresThreats().get(i) + ", ");
+					}
 				}
 			}
 
@@ -573,27 +578,18 @@ public class IncidentServiceImpl implements IncidentService {
 			// TODO : Incldue empty string in the IF CONDITION
 			if(rocMessage.getInfrastructuresThreats() != null && !rocMessage.getInfrastructuresThreats().equals("null")) {
                 StringBuilder infrastructuresThreatsString = new StringBuilder();
-				for (int i = 0; i < rocMessage.getInfrastructuresThreats().size(); i++) {
-					infrastructuresThreatsString.append(rocMessage.getInfrastructuresThreats().get(i) + ", ");
+				int infraStructureThreatArraySize = rocMessage.getInfrastructuresThreats().size();
+
+				for (int i = 0; i < infraStructureThreatArraySize; i++) {
+					if( i == infraStructureThreatArraySize-1) {
+						infrastructuresThreatsString.append(rocMessage.getInfrastructuresThreats().get(i) + ".");
+					} else {
+						infrastructuresThreatsString.append(rocMessage.getInfrastructuresThreats().get(i) + ", ");
+					}
+
 		        }
 				emailBodyString = emailBodyString + infrastructuresThreatsString;
 			}
-
-			/*
-			emailBodyString = emailBodyString + "Trying to find last character: \"" + emailBodyString.substring(emailBodyString.trim().length() - 1) + "\"";
-
-			emailBodyString = emailBodyString + "Trying to find last character: \"" + emailBodyString.substring(0, emailBodyString.length() - 1) + "\"";
-			emailBodyString = emailBodyString + "\n\n";
-			emailBodyString = emailBodyString + "\n\n";
-
-
-
-			if(emailBodyString.substring(emailBodyString.trim().length() - 1).equals(",")) {
-				// emailBodyString = emailBodyString.substring(emailBodyString.trim().length() - 1);
-				emailBodyString = StringUtils.substring(emailBodyString, 0, (emailBodyString.length() - 1));
-			}
-
-			*/
 
 			emailBodyString = emailBodyString + "\n\n";
 
@@ -605,10 +601,16 @@ public class IncidentServiceImpl implements IncidentService {
 			// TODO : Incldue empty string in the IF CONDITION
 			if(rocMessage.getEvacuationsList() != null && !rocMessage.getEvacuationsList().equals("null")) {
 				emailBodyString = emailBodyString + "- Evacuations List: ";
-
 				StringBuilder evacuationsListString = new StringBuilder();
-				for (int i = 0; i < rocMessage.getEvacuationsList().size(); i++) {
-					evacuationsListString.append(rocMessage.getEvacuationsList().get(i) + ", ");
+				int evacuationsListArraySize = rocMessage.getEvacuationsList().size();
+
+				for (int i = 0; i < evacuationsListArraySize; i++) {
+
+					if( i == evacuationsListArraySize-1) {
+						evacuationsListString.append(rocMessage.getEvacuationsList().get(i) + ".");
+					} else {
+						evacuationsListString.append(rocMessage.getEvacuationsList().get(i) + ", ");
+					}
 				}
 				emailBodyString = emailBodyString + evacuationsListString + "\n\n";
 			}
@@ -617,10 +619,15 @@ public class IncidentServiceImpl implements IncidentService {
 
 			if(rocMessage.getOtherSignificantInfo() != null && !rocMessage.getOtherSignificantInfo().equals("null")) {
 				emailBodyString = emailBodyString + "- Other Significant Info: ";
-
 				StringBuilder otherSignificantInfoString = new StringBuilder();
-				for (int i = 0; i < rocMessage.getOtherSignificantInfo().size(); i++) {
-					otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ", ");
+				int otherSignificantInfoArraySize = rocMessage.getOtherSignificantInfo().size();
+
+				for (int i = 0; i < otherSignificantInfoArraySize; i++) {
+					if( i == otherSignificantInfoArraySize-1) {
+						otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ".");
+					} else {
+						otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ", ");
+					}
 				}
 				emailBodyString = emailBodyString + otherSignificantInfoString + "\n\n";
 			}
@@ -629,10 +636,15 @@ public class IncidentServiceImpl implements IncidentService {
 			// Resources Assigned
 			if(rocMessage.getResourcesAssigned() != null && !rocMessage.getResourcesAssigned().equals("null")) {
 				emailBodyString = emailBodyString + "- Resources Assigned: ";
-
 				StringBuilder resourcesAssignedString = new StringBuilder();
-				for (int i = 0; i < rocMessage.getResourcesAssigned().size(); i++) {
-					resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i) + ", ");
+				int resourcesAssignedArraySize = rocMessage.getResourcesAssigned().size();
+
+				for (int i = 0; i < resourcesAssignedArraySize; i++) {
+					if( i == resourcesAssignedArraySize-1) {
+						resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i) + ".");
+					} else {
+						resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i) + ", ");
+					}
 				}
 				emailBodyString = emailBodyString + resourcesAssignedString;
 			}
