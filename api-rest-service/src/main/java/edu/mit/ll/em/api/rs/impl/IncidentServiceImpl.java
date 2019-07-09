@@ -516,6 +516,34 @@ public class IncidentServiceImpl implements IncidentService {
 			/* Email Body String building Starts Here */
 			String emailBodyString = "\n\nIntel - for internal use only. Numbers subject to change.\n\n";
 
+			// Location
+
+			emailBodyString = emailBodyString + "- Location: ";
+			// Street
+			if(rocMessage.getStreet().trim().length() > 0) {
+				emailBodyString = emailBodyString + rocMessage.getStreet()  + ", ";
+			}
+
+			// Cross Street
+			if(rocMessage.getCrossStreet().trim().length() > 0) {
+				emailBodyString = emailBodyString + rocMessage.getCrossStreet()  + " ";
+			}
+
+			// Miles from nearest community
+			if(rocMessage.getMilesFromNearestCommunity().trim().length() > 0) {
+				emailBodyString = emailBodyString + rocMessage.getMilesFromNearestCommunity()  + " miles ";
+			}
+
+			// Direction from Nearest Community
+			if(rocMessage.getDirectionFromNearestCommunity().trim().length() > 0) {
+				emailBodyString = emailBodyString + rocMessage.getDirectionFromNearestCommunity()  + " of ";
+			}
+
+			// Nearest community
+			if(rocMessage.getNearestCommunity().trim().length() > 0) {
+				emailBodyString = emailBodyString + rocMessage.getNearestCommunity()  + "\n\n";
+			}
+
 			// DPA
 			if (rocMessage.getDpa().trim().length() > 0) {
 				emailBodyString = emailBodyString + "- " + rocMessage.getDpa() + " DPA";
@@ -532,9 +560,27 @@ public class IncidentServiceImpl implements IncidentService {
 			// Scope
 			if (rocMessage.getScope().trim().length() > 0) {
 				emailBodyString = emailBodyString + "- "
-					+ rocMessage.getScope() + " acres < pending incident type names >, "
-					+ rocMessage.getPercentageContained() + "% contained" + "\n";
+					+ rocMessage.getScope() + " acres ";
 			}
+
+			// Fuel Types
+			/*
+			if(rocMessage.getFuelTypes() != null) {
+                StringBuilder fuelTypesString = new StringBuilder();
+				int fuelTypesThreatArraySize = rocMessage.getFuelTypes().size();
+				for (int i = 0; i < fuelTypesThreatArraySize; i++) {
+                    fuelTypesString.append(rocMessage.getFuelTypes().get(i) + ", ");
+					if( i == fuelTypesThreatArraySize-1) {
+						fuelTypesString.append(rocMessage.getStructuresThreats().get(i) + " ");
+					} else {
+						fuelTypesString.append(rocMessage.getStructuresThreats().get(i) + ", ");
+					}
+                }
+				emailBodyString = emailBodyString + fuelTypesString + "\n\n";
+			}
+			*/
+
+			emailBodyString = emailBodyString + rocMessage.getPercentageContained() + "% contained" + "\n";
 
 			// Spread Rate
 			if (rocMessage.getSpreadRate().trim().length() > 0) {
@@ -665,19 +711,7 @@ public class IncidentServiceImpl implements IncidentService {
 			}
 			*/
 
-			// Fuel Types
-			/*
-			if(rocMessage.getFuelTypes() != null) {
-				// emailBodyString = emailBodyString + "- " + rocMessage.getFuelTypes() + "\n\n";
-				emailBodyString = emailBodyString + "- Fuel Types: ";
-                StringBuilder fuelTypesString = new StringBuilder();
 
-				for (int i = 0; i < rocMessage.getFuelTypes().size(); i++) {
-                    fuelTypesString.append(rocMessage.getFuelTypes().get(i) + ", ");
-                }
-				emailBodyString = emailBodyString + fuelTypesString + "\n";
-			}
-			*/
 
 
 
