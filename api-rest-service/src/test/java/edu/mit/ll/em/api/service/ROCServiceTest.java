@@ -43,6 +43,7 @@ import edu.mit.ll.nics.nicsdao.JurisdictionDAO;
 import edu.mit.ll.nics.nicsdao.WeatherDAO;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.junit.After;
@@ -104,6 +105,9 @@ public class ROCServiceTest {
     private Date rocUpdate2CreateDate = new Date(rocUpdate1CreateDate.getTime() + 1000);
     private Date rocFinalCreateDate = new Date(rocUpdate2CreateDate.getTime() + 1000);
 
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
+    private String rocStartTime = simpleDateFormat.format(startDate);
+
     private List<String> otherSignificantInfo = Arrays.asList(new String[] {
         "Extensive mop up in oak woodlands",
         "Ground resources continue to mop-up and strengthen control line",
@@ -133,22 +137,22 @@ public class ROCServiceTest {
                     .build();
 
         rocMessageNew = new ROCMessageBuilder().buildReportDetails("NEW", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
-                    .buildReportDates(startDate, startDate, startDate)
+                    .buildReportDates(startDate, startDate, rocStartTime)
                     .buildLocationBasedData(rocLocationBasedData)
                     .build();
 
         rocMessageUpdate1 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
-                .buildReportDates(rocUpdate1CreateDate, startDate, startDate)
+                .buildReportDates(rocUpdate1CreateDate, startDate, rocStartTime)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
 
         rocMessageUpdate2 = new ROCMessageBuilder().buildReportDetails("UPDATE", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
-                .buildReportDates(rocUpdate2CreateDate, startDate, startDate)
+                .buildReportDates(rocUpdate2CreateDate, startDate, rocStartTime)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
 
         rocMessageFinal = new ROCMessageBuilder().buildReportDetails("FINAL", "addtl counties", "", "", "", "", "", "general location", fuelTypes, otherFuelTypes, otherSignificantInfo)
-                .buildReportDates(rocFinalCreateDate, startDate, startDate)
+                .buildReportDates(rocFinalCreateDate, startDate, rocStartTime)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
 
@@ -252,7 +256,7 @@ public class ROCServiceTest {
 
         assertNotNull(rocForm.getMessage().getDateCreated());
         assertEquals(startDate, rocForm.getMessage().getDate());
-        assertEquals(startDate, rocForm.getMessage().getStartTime());
+        assertEquals(rocStartTime, rocForm.getMessage().getStartTime());
 
         verifyZeroInteractions(geocodeAPIGateway);
         verifyZeroInteractions(jurisdictionDAO);
@@ -289,7 +293,7 @@ public class ROCServiceTest {
 
         assertTrue(rocForm.getMessage().getDateCreated().getTime() > rocMessageUpdate2.getDateCreated().getTime());
         assertEquals(startDate, rocForm.getMessage().getDate());
-        assertEquals(startDate, rocForm.getMessage().getStartTime());
+        assertEquals(rocStartTime, rocForm.getMessage().getStartTime());
 
         assertEquals(jurisdiction.getSra(), rocForm.getMessage().getSra());
         assertEquals(jurisdiction.getDpa(), rocForm.getMessage().getDpa());
@@ -350,7 +354,7 @@ public class ROCServiceTest {
 
         assertTrue(rocForm.getMessage().getDateCreated().getTime() > rocMessageNew.getDateCreated().getTime());
         assertEquals(startDate, rocForm.getMessage().getDate());
-        assertEquals(startDate, rocForm.getMessage().getStartTime());
+        assertEquals(rocStartTime, rocForm.getMessage().getStartTime());
 
         assertEquals(rocMessageNew.getAdditionalAffectedCounties(), rocForm.getMessage().getAdditionalAffectedCounties());
         assertEquals(rocMessageNew.getStreet(), rocForm.getMessage().getStreet());

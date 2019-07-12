@@ -76,18 +76,24 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
 
         String reportType = reportNode.get("reportType") == null ? null : reportNode.get("reportType").asText();
         String dateStr = reportNode.get("date") == null ? null : reportNode.get("date").asText();
-        Date date, startTime;
+        Date date;
+
         try {
             date = StringUtils.isBlank(dateStr) ? null : dateFormat.parse(dateStr);
         } catch(ParseException e) {
             date = null;
         }
-        String startTimeStr = reportNode.get("starttime") == null ? null : reportNode.get("starttime").asText();
+
+        // String startTimeStr = reportNode.get("starttime") == null ? null : reportNode.get("startTime").asText();
+        String startTime = reportNode.get("startTime") == null ? null : reportNode.get("startTime").asText();
+        /*
         try {
-            startTime = StringUtils.isBlank(startTimeStr) ? null : dateFormat.parse(startTimeStr);
+            startTime = StringUtils.isBlank(startTimeStr) ? null : startTimeStr;
         } catch(ParseException e) {
             startTime = null;
         }
+        */
+
         String location = reportNode.get("location") == null ? null : reportNode.get("location").asText();
         String generalLocation = reportNode.get("generalLocation") == null ? null : reportNode.get("generalLocation").asText();
         String county = reportNode.get("county") == null ? null : reportNode.get("county").asText();

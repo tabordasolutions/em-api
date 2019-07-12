@@ -29,6 +29,8 @@
  */
 package edu.mit.ll.em.api.rs.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -56,23 +58,26 @@ public class ROCMessageTest {
     private Date dateCreatedFirstUpdate = rocStartDate;
     private Date dateCreatedSecondUpdate = new Date(dateCreatedFirstUpdate.getTime() + 1000);
 
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
+    String rocStartTime = simpleDateFormat.format(rocStartDate);
+
     @Before
     public void setup() {
         rocMessageFirstFinal = new ROCMessageBuilder()
                 .buildReportDetails("FINAL", null, "", "", "", "", "", "generalLocation", Arrays.asList(new String[] {"brass"}), "other fuel type", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))
-                .buildReportDates(dateCreatedFirstFinal, rocStartDate, rocStartDate)
+                .buildReportDates(dateCreatedFirstFinal, rocStartDate, rocStartTime)
                 .build();
         rocMessageSecondFinal = new ROCMessageBuilder()
                 .buildReportDetails("FINAL", "county1, county2", "", "", "", "", "", "general location1", Arrays.asList(new String[] {"brass"}), "other fuel type1", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))
-                .buildReportDates(dateCreatedSecondFinal, rocStartDate, rocStartDate)
+                .buildReportDates(dateCreatedSecondFinal, rocStartDate, rocStartTime)
                 .build();
         rocMessageFirstUpdate = new ROCMessageBuilder()
                 .buildReportDetails("UPDATE", "county1, county2", "", "", "", "", "", "general location2", Arrays.asList(new String[] {"brass"}), "other fuel type2", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))
-                .buildReportDates(dateCreatedFirstUpdate, rocStartDate, rocStartDate)
+                .buildReportDates(dateCreatedFirstUpdate, rocStartDate, rocStartTime)
                 .build();
         rocMessageSecondUpdate = new ROCMessageBuilder()
                 .buildReportDetails("UPDATE", "county1, county2", "", "", "", "", "", "general location3", Arrays.asList(new String[] {"brass"}), "other fuel type3", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))
-                .buildReportDates(dateCreatedSecondUpdate, rocStartDate, rocStartDate)
+                .buildReportDates(dateCreatedSecondUpdate, rocStartDate, rocStartTime)
                 .build();
         rocMessageNullCreateDate = new ROCMessageBuilder()
                 .buildReportDetails("UPDATE", "county1, county2", "", "", "", "", "", "general location4", Arrays.asList(new String[] {"brass"}), "other fuel type4", Arrays.asList(new String[] {"Extensive mop up in oak woodlands"}))

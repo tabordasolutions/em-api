@@ -55,7 +55,7 @@ public class ROCMessageBuilder {
         return this;
     }
 
-    public ROCMessageBuilder buildReportDates(Date dateCreated, Date startDate, Date startTime) {
+    public ROCMessageBuilder buildReportDates(Date dateCreated, Date startDate, String startTime) {
         Date startDateTime = new Date();
         if(dateCreated == null) {
             this.rocMessage.setDateCreated(startDateTime);
@@ -67,11 +67,11 @@ public class ROCMessageBuilder {
         } else {
             this.rocMessage.setDate(startDate);
         }
-        if(startTime == null) {
-            this.rocMessage.setStartTime(startDateTime);
-        } else {
+        // if(startTime == null) {
             this.rocMessage.setStartTime(startTime);
-        }
+        // } else {
+        //    this.rocMessage.setStartTime(startTime);
+        // }
         return this;
     }
 
