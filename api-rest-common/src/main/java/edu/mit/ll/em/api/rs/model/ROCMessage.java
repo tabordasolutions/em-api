@@ -47,7 +47,7 @@ public class ROCMessage implements Cloneable, Comparable {
     //ROC info
     private String reportType;
     private Date date;
-    private Date startTime;
+    private String startTime;
     private List<IncidentType> incidentTypes;
 
     //Location info pre populated based on incident location
@@ -92,7 +92,7 @@ public class ROCMessage implements Cloneable, Comparable {
 
     public ROCMessage() { }
 
-    public ROCMessage(Date dateCreated, String reportType, Date date, Date startTime,
+    public ROCMessage(Date dateCreated, String reportType, Date date, String startTime,
             String location, String generalLocation, String county, String additionalAffectedCounties, String street, String crossStreet,
             String nearestCommunity, String milesFromNearestCommunity, String directionFromNearestCommunity, String state,
             String sra, String dpa, String jurisdiction,
@@ -166,11 +166,11 @@ public class ROCMessage implements Cloneable, Comparable {
         this.date = date;
     }
 
-    public Date getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 

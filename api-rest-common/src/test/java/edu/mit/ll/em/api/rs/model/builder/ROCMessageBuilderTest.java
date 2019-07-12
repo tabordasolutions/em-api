@@ -29,6 +29,7 @@
  */
 package edu.mit.ll.em.api.rs.model.builder;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import edu.mit.ll.em.api.rs.model.*;
@@ -64,6 +65,10 @@ public class ROCMessageBuilderTest {
     private String directionFromNearestCommunity = "";
     private String generalLocation = "5 miles from xy";
     private Date startDateTime = new Date();
+
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmm");
+    String rocStartTime = simpleDateFormat.format(startDateTime);
+
     private String sra = "sra";
     private Jurisdiction jurisdiction = new Jurisdiction("sra", new DirectProtectionArea("dpa", "contract county", "unitid", "respondid"));
 
@@ -103,11 +108,11 @@ public class ROCMessageBuilderTest {
 
     @Test
     public void buildsROCMessageWithGivenReportDatesAndLeavesOtherFieldsBlank() {
-        ROCMessage rocMessage = new ROCMessageBuilder().buildReportDates(startDateTime, startDateTime, startDateTime)
+        ROCMessage rocMessage = new ROCMessageBuilder().buildReportDates(startDateTime, startDateTime, rocStartTime)
                 .build();
         assertEquals(startDateTime, rocMessage.getDateCreated());
         assertEquals(startDateTime, rocMessage.getDate());
-        assertEquals(startDateTime, rocMessage.getStartTime());
+        assertEquals(rocStartTime, rocMessage.getStartTime());
 
         assertNull(rocMessage.getReportType());
         assertNull(rocMessage.getAdditionalAffectedCounties());
@@ -192,7 +197,7 @@ public class ROCMessageBuilderTest {
 
         ROCMessage rocMessage = new ROCMessageBuilder()
                 .buildReportDetails(reportType, additionalAffectedCounties, street, crossStreet, nearestCommunity, milesFromNearestCommunity, directionFromNearestCommunity, generalLocation, fuelTypes, additionalFuelTypes, otherSignificantInfo)
-                .buildReportDates(startDateTime, startDateTime, startDateTime)
+                .buildReportDates(startDateTime, startDateTime, rocStartTime)
                 .buildLocationBasedData(rocLocationBasedData).build();
 
         assertEquals(reportType, rocMessage.getReportType());
@@ -208,7 +213,7 @@ public class ROCMessageBuilderTest {
 
         assertEquals(startDateTime, rocMessage.getDateCreated());
         assertEquals(startDateTime, rocMessage.getDate());
-        assertEquals(startDateTime, rocMessage.getStartTime());
+        assertEquals(rocStartTime, rocMessage.getStartTime());
 
         assertEquals(rocLocationBasedData.getLocation(), rocMessage.getLocation());
         assertEquals(rocLocationBasedData.getCounty(), rocMessage.getCounty());

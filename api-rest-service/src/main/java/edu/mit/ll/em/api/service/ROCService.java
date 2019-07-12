@@ -44,6 +44,7 @@ import edu.mit.ll.nics.nicsdao.JurisdictionDAO;
 import edu.mit.ll.nics.nicsdao.WeatherDAO;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
@@ -156,9 +157,11 @@ public class ROCService {
 
     private ROCForm buildNewROCForm(Incident incident, ROCLocationBasedData rocLocationBasedData) {
         Date dateCreated = new Date();
+        String rocStartTime = "0000";
+
         ROCMessage rocMessage = new ROCMessageBuilder()
                 .buildReportDetails("NEW", null, null, null, null, null, null, null, null,null, null)
-                .buildReportDates(dateCreated, dateCreated, dateCreated)
+                .buildReportDates(dateCreated, dateCreated, rocStartTime)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();
 
