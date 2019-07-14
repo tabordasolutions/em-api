@@ -37,9 +37,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import edu.mit.ll.em.api.json.deserializer.ROCMessageDeserializer;
 import edu.mit.ll.em.api.rs.*;
+import edu.mit.ll.em.api.rs.model.ROCMessage;
 import edu.mit.ll.em.api.rs.validator.ReportValidator;
 import edu.mit.ll.nics.common.constants.SADisplayConstants;
+import edu.mit.ll.nics.common.email.JsonEmail;
 import edu.mit.ll.nics.common.entity.*;
 import edu.mit.ll.nics.common.entity.Incident;
 import edu.mit.ll.nics.common.entity.User;
@@ -51,6 +55,7 @@ import edu.mit.ll.nics.nicsdao.impl.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -282,7 +287,7 @@ public class ReportServiceImpl implements ReportService {
     private Response persistReportOnIncident(Form form, Incident incident) throws Exception {
         form.setIncidentid(incident.getIncidentid());
         form.setIncidentname(incident.getIncidentname());
-        return this.persistReport(SADisplayConstants.FORM_TYPE_ROC, form);
+        return this.persistReport(SADisplayConstants.FORM_TYPE_ROC, form, incident.getIncidentid());
     }
 
     /**
@@ -308,7 +313,7 @@ public class ReportServiceImpl implements ReportService {
                 reportServiceResponse.setMessage("failure: " + valid.values());
                 return Response.ok(reportServiceResponse).status(Status.EXPECTATION_FAILED).build();
             }
-            return this.persistReport(reportType, form);
+            return this.persistReport(reportType, form, incidentId);
         } catch(Exception e) {
             APILogger.getInstance().e("ReportServiceImpl", "Exception persisting new form with type id: " +
                     form.getFormtypeid(), e);
@@ -317,7 +322,7 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
-    private Response persistReport(String reportType, Form form) throws Exception {
+    private Response persistReport(String reportType, Form form, int incidentId) throws Exception {
         ReportServiceResponse reportServiceResponse = new ReportServiceResponse();
         Response response = null;
         Form persistedForm = formDao.persistForm(form);
@@ -334,6 +339,11 @@ public class ReportServiceImpl implements ReportService {
             try {
                 String topic = String.format("iweb.NICS.incident.%d.report.%s.new", form.getIncidentid(), reportType.toUpperCase());
                 notifyNewReport(topic, form);
+
+                Incident inc = incidentDao.getIncident(incidentId);
+                User creator = userDao.getUserBySessionId(form.getUsersessionid());
+                createNewROCIncidentEmail(creator, creator.getUsername(), inc, form);
+
             } catch (IOException e) {
                 APILogger.getInstance().e("ReportServiceImpl", "Exception publishing new form with type id: " +
                         form.getFormtypeid());
@@ -342,6 +352,345 @@ public class ReportServiceImpl implements ReportService {
         }
         return response;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void createNewROCIncidentEmail(User creator, String toEmails, Incident newIncident, Form form) {
+        JsonEmail email = null;
+
+        try{
+            String alertTopic = String.format("iweb.nics.email.alert");
+            ROCMessage rocMessage = getROCMessage(form.getMessage());
+
+            /* Start Building Email Here  */
+            String emailSubject = newIncident.getIncidentname() + ", " + newIncident.getIncidentTypes() + rocMessage.getCounty() + " County, " + rocMessage.getReportType();
+
+            email = new JsonEmail(creator.getUsername(), toEmails + ",nikhil.devre@tabordasolutions.com", emailSubject);
+
+            /* Email Body String building Starts Here */
+            String emailBodyString = "\n\nIntel - for internal use only. Numbers subject to change.\n\n";
+
+
+            // TEST AREA
+
+
+
+            // Incident Types
+            if(rocMessage.getIncidentTypes() != null && !rocMessage.getIncidentTypes().equals("null")) {
+                emailBodyString = emailBodyString + "- Incident Types: ";
+                StringBuilder incidentTypesString = new StringBuilder();
+                int incidentTypesArraySize = rocMessage.getIncidentTypes().size();
+
+                for (int i = 0; i < incidentTypesArraySize; i++) {
+                    if( i == incidentTypesArraySize-1) {
+                        incidentTypesString.append(rocMessage.getIncidentTypes().get(i) + ".");
+                    } else {
+                        incidentTypesString.append(rocMessage.getIncidentTypes().get(i) + ", ");
+                    }
+                }
+                emailBodyString = emailBodyString + incidentTypesString + "\n\n\n\n";
+            }
+
+
+            emailBodyString = emailBodyString + "==========================================" + "\n\n";
+
+
+            emailBodyString = emailBodyString + newIncident.getIncidentname() + "\n\n";
+
+
+            emailBodyString = emailBodyString + "==========================================" + "\n\n";
+
+
+
+
+            // emailBodyString = "\n\n\n\n TEST AREA: \n\n" + emailBodyString + newIncident.getIncidentTypes() + "\n\n TEST AREA ENDS \n\n\n\n";
+
+
+
+            // TEST AREA ENDS
+
+
+            // Location
+
+            emailBodyString = emailBodyString + "- Location: ";
+            // Street
+            if(rocMessage.getStreet().trim().length() > 0) {
+                emailBodyString = emailBodyString + rocMessage.getStreet()  + ", ";
+            }
+
+            // Cross Street
+            if(rocMessage.getCrossStreet().trim().length() > 0) {
+                emailBodyString = emailBodyString + rocMessage.getCrossStreet()  + " ";
+            }
+
+            // Miles from nearest community
+            if(rocMessage.getMilesFromNearestCommunity().trim().length() > 0) {
+                emailBodyString = emailBodyString + rocMessage.getMilesFromNearestCommunity()  + " miles ";
+            }
+
+            // Direction from Nearest Community
+            if(rocMessage.getDirectionFromNearestCommunity().trim().length() > 0) {
+                emailBodyString = emailBodyString + rocMessage.getDirectionFromNearestCommunity()  + " of ";
+            }
+
+            // Nearest community
+            if(rocMessage.getNearestCommunity().trim().length() > 0) {
+                emailBodyString = emailBodyString + rocMessage.getNearestCommunity()  + "\n\n";
+            }
+
+            // DPA
+            if (rocMessage.getDpa().trim().length() > 0) {
+                emailBodyString = emailBodyString + "- " + rocMessage.getDpa() + " DPA";
+            }
+
+            // SRA
+            if (rocMessage.getSra().trim().length() > 0) {
+                emailBodyString = emailBodyString + ", " + rocMessage.getSra()  + "\n\n";
+            }
+
+            // Start Time
+            emailBodyString = emailBodyString + "- Start Time: " + rocMessage.getStartTime() + "\n\n";
+
+            // Scope
+            if (rocMessage.getScope().trim().length() > 0 && rocMessage.getScope() != null) {
+                emailBodyString = emailBodyString + "- " + rocMessage.getScope() + " acres ";
+            }
+
+            // Percentage Contained
+            if (rocMessage.getPercentageContained().trim().length() > 0 && rocMessage.getPercentageContained() != null) {
+                emailBodyString = emailBodyString + rocMessage.getPercentageContained() + "% contained" + "\n\n";
+            }
+
+
+            // Fuel Types
+            if(rocMessage.getFuelTypes() != null) {
+                StringBuilder fuelTypesString = new StringBuilder();
+                int fuelTypesArraySize = rocMessage.getFuelTypes().size();
+                for (int i = 0; i < fuelTypesArraySize; i++) {
+                    if( i == fuelTypesArraySize-1) {
+                        fuelTypesString.append(rocMessage.getFuelTypes().get(i) + " ");
+                    } else {
+                        fuelTypesString.append(rocMessage.getFuelTypes().get(i) + ", ");
+                    }
+                }
+                emailBodyString = emailBodyString + "- Fuel Types: " + fuelTypesString + "\n\n";
+            }
+
+
+            // Spread Rate
+            if (rocMessage.getSpreadRate().trim().length() > 0) {
+                emailBodyString = emailBodyString + "- " + rocMessage.getSpreadRate() + "\n";
+            }
+
+            emailBodyString = emailBodyString + "- " + rocMessage.getTemperature() + " degrees";
+
+            // Humidity
+            if(rocMessage.getRelHumidity() > 0) {
+                emailBodyString = emailBodyString + ", " +  rocMessage.getRelHumidity() + " RH";
+            }
+
+            // Wind Direction
+            if(rocMessage.getWindDirection().trim().length() > 0) {
+                emailBodyString = emailBodyString + ", " + " wind " + rocMessage.getWindDirection();
+            }
+
+            // Wind Speed
+            if(rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ) {
+                emailBodyString = emailBodyString + " @ " + rocMessage.getWindSpeed() + ", < wind gusts pending > " + "\n";
+            }
+
+            // Structures Threats
+            // TODO : Incldue empty string in the IF CONDITION
+            if(rocMessage.getStructuresThreats() != null && !rocMessage.getStructuresThreats().equals("null")) {
+                emailBodyString = emailBodyString + "- Structure Threats: ";
+                StringBuilder structuresThreatsString = new StringBuilder();
+                int structureThreatArraySize = rocMessage.getStructuresThreats().size();
+
+                for (int i = 0; i < structureThreatArraySize; i++) {
+                    if( i == structureThreatArraySize-1) {
+                        structuresThreatsString.append(rocMessage.getStructuresThreats().get(i) + ".");
+                    } else {
+                        structuresThreatsString.append(rocMessage.getStructuresThreats().get(i) + ", ");
+                    }
+                }
+            }
+
+            // Infrastructures Threats
+            // TODO : Incldue empty string in the IF CONDITION
+            if(rocMessage.getInfrastructuresThreats() != null && !rocMessage.getInfrastructuresThreats().equals("null")) {
+                StringBuilder infrastructuresThreatsString = new StringBuilder();
+                int infraStructureThreatArraySize = rocMessage.getInfrastructuresThreats().size();
+
+                for (int i = 0; i < infraStructureThreatArraySize; i++) {
+                    if( i == infraStructureThreatArraySize-1) {
+                        infrastructuresThreatsString.append(rocMessage.getInfrastructuresThreats().get(i) + ".");
+                    } else {
+                        infrastructuresThreatsString.append(rocMessage.getInfrastructuresThreats().get(i) + ", ");
+                    }
+
+                }
+                emailBodyString = emailBodyString + infrastructuresThreatsString;
+            }
+
+            emailBodyString = emailBodyString + "\n\n";
+
+            // Evacuations In Progress
+            if(rocMessage.getEvacuationsInProgress() != null && !rocMessage.getEvacuationsInProgress().equals("null")) {
+                emailBodyString = emailBodyString + "- Evacuations In Progress: " + rocMessage.getEvacuationsInProgress() + "\n\n";
+            }
+
+            // TODO : Incldue empty string in the IF CONDITION
+            if(rocMessage.getEvacuationsList() != null && !rocMessage.getEvacuationsList().equals("null")) {
+                emailBodyString = emailBodyString + "- Evacuations List: ";
+                StringBuilder evacuationsListString = new StringBuilder();
+                int evacuationsListArraySize = rocMessage.getEvacuationsList().size();
+
+                for (int i = 0; i < evacuationsListArraySize; i++) {
+
+                    if( i == evacuationsListArraySize-1) {
+                        evacuationsListString.append(rocMessage.getEvacuationsList().get(i) + ".");
+                    } else {
+                        evacuationsListString.append(rocMessage.getEvacuationsList().get(i) + ", ");
+                    }
+                }
+                emailBodyString = emailBodyString + evacuationsListString + "\n\n";
+            }
+
+            // Other Significant Info
+
+            if(rocMessage.getOtherSignificantInfo() != null && !rocMessage.getOtherSignificantInfo().equals("null")) {
+                emailBodyString = emailBodyString + "- Other Significant Info: ";
+                StringBuilder otherSignificantInfoString = new StringBuilder();
+                int otherSignificantInfoArraySize = rocMessage.getOtherSignificantInfo().size();
+
+                for (int i = 0; i < otherSignificantInfoArraySize; i++) {
+                    if( i == otherSignificantInfoArraySize-1) {
+                        otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ".");
+                    } else {
+                        otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ", ");
+                    }
+                }
+                emailBodyString = emailBodyString + otherSignificantInfoString + "\n\n";
+            }
+
+
+            // Resources Assigned
+            if(rocMessage.getResourcesAssigned() != null && !rocMessage.getResourcesAssigned().equals("null")) {
+                emailBodyString = emailBodyString + "- Resources Assigned: ";
+                StringBuilder resourcesAssignedString = new StringBuilder();
+                int resourcesAssignedArraySize = rocMessage.getResourcesAssigned().size();
+
+                for (int i = 0; i < resourcesAssignedArraySize; i++) {
+                    if( i == resourcesAssignedArraySize-1) {
+                        resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i));
+                    } else {
+                        resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i) + ", ");
+                    }
+                }
+
+				/*
+				if(rocMessage.getOtherResourcesAssigned() != null && !rocMessage.getOtherResourcesAssigned().equals("null")) {
+					emailBodyString = emailBodyString + ", " + rocMessage.getOtherResourcesAssigned();
+				}
+				*/
+
+                emailBodyString = emailBodyString + resourcesAssignedString + ". ";
+            }
+
+
+
+            /* Set email body */
+            email.setBody(emailBodyString);
+            notifyNewIncidentEmail(email.toJsonObject().toString(),alertTopic);
+
+
+
+
+
+
+            // Affected Counties
+			/*
+			if(rocMessage.getAdditionalAffectedCounties() != null) {
+				emailBodyString = emailBodyString + "- Additional affected counties: " + rocMessage.getAdditionalAffectedCounties() + "\n\n";
+			}
+			*/
+
+
+
+
+
+
+
+
+        } catch (Exception e) {
+            APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
+            APILogger.getInstance().e(CNAME, ExceptionUtils.getStackTrace(e));
+        }
+    }
+
+
+
+    private ROCMessage getROCMessage(String message) throws IOException{
+        com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addDeserializer(ROCMessage.class, new ROCMessageDeserializer());
+        objectMapper.registerModule(simpleModule);
+
+        return objectMapper.readValue(message, ROCMessage.class);
+    }
+
+    private void notifyNewIncidentEmail(String email, String topic) throws IOException {
+        if (email != null) {
+            getRabbitProducer().produce(topic, email);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      *  Creation of a single Report item.
