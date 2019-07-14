@@ -457,7 +457,7 @@ public class IncidentServiceImpl implements IncidentService {
 
 					if( formTypeId.equals(1) ) {
 						/* Create and send email for ROC Incidents */
-						createNewROCIncidentEmail(creator,creator.getUsername(), newIncident, workspaceId, form);
+						createNewROCIncidentEmail(creator,creator.getUsername(), newIncident, form);
 					} else {
 						if(disList.size() > 0){
 							/* Create and send email for non-ROC Incidents */
@@ -502,7 +502,7 @@ public class IncidentServiceImpl implements IncidentService {
 		}
 	}
 
-	private void createNewROCIncidentEmail(User creator, String toEmails, Incident newIncident, Integer workspaceId, Form form) {
+	private void createNewROCIncidentEmail(User creator, String toEmails, Incident newIncident, Form form) {
 		JsonEmail email = null;
 
 		try{
