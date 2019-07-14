@@ -340,10 +340,9 @@ public class ReportServiceImpl implements ReportService {
                 String topic = String.format("iweb.NICS.incident.%d.report.%s.new", form.getIncidentid(), reportType.toUpperCase());
                 notifyNewReport(topic, form);
 
-
                 Incident inc = incidentDao.getIncident(incidentId);
-                // User creator = userDao.getUserBySessionId(inc.getUsersessionid());
-                createNewROCIncidentEmail(inc, form);
+                User creator = userDao.getUserBySessionId(form.getUsersessionid());
+                createNewROCIncidentEmail(creator, creator.getUsername(), inc, form);
 
             } catch (IOException e) {
                 APILogger.getInstance().e("ReportServiceImpl", "Exception publishing new form with type id: " +
@@ -371,7 +370,7 @@ public class ReportServiceImpl implements ReportService {
 
 
 
-    private void createNewROCIncidentEmail(Incident newIncident, Form form) {
+    private void createNewROCIncidentEmail(User creator, String toEmails, Incident newIncident, Form form) {
         JsonEmail email = null;
 
         try{
@@ -381,7 +380,7 @@ public class ReportServiceImpl implements ReportService {
             /* Start Building Email Here  */
             String emailSubject = newIncident.getIncidentname() + ", " + newIncident.getIncidentTypes() + rocMessage.getCounty() + " County, " + rocMessage.getReportType();
 
-            email = new JsonEmail("nikhil.devre@tabordasolutions.com", "nikhil.devre@tabordasolutions.com" + ",nikhil.devre@tabordasolutions.com", emailSubject);
+            email = new JsonEmail(creator.getUsername(), toEmails + ",nikhil.devre@tabordasolutions.com", emailSubject);
 
             /* Email Body String building Starts Here */
             String emailBodyString = "\n\nIntel - for internal use only. Numbers subject to change.\n\n";
