@@ -32,9 +32,7 @@ package edu.mit.ll.em.api.rs.impl;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -44,6 +42,7 @@ import edu.mit.ll.em.api.json.deserializer.ROCMessageDeserializer;
 import edu.mit.ll.em.api.rs.model.ROCMessage;
 import edu.mit.ll.em.api.util.APIConfig;
 import edu.mit.ll.em.api.util.SADisplayConstants;
+import edu.mit.ll.nics.common.entity.*;
 import edu.mit.ll.nics.common.rabbitmq.RabbitFactory;
 import edu.mit.ll.nics.common.rabbitmq.RabbitPubSubProducer;
 
@@ -52,9 +51,6 @@ import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.dao.DataAccessException;
 
-import edu.mit.ll.nics.common.entity.CollabRoom;
-import edu.mit.ll.nics.common.entity.Org;
-import edu.mit.ll.nics.common.entity.User;
 import edu.mit.ll.em.api.exception.DuplicateCollabRoomException;
 import edu.mit.ll.em.api.rs.CollabService;
 import edu.mit.ll.em.api.rs.FieldMapResponse;
@@ -66,9 +62,7 @@ import edu.mit.ll.nics.nicsdao.impl.OrgDAOImpl;
 import edu.mit.ll.nics.nicsdao.impl.UserDAOImpl;
 import edu.mit.ll.nics.nicsdao.impl.UserOrgDAOImpl;
 import edu.mit.ll.nics.nicsdao.impl.WorkspaceDAOImpl;
-import edu.mit.ll.nics.common.entity.Incident;
 import edu.mit.ll.nics.common.email.JsonEmail;
-import edu.mit.ll.nics.common.entity.Form;
 
 /**
  * 
@@ -275,6 +269,13 @@ public class IncidentServiceImpl implements IncidentService {
 			updatedIncident = incidentDao.updateIncident(workspaceId,incident); 
 			
 			if (updatedIncident != null) {
+
+				User creator = userDao.getUserBySessionId(incident.getUsersessionid());
+
+
+				// createNewROCIncidentEmail(creator,creator.getUsername(), incident, workspaceId, form);
+
+
 				incidentResponse.setCount(1);
 				incidentResponse.setMessage(Status.OK.getReasonPhrase());
 				response = Response.ok(incidentResponse).status(Status.OK).build();
@@ -509,12 +510,68 @@ public class IncidentServiceImpl implements IncidentService {
 			ROCMessage rocMessage = getROCMessage(form.getMessage());
 
 			/* Start Building Email Here  */
-			String emailSubject = newIncident.getIncidentname() + " , " + ", " + newIncident.getIncidentTypes() + rocMessage.getCounty() + " County, " + rocMessage.getReportType();
+			String emailSubject = newIncident.getIncidentname() + ", " + newIncident.getIncidentTypes() + rocMessage.getCounty() + " County, " + rocMessage.getReportType();
 
 			email = new JsonEmail(creator.getUsername(), toEmails + ",nikhil.devre@tabordasolutions.com", emailSubject);
 
 			/* Email Body String building Starts Here */
 			String emailBodyString = "\n\nIntel - for internal use only. Numbers subject to change.\n\n";
+
+
+			// TEST AREA
+
+
+
+			// Incident Types
+			if(rocMessage.getIncidentTypes() != null && !rocMessage.getIncidentTypes().equals("null")) {
+				emailBodyString = emailBodyString + "- Incident Types: ";
+				StringBuilder incidentTypesString = new StringBuilder();
+				int incidentTypesArraySize = rocMessage.getIncidentTypes().size();
+
+				for (int i = 0; i < incidentTypesArraySize; i++) {
+					if( i == incidentTypesArraySize-1) {
+						incidentTypesString.append(rocMessage.getIncidentTypes().get(i) + ".");
+					} else {
+						incidentTypesString.append(rocMessage.getIncidentTypes().get(i) + ", ");
+					}
+				}
+				emailBodyString = emailBodyString + incidentTypesString + "\n\n\n\n";
+			}
+
+
+			emailBodyString = emailBodyString + "==========================================" + "\n\n";
+
+
+			emailBodyString = emailBodyString + newIncident.getIncidentname() + "\n\n";
+
+
+			emailBodyString = emailBodyString + "==========================================" + "\n\n";
+
+
+
+
+
+
+
+
+
+
+
+			// emailBodyString = "\n\n\n\n TEST AREA: \n\n" + emailBodyString + newIncident.getIncidentTypes() + "\n\n TEST AREA ENDS \n\n\n\n";
+
+
+
+
+
+
+
+
+
+
+
+
+			// TEST AREA ENDS
+
 
 			// Location
 
@@ -558,29 +615,30 @@ public class IncidentServiceImpl implements IncidentService {
 			emailBodyString = emailBodyString + "- Start Time: " + rocMessage.getStartTime() + "\n\n";
 
 			// Scope
-			if (rocMessage.getScope().trim().length() > 0) {
-				emailBodyString = emailBodyString + "- "
-					+ rocMessage.getScope() + " acres ";
+			if (rocMessage.getScope().trim().length() > 0 && rocMessage.getScope() != null) {
+				emailBodyString = emailBodyString + "- " + rocMessage.getScope() + " acres ";
 			}
+
+			// Percentage Contained
+			if (rocMessage.getPercentageContained().trim().length() > 0 && rocMessage.getPercentageContained() != null) {
+				emailBodyString = emailBodyString + rocMessage.getPercentageContained() + "% contained" + "\n\n";
+			}
+
 
 			// Fuel Types
-			/*
 			if(rocMessage.getFuelTypes() != null) {
                 StringBuilder fuelTypesString = new StringBuilder();
-				int fuelTypesThreatArraySize = rocMessage.getFuelTypes().size();
-				for (int i = 0; i < fuelTypesThreatArraySize; i++) {
-                    fuelTypesString.append(rocMessage.getFuelTypes().get(i) + ", ");
-					if( i == fuelTypesThreatArraySize-1) {
-						fuelTypesString.append(rocMessage.getStructuresThreats().get(i) + " ");
+				int fuelTypesArraySize = rocMessage.getFuelTypes().size();
+				for (int i = 0; i < fuelTypesArraySize; i++) {
+					if( i == fuelTypesArraySize-1) {
+						fuelTypesString.append(rocMessage.getFuelTypes().get(i) + " ");
 					} else {
-						fuelTypesString.append(rocMessage.getStructuresThreats().get(i) + ", ");
+						fuelTypesString.append(rocMessage.getFuelTypes().get(i) + ", ");
 					}
                 }
-				emailBodyString = emailBodyString + fuelTypesString + "\n\n";
+				emailBodyString = emailBodyString + "- Fuel Types: " + fuelTypesString + "\n\n";
 			}
-			*/
 
-			emailBodyString = emailBodyString + rocMessage.getPercentageContained() + "% contained" + "\n";
 
 			// Spread Rate
 			if (rocMessage.getSpreadRate().trim().length() > 0) {
@@ -687,13 +745,22 @@ public class IncidentServiceImpl implements IncidentService {
 
 				for (int i = 0; i < resourcesAssignedArraySize; i++) {
 					if( i == resourcesAssignedArraySize-1) {
-						resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i) + ".");
+						resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i));
 					} else {
 						resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i) + ", ");
 					}
 				}
-				emailBodyString = emailBodyString + resourcesAssignedString;
+
+				/*
+				if(rocMessage.getOtherResourcesAssigned() != null && !rocMessage.getOtherResourcesAssigned().equals("null")) {
+					emailBodyString = emailBodyString + ", " + rocMessage.getOtherResourcesAssigned();
+				}
+				*/
+
+				emailBodyString = emailBodyString + resourcesAssignedString + ". ";
 			}
+
+
 
 			/* Set email body */
 			email.setBody(emailBodyString);

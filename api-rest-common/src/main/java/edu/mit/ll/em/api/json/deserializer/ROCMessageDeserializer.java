@@ -84,16 +84,7 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
             date = null;
         }
 
-        // String startTimeStr = reportNode.get("starttime") == null ? null : reportNode.get("startTime").asText();
         String startTime = reportNode.get("startTime") == null ? null : reportNode.get("startTime").asText();
-        /*
-        try {
-            startTime = StringUtils.isBlank(startTimeStr) ? null : startTimeStr;
-        } catch(ParseException e) {
-            startTime = null;
-        }
-        */
-
         String location = reportNode.get("location") == null ? null : reportNode.get("location").asText();
         String generalLocation = reportNode.get("generalLocation") == null ? null : reportNode.get("generalLocation").asText();
         String county = reportNode.get("county") == null ? null : reportNode.get("county").asText();
@@ -111,6 +102,9 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         String percentageContained = reportNode.get("percentContained") == null ? null : reportNode.get("percentContained").asText();
         String evacuations = reportNode.get("evacuations") == null ? null : reportNode.get("evacuations").asText();
 
+        JsonNode incidentTypesRoot = reportNode.get("incidentTypes") == null ? null : reportNode.get("incidentTypes");
+        JsonNode incidentTypesChild = (incidentTypesRoot == null) || incidentTypesRoot.get("incidenttype") == null ? null : incidentTypesRoot.get("incidenttype");
+        List<String> incidentTypesLst =  incidentTypesChild==null ? null : getJsonNdeAsList(incidentTypesChild);
 
 
         JsonNode evacuationsInProgress = reportNode.get("evacuationsInProgress") == null ? null : reportNode.get("evacuationsInProgress");
@@ -131,7 +125,6 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         JsonNode resourcesAssignedChild = (resourcesAssignedRoot == null) || resourcesAssignedRoot.get("resourcesAssigned") == null ? null : resourcesAssignedRoot.get("resourcesAssigned");
         List<String> resourcesAssignedLst =  resourcesAssignedChild==null ? null : getJsonNdeAsList(resourcesAssignedChild);
 
-
         String jurisdiction = reportNode.get("jurisdiction") == null ? null : reportNode.get("jurisdiction").asText();
         Double temperature = reportNode.get("temperature") == null ? null : reportNode.get("temperature").asDouble();
         JsonNode relHumidityJsonNode = reportNode.get("relHumidity");
@@ -145,13 +138,15 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         JsonNode otherSignificantInfoJSON = reportNode.get("otherSignificantInfo") == null ? null : reportNode.get("otherSignificantInfo");
         List<String> otherSignificantInfo = otherSignificantInfoJSON == null ? null : getJsonNdeAsList(otherSignificantInfoJSON);
 
-
         String otherFuelTypes = reportNode.get("otherFuelTypes") == null ? null : reportNode.get("otherFuelTypes").asText();
+        String otherResourcesAssigned = reportNode.get("otherResourcesAssigned") == null ? null : reportNode.get("otherResourcesAssigned").asText();
+
+
         return new ROCMessage(dateCreated, reportType, date, startTime,
                 location, generalLocation, county, additionalAffectedCounties, street, crossStreet, nearestCommunity, milesFromNearestCommunity, directionFromNearestCommunity, state,
                 sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windDirection, percentageContained, scope, spreadRate,
                 fuelTypes, otherSignificantInfo, otherFuelTypes, evacuations,evacuationsList, structuresThreat,
-                structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst);
+                structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst, otherResourcesAssigned, incidentTypesLst);
     }
 
     private List<String> getJsonNdeAsList(JsonNode jsonNode){
