@@ -269,13 +269,6 @@ public class IncidentServiceImpl implements IncidentService {
 			updatedIncident = incidentDao.updateIncident(workspaceId,incident); 
 			
 			if (updatedIncident != null) {
-
-				User creator = userDao.getUserBySessionId(incident.getUsersessionid());
-
-
-				// createNewROCIncidentEmail(creator,creator.getUsername(), incident, workspaceId, form);
-
-
 				incidentResponse.setCount(1);
 				incidentResponse.setMessage(Status.OK.getReasonPhrase());
 				response = Response.ok(incidentResponse).status(Status.OK).build();
@@ -509,281 +502,262 @@ public class IncidentServiceImpl implements IncidentService {
 			String alertTopic = String.format("iweb.nics.email.alert");
 			ROCMessage rocMessage = getROCMessage(form.getMessage());
 
-			/* Start Building Email Here  */
-			String emailSubject = newIncident.getIncidentname() + ", " + newIncident.getIncidentTypes() + rocMessage.getCounty() + " County, " + rocMessage.getReportType();
+			/* ------------------------- */
+			/* Start Building Email Here */
+			/* ------------------------- */
 
-			email = new JsonEmail(creator.getUsername(), toEmails + ",nikhil.devre@tabordasolutions.com", emailSubject);
+			/* Subject Line */
 
+			// + newIncident.getIncidentTypes()
+			String emailSubject = newIncident.getIncidentname() + ", " + rocMessage.getCounty() + " County, " + convertToTitleCaseIteratingChars(rocMessage.getReportType());
+
+			email = new JsonEmail(creator.getUsername(), toEmails + ", nikhil.devre@tabordasolutions.com", emailSubject);
+
+
+			/* ************************************** */
 			/* Email Body String building Starts Here */
-			String emailBodyString = "\n\nIntel - for internal use only. Numbers subject to change.\n\n";
+			/* ************************************** */
+			StringBuilder emailBodyString = new StringBuilder();
+			emailBodyString.append("<html><body><div>");
+
+			/* Disclaimer */
+			emailBodyString.append("<b>&quot;Intel - for internal use only. Numbers subject to change.&quot;</b>");
+			emailBodyString.append("<br/><br/>");
 
 
-			// TEST AREA
+			/* ------------- */
+			/* Location line */
+			/* ------------- */
+			emailBodyString.append("<div>");
 
-
-
-			// Incident Types
-			if(rocMessage.getIncidentTypes() != null && !rocMessage.getIncidentTypes().equals("null")) {
-				emailBodyString = emailBodyString + "- Incident Types: ";
-				StringBuilder incidentTypesString = new StringBuilder();
-				int incidentTypesArraySize = rocMessage.getIncidentTypes().size();
-
-				for (int i = 0; i < incidentTypesArraySize; i++) {
-					if( i == incidentTypesArraySize-1) {
-						incidentTypesString.append(rocMessage.getIncidentTypes().get(i) + ".");
-					} else {
-						incidentTypesString.append(rocMessage.getIncidentTypes().get(i) + ", ");
-					}
-				}
-				emailBodyString = emailBodyString + incidentTypesString + "\n\n\n\n";
-			}
-
-
-			emailBodyString = emailBodyString + "==========================================" + "\n\n";
-
-
-			emailBodyString = emailBodyString + newIncident.getIncidentname() + "\n\n";
-
-
-			emailBodyString = emailBodyString + "==========================================" + "\n\n";
-
-
-
-
-
-
-
-
-
-
-
-			// emailBodyString = "\n\n\n\n TEST AREA: \n\n" + emailBodyString + newIncident.getIncidentTypes() + "\n\n TEST AREA ENDS \n\n\n\n";
-
-
-
-
-
-
-
-
-
-
-
-
-			// TEST AREA ENDS
-
-
-			// Location
-
-			emailBodyString = emailBodyString + "- Location: ";
-			// Street
+			// Street x Cross Street, Miles from Nearest Community miles Direction from Nearest Community of Nearest Community
 			if(rocMessage.getStreet().trim().length() > 0) {
-				emailBodyString = emailBodyString + rocMessage.getStreet()  + ", ";
+				emailBodyString.append(rocMessage.getStreet()  + " x ");
 			}
 
 			// Cross Street
 			if(rocMessage.getCrossStreet().trim().length() > 0) {
-				emailBodyString = emailBodyString + rocMessage.getCrossStreet()  + " ";
+				emailBodyString.append(rocMessage.getCrossStreet()  + ", ");
 			}
 
 			// Miles from nearest community
 			if(rocMessage.getMilesFromNearestCommunity().trim().length() > 0) {
-				emailBodyString = emailBodyString + rocMessage.getMilesFromNearestCommunity()  + " miles ";
+				emailBodyString.append(rocMessage.getMilesFromNearestCommunity()  + " miles ");
 			}
 
 			// Direction from Nearest Community
 			if(rocMessage.getDirectionFromNearestCommunity().trim().length() > 0) {
-				emailBodyString = emailBodyString + rocMessage.getDirectionFromNearestCommunity()  + " of ";
+				emailBodyString.append(rocMessage.getDirectionFromNearestCommunity()  + " of ");
 			}
 
 			// Nearest community
 			if(rocMessage.getNearestCommunity().trim().length() > 0) {
-				emailBodyString = emailBodyString + rocMessage.getNearestCommunity()  + "\n\n";
+				emailBodyString.append(rocMessage.getNearestCommunity());
 			}
 
+			// Jurisdiction
+			if(rocMessage.getNearestCommunity().trim().length() > 0) {
+				emailBodyString.append(rocMessage.getJurisdiction());
+			}
+			emailBodyString.append("</div>");
+
+
+			/* -------------------------------- */
+			/* DPA DPA, Ownership, Jurisdiction */
+			/* -------------------------------- */
+			emailBodyString.append("<div>");
 			// DPA
 			if (rocMessage.getDpa().trim().length() > 0) {
-				emailBodyString = emailBodyString + "- " + rocMessage.getDpa() + " DPA";
+				emailBodyString.append(rocMessage.getDpa() + " DPA");
 			}
 
 			// SRA
 			if (rocMessage.getSra().trim().length() > 0) {
-				emailBodyString = emailBodyString + ", " + rocMessage.getSra()  + "\n\n";
+				emailBodyString.append(", " + rocMessage.getSra());
 			}
+			emailBodyString.append("</div>");
+
+
+			/* ---------------------- */
+			/* Start time: Start Time */
+			/* ---------------------- */
+			// emailBodyString.append();
 
 			// Start Time
-			emailBodyString = emailBodyString + "- Start Time: " + rocMessage.getStartTime() + "\n\n";
+			emailBodyString.append("<div>");
+			emailBodyString.append("<b>Start time:</b> " + rocMessage.getStartTime());
+			emailBodyString.append("</div>");
+
+			/* =================== */
+			/* Start Unsorted List */
+			/* =================== */
+			emailBodyString.append("<ul>");
+
+
+			/* --------------------------------------------------- */
+			/* Acreage acres Fuel Type(s), % Contained % contained */
+			/* --------------------------------------------------- */
+
 
 			// Scope
 			if (rocMessage.getScope().trim().length() > 0 && rocMessage.getScope() != null) {
-				emailBodyString = emailBodyString + "- " + rocMessage.getScope() + " acres ";
+				emailBodyString.append("<li>");
+				emailBodyString.append(rocMessage.getScope() + " acres ");
+			}
+
+			// Fuel Types
+			if(rocMessage.getFuelTypes() != null) {
+				int fuelTypesArraySize = rocMessage.getFuelTypes().size();
+				for (int i = 0; i < fuelTypesArraySize; i++) {
+					emailBodyString.append(rocMessage.getFuelTypes().get(i) + ", ");
+				}
 			}
 
 			// Percentage Contained
 			if (rocMessage.getPercentageContained().trim().length() > 0 && rocMessage.getPercentageContained() != null) {
-				emailBodyString = emailBodyString + rocMessage.getPercentageContained() + "% contained" + "\n\n";
+				emailBodyString.append(rocMessage.getPercentageContained() + "% contained");
 			}
 
+			emailBodyString.append("</li>");
 
-			// Fuel Types
-			if(rocMessage.getFuelTypes() != null) {
-                StringBuilder fuelTypesString = new StringBuilder();
-				int fuelTypesArraySize = rocMessage.getFuelTypes().size();
-				for (int i = 0; i < fuelTypesArraySize; i++) {
-					if( i == fuelTypesArraySize-1) {
-						fuelTypesString.append(rocMessage.getFuelTypes().get(i) + " ");
-					} else {
-						fuelTypesString.append(rocMessage.getFuelTypes().get(i) + ", ");
-					}
-                }
-				emailBodyString = emailBodyString + "- Fuel Types: " + fuelTypesString + "\n\n";
-			}
 
+			/* -------------- */
+			/* Rate of Spread */
+			/* -------------- */
 
 			// Spread Rate
 			if (rocMessage.getSpreadRate().trim().length() > 0) {
-				emailBodyString = emailBodyString + "- " + rocMessage.getSpreadRate() + "\n";
+				emailBodyString.append("<li>");
+				emailBodyString.append(rocMessage.getSpreadRate());
+				emailBodyString.append("</li>");
 			}
 
-			emailBodyString = emailBodyString + "- " + rocMessage.getTemperature() + " degrees";
+
+			/* ------------------------------------------------------------------------------------------------- */
+			/* Temperature degrees, Relative Humidity% RH, wind Wind Direction @ Wind Speed, gusts to Wind Gusts */
+			/* ------------------------------------------------------------------------------------------------- */
+			emailBodyString.append("<li>");
+
+			// Tempreature
+			emailBodyString.append(rocMessage.getTemperature().intValue() + " degrees, ");
 
 			// Humidity
 			if(rocMessage.getRelHumidity() > 0) {
-				emailBodyString = emailBodyString + ", " +  rocMessage.getRelHumidity() + " RH";
+				emailBodyString.append(rocMessage.getRelHumidity().intValue() + " RH");
 			}
 
 			// Wind Direction
 			if(rocMessage.getWindDirection().trim().length() > 0) {
-				emailBodyString = emailBodyString + ", " + " wind " + rocMessage.getWindDirection();
+				emailBodyString.append(", " + " wind " + rocMessage.getWindDirection());
 			}
 
 			// Wind Speed
 			if(rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ) {
-				emailBodyString = emailBodyString + " @ " + rocMessage.getWindSpeed() + ", < wind gusts pending > " + "\n";
+				emailBodyString.append(" @ " + rocMessage.getWindSpeed().intValue() + ", < wind gusts pending > ");
 			}
+			emailBodyString.append("</li>");
 
-			// Structures Threats
-			// TODO : Incldue empty string in the IF CONDITION
+
+			/* --------------------------------- */
+			/* Structures Threat in progress for */
+			/* --------------------------------- */
+
 			if(rocMessage.getStructuresThreats() != null && !rocMessage.getStructuresThreats().equals("null")) {
-				emailBodyString = emailBodyString + "- Structure Threats: ";
-                StringBuilder structuresThreatsString = new StringBuilder();
-                int structureThreatArraySize = rocMessage.getStructuresThreats().size();
+				int structureThreatArraySize = rocMessage.getStructuresThreats().size();
 
-				for (int i = 0; i < structureThreatArraySize; i++) {
-					if( i == structureThreatArraySize-1) {
-						structuresThreatsString.append(rocMessage.getStructuresThreats().get(i) + ".");
-					} else {
-						structuresThreatsString.append(rocMessage.getStructuresThreats().get(i) + ", ");
+				if(structureThreatArraySize > 0) {
+					for (int i = 0; i < structureThreatArraySize; i++) {
+						emailBodyString.append("<li>");
+						emailBodyString.append(rocMessage.getStructuresThreats().get(i));
+						emailBodyString.append("</li>");
 					}
 				}
 			}
 
-			// Infrastructures Threats
-			// TODO : Incldue empty string in the IF CONDITION
+
+			/* -------------------------------------- */
+			/* Infrastructures Threat in progress for */
+			/* -------------------------------------- */
+
 			if(rocMessage.getInfrastructuresThreats() != null && !rocMessage.getInfrastructuresThreats().equals("null")) {
-                StringBuilder infrastructuresThreatsString = new StringBuilder();
 				int infraStructureThreatArraySize = rocMessage.getInfrastructuresThreats().size();
 
-				for (int i = 0; i < infraStructureThreatArraySize; i++) {
-					if( i == infraStructureThreatArraySize-1) {
-						infrastructuresThreatsString.append(rocMessage.getInfrastructuresThreats().get(i) + ".");
-					} else {
-						infrastructuresThreatsString.append(rocMessage.getInfrastructuresThreats().get(i) + ", ");
+				if(infraStructureThreatArraySize > 0) {
+					for (int i = 0; i < infraStructureThreatArraySize; i++) {
+						emailBodyString.append("<li>");
+						emailBodyString.append(rocMessage.getInfrastructuresThreats().get(i));
+						emailBodyString.append("</li>");
 					}
-
-		        }
-				emailBodyString = emailBodyString + infrastructuresThreatsString;
+				}
 			}
 
-			emailBodyString = emailBodyString + "\n\n";
 
-			// Evacuations In Progress
-			if(rocMessage.getEvacuationsInProgress() != null && !rocMessage.getEvacuationsInProgress().equals("null")) {
-				emailBodyString = emailBodyString + "- Evacuations In Progress: " + rocMessage.getEvacuationsInProgress() + "\n\n";
-			}
+			/* --------------------------- */
+			/* Evacuations in progress for */
+			/* --------------------------- */
 
-			// TODO : Incldue empty string in the IF CONDITION
 			if(rocMessage.getEvacuationsList() != null && !rocMessage.getEvacuationsList().equals("null")) {
-				emailBodyString = emailBodyString + "- Evacuations List: ";
-				StringBuilder evacuationsListString = new StringBuilder();
 				int evacuationsListArraySize = rocMessage.getEvacuationsList().size();
 
-				for (int i = 0; i < evacuationsListArraySize; i++) {
-
-					if( i == evacuationsListArraySize-1) {
-						evacuationsListString.append(rocMessage.getEvacuationsList().get(i) + ".");
-					} else {
-						evacuationsListString.append(rocMessage.getEvacuationsList().get(i) + ", ");
+				if(evacuationsListArraySize > 0) {
+					for (int i = 0; i < evacuationsListArraySize; i++) {
+						emailBodyString.append("<li>");
+						emailBodyString.append(rocMessage.getEvacuationsList().get(i));
+						emailBodyString.append("</li>");
 					}
 				}
-				emailBodyString = emailBodyString + evacuationsListString + "\n\n";
 			}
 
-			// Other Significant Info
+
+			/* ---------------------- */
+			/* Other Significant Info */
+			/* ---------------------- */
 
 			if(rocMessage.getOtherSignificantInfo() != null && !rocMessage.getOtherSignificantInfo().equals("null")) {
-				emailBodyString = emailBodyString + "- Other Significant Info: ";
-				StringBuilder otherSignificantInfoString = new StringBuilder();
 				int otherSignificantInfoArraySize = rocMessage.getOtherSignificantInfo().size();
 
-				for (int i = 0; i < otherSignificantInfoArraySize; i++) {
-					if( i == otherSignificantInfoArraySize-1) {
-						otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ".");
-					} else {
-						otherSignificantInfoString.append(rocMessage.getOtherSignificantInfo().get(i) + ", ");
+				if(otherSignificantInfoArraySize > 0) {
+					for (int i = 0; i < otherSignificantInfoArraySize; i++) {
+						emailBodyString.append("<li>");
+						emailBodyString.append(rocMessage.getOtherSignificantInfo().get(i));
+						emailBodyString.append("</li>");
 					}
 				}
-				emailBodyString = emailBodyString + otherSignificantInfoString + "\n\n";
 			}
 
 
-			// Resources Assigned
+			/* ------------------ */
+			/* Resources Assigned */
+			/* ------------------ */
+
 			if(rocMessage.getResourcesAssigned() != null && !rocMessage.getResourcesAssigned().equals("null")) {
-				emailBodyString = emailBodyString + "- Resources Assigned: ";
-				StringBuilder resourcesAssignedString = new StringBuilder();
 				int resourcesAssignedArraySize = rocMessage.getResourcesAssigned().size();
 
-				for (int i = 0; i < resourcesAssignedArraySize; i++) {
-					if( i == resourcesAssignedArraySize-1) {
-						resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i));
-					} else {
-						resourcesAssignedString.append(rocMessage.getResourcesAssigned().get(i) + ", ");
+				if(resourcesAssignedArraySize > 0) {
+					for (int i = 0; i < resourcesAssignedArraySize; i++) {
+						emailBodyString.append("<li>");
+						emailBodyString.append(rocMessage.getResourcesAssigned().get(i));
+						emailBodyString.append("</li>");
 					}
 				}
-
-				/*
-				if(rocMessage.getOtherResourcesAssigned() != null && !rocMessage.getOtherResourcesAssigned().equals("null")) {
-					emailBodyString = emailBodyString + ", " + rocMessage.getOtherResourcesAssigned();
-				}
-				*/
-
-				emailBodyString = emailBodyString + resourcesAssignedString + ". ";
 			}
 
+
+			emailBodyString.append("</ul>");
+			/* ==================== */
+			/* End of Unsorted List */
+			/* ==================== */
+
+
+			emailBodyString.append("</div></body></html>");
+			/* ************************************** */
+			/* Email Body String building Ends Here.. */
+			/* ************************************** */
 
 
 			/* Set email body */
-			email.setBody(emailBodyString);
+			email.setBody(emailBodyString.toString());
 			notifyNewIncidentEmail(email.toJsonObject().toString(),alertTopic);
-
-
-
-
-
-
-			// Affected Counties
-			/*
-			if(rocMessage.getAdditionalAffectedCounties() != null) {
-				emailBodyString = emailBodyString + "- Additional affected counties: " + rocMessage.getAdditionalAffectedCounties() + "\n\n";
-			}
-			*/
-
-
-
-
-
-
-
 
 		} catch (Exception e) {
 			APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
@@ -798,6 +772,28 @@ public class IncidentServiceImpl implements IncidentService {
 		objectMapper.registerModule(simpleModule);
 
 		return objectMapper.readValue(message, ROCMessage.class);
+	}
+
+	public static String convertToTitleCaseIteratingChars(String text) {
+		if (text == null || text.isEmpty()) {
+			return text;
+		}
+
+		StringBuilder converted = new StringBuilder();
+		boolean convertNext = true;
+
+		for (char ch : text.toCharArray()) {
+			if (Character.isSpaceChar(ch)) {
+				convertNext = true;
+			} else if (convertNext) {
+				ch = Character.toTitleCase(ch);
+				convertNext = false;
+			} else {
+				ch = Character.toLowerCase(ch);
+			}
+			converted.append(ch);
+		}
+		return converted.toString();
 	}
 	
 	private CollabRoom createDefaultCollabRoom(int userSessionId, String name){
