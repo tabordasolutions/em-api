@@ -63,6 +63,7 @@ import edu.mit.ll.nics.nicsdao.impl.UserDAOImpl;
 import edu.mit.ll.nics.nicsdao.impl.UserOrgDAOImpl;
 import edu.mit.ll.nics.nicsdao.impl.WorkspaceDAOImpl;
 import edu.mit.ll.nics.common.email.JsonEmail;
+import edu.mit.ll.nics.common.entity.IncidentType;
 
 /**
  * 
@@ -507,9 +508,20 @@ public class IncidentServiceImpl implements IncidentService {
 			/* ------------------------- */
 
 			/* Subject Line */
+			String emailSubject = newIncident.getIncidentname() + ", ";
 
-			// + newIncident.getIncidentTypes()
-			String emailSubject = newIncident.getIncidentname() + ", " + rocMessage.getCounty() + " County, " + convertToTitleCaseIteratingChars(rocMessage.getReportType());
+			/* Subject Line - Incident Types */
+			List<IncidentType> incidentTypes = incidentDao.getIncidentTypesByIncidentId(newIncident.getIncidentid());
+			if(incidentTypes != null && !incidentTypes.equals("null")) {
+				int incidentTypesArrayListSize = incidentTypes.size();
+				if(incidentTypesArrayListSize > 0) {
+					for (int i = 0; i < incidentTypesArrayListSize; i++) {
+						emailSubject = emailSubject + incidentTypes.get(i).getIncidentTypeName() + ", ";
+					}
+				}
+			}
+
+			emailSubject = emailSubject + rocMessage.getCounty() + " County, " + convertToTitleCaseIteratingChars(rocMessage.getReportType());
 
 			email = new JsonEmail(creator.getUsername(), toEmails + ", nikhil.devre@tabordasolutions.com", emailSubject);
 
