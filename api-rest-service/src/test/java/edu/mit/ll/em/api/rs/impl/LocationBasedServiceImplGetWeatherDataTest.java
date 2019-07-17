@@ -70,7 +70,7 @@ public class LocationBasedServiceImplGetWeatherDataTest {
     private Double searchRangeInKM = searchRange * SADisplayConstants.KM_PER_MILE;
     private Coordinate coordinatesInCRS4326 = new Coordinate(-69.0, 76.0);
     private Weather weather = new Weather("objectid", "location",
-            80.01, 9.22f, 310.0, 38.85f, "OK", 8.018);
+            80.01, 9.22f, 27.22, 310.0, 38.85f, "OK", 8.018);
     private WeatherModel weatherModel = new WeatherModel(weather);
 
     @Test

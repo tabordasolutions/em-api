@@ -60,6 +60,7 @@ public class ROCLocationBasedDataBuilder {
             rocLocationBasedData.setTemperature(weather.getAirTemperature());
             rocLocationBasedData.setRelHumidity(weather.getHumidity());
             rocLocationBasedData.setWindSpeed(weather.getWindSpeed());
+            rocLocationBasedData.setWindGust(weather.getWindGust());
             rocLocationBasedData.setWindDirection(weather.getDescriptiveWindDirectionAbbreviation());
         }
         return this;

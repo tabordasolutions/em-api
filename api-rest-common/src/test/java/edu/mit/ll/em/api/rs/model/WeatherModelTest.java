@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 public class WeatherModelTest {
 
     private Weather weather = new Weather("objectid", "location",
-            80.01, 9.22f, 310.0, 38.85f, "OK", 8.018);
+            80.01, 9.22f, 27.22,310.0, 38.85f, "OK", 8.018);
     private WeatherModel weatherModel = new WeatherModel(weather);
 
     @Test
@@ -57,6 +57,11 @@ public class WeatherModelTest {
     @Test
     public void returnsWindSpeedFromGivenWeatherInstance() {
         assertEquals(weatherModel.getWindSpeed(), weather.getWindSpeed());
+    }
+
+    @Test
+    public void returnsWindGustFromGivenWeatherInstance() {
+        assertEquals(weatherModel.getWindGust(), weather.getWindGust());
     }
 
     @Test

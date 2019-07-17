@@ -56,6 +56,10 @@ public class WeatherModel {
         return this.weather.getWindSpeed();
     }
 
+    public Double getWindGust() {
+        return this.weather.getWindGust();
+    }
+
     public String getWindDirection() {
         return this.weather.getDescriptiveWindDirection();
     }

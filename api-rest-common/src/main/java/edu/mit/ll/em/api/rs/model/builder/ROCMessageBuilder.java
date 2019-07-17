@@ -86,6 +86,7 @@ public class ROCMessageBuilder {
             this.rocMessage.setTemperature(rocLocationBasedData.getTemperature());
             this.rocMessage.setRelHumidity(rocLocationBasedData.getRelHumidity());
             this.rocMessage.setWindSpeed(rocLocationBasedData.getWindSpeed());
+            this.rocMessage.setWindGust(rocLocationBasedData.getWindGust());
             this.rocMessage.setWindDirection(rocLocationBasedData.getWindDirection());
         }
         return this;

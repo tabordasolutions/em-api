@@ -381,15 +381,24 @@ public class ReportServiceImpl implements ReportService {
             /* Start Building Email Here */
             /* ------------------------- */
 
-            /* Subject Line */
 
-            // + newIncident.getIncidentTypes()
-            String emailSubject = newIncident.getIncidentname() + ", " + rocMessage.getCounty() + " County, " + convertToTitleCaseIteratingChars(rocMessage.getReportType());
+            /* Subject Line */
+            String emailSubject = newIncident.getIncidentname() + ", ";
+
+            /* Subject Line - Incident Types */
+            List<IncidentType> incidentTypes = incidentDao.getIncidentTypesByIncidentId(newIncident.getIncidentid());
+            if(incidentTypes != null && !incidentTypes.equals("null")) {
+                int incidentTypesArrayListSize = incidentTypes.size();
+                if(incidentTypesArrayListSize > 0) {
+                    for (int i = 0; i < incidentTypesArrayListSize; i++) {
+                        emailSubject = emailSubject + incidentTypes.get(i).getIncidentTypeName() + ", ";
+                    }
+                }
+            }
+
+            emailSubject = emailSubject + rocMessage.getCounty() + " County, " + convertToTitleCaseIteratingChars(rocMessage.getReportType());
 
             email = new JsonEmail(creator.getUsername(), toEmails + ", nikhil.devre@tabordasolutions.com", emailSubject);
-
-
-
 
 
             /* ************************************** */
@@ -531,8 +540,14 @@ public class ReportServiceImpl implements ReportService {
 
             // Wind Speed
             if(rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ) {
-                emailBodyString.append(" @ " + rocMessage.getWindSpeed().intValue() + ", < wind gusts pending > ");
+                emailBodyString.append(" @ " + rocMessage.getWindSpeed().intValue());
             }
+
+            // Wind Gust
+            if(rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null") ) {
+                emailBodyString.append(", gusts to " + rocMessage.getWindGust().intValue());
+            }
+
             emailBodyString.append("</li>");
 
 

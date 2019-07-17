@@ -72,7 +72,7 @@ public class ROCMessageBuilderTest {
     private String sra = "sra";
     private Jurisdiction jurisdiction = new Jurisdiction("sra", new DirectProtectionArea("dpa", "contract county", "unitid", "respondid"));
 
-    private Weather weather = new Weather("objectId", "-123, 098", 78.9, 10.0f, 214.0, 2.3f, "OK", 10.0);
+    private Weather weather = new Weather("objectId", "-123, 098", 78.9, 10.0f, 27.22,214.0, 2.3f, "OK", 10.0);
     private Location location = new Location("county", "state", "000 exact st, xm city, ca, USA, 90000");
 
     @Test
@@ -103,6 +103,7 @@ public class ROCMessageBuilderTest {
         assertNull(rocMessage.getTemperature());
         assertNull(rocMessage.getRelHumidity());
         assertNull(rocMessage.getWindSpeed());
+        assertNull(rocMessage.getWindGust());
         assertNull(rocMessage.getWindDirection());
     }
 
@@ -134,6 +135,7 @@ public class ROCMessageBuilderTest {
         assertNull(rocMessage.getTemperature());
         assertNull(rocMessage.getRelHumidity());
         assertNull(rocMessage.getWindSpeed());
+        assertNull(rocMessage.getWindGust());
         assertNull(rocMessage.getWindDirection());
     }
 
@@ -154,6 +156,7 @@ public class ROCMessageBuilderTest {
         assertEquals(rocLocationBasedData.getTemperature(), rocMessage.getTemperature());
         assertEquals(rocLocationBasedData.getRelHumidity(), rocMessage.getRelHumidity());
         assertEquals(rocLocationBasedData.getWindSpeed(), rocMessage.getWindSpeed());
+        assertEquals(rocLocationBasedData.getWindGust(), rocMessage.getWindGust());
         assertEquals(rocLocationBasedData.getWindDirection(), rocMessage.getWindDirection());
 
         assertNull(rocMessage.getReportType());
@@ -184,6 +187,7 @@ public class ROCMessageBuilderTest {
         assertNull(rocMessage.getTemperature());
         assertNull(rocMessage.getRelHumidity());
         assertNull(rocMessage.getWindSpeed());
+        assertNull(rocMessage.getWindGust());
         assertNull(rocMessage.getWindDirection());
     }
 
@@ -224,6 +228,7 @@ public class ROCMessageBuilderTest {
         assertEquals(rocLocationBasedData.getTemperature(), rocMessage.getTemperature());
         assertEquals(rocLocationBasedData.getRelHumidity(), rocMessage.getRelHumidity());
         assertEquals(rocLocationBasedData.getWindSpeed(), rocMessage.getWindSpeed());
+        assertEquals(rocLocationBasedData.getWindGust(), rocMessage.getWindGust());
         assertEquals(rocLocationBasedData.getWindDirection(), rocMessage.getWindDirection());
     }
 }

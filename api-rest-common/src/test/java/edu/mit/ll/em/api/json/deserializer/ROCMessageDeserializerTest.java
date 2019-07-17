@@ -65,6 +65,7 @@ public class ROCMessageDeserializerTest {
     private Double temperature = 92.0;
     private Float relHumidity = 10.0f;
     private Float windSpeed = 8.0f;
+    private Double windGust = 27.22;
     private String windDirection = "South";
     private String fuelTypes = "GRASS";
 //    private String fuelTypes = "\"fuelTypes\":[\"GRASS\",\"BUSH\"]";
@@ -117,6 +118,7 @@ public class ROCMessageDeserializerTest {
             ",\"temperature\":\"" + temperature + "\"" +
             ",\"relHumidity\":\"" + relHumidity + "\"" +
             ",\"windSpeed\":\"" + windSpeed + "\"" +
+            ",\"windGust\":\"" + windGust + "\"" +
             ",\"windDirection\":\"" + windDirection + "\"" +/* "\",\"predictedWeather\":\"mild\",\"evacuations\":\"0\",\"structuresThreat\":\"0\",\"infrastructuresThreat\":\"0\",\"comments\":\"lkjljklj - Final 1\",\"simplifiedEmail\":true,\"airAttack\":\"none\"" + */
             ",\"evacuations\":\"" + evacuations + "\"" +
             ",\"evacuationsInProgress\":" + evacuationsProgressJsonInArray +
@@ -178,6 +180,7 @@ public class ROCMessageDeserializerTest {
         assertEquals(rocMessage.getTemperature(), temperature);
         assertEquals(rocMessage.getRelHumidity(), relHumidity);
         assertEquals(rocMessage.getWindSpeed(), windSpeed);
+        assertEquals(rocMessage.getWindGust(), windGust);
         assertEquals(rocMessage.getWindDirection(), windDirection);
         assertEquals(rocMessage.getEvacuations(), evacuations);
         assertEquals(rocMessage.getEvacuationsList(), evacuationsList);
@@ -210,6 +213,7 @@ public class ROCMessageDeserializerTest {
         assertNull(rocMessage.getTemperature());
         assertNull(rocMessage.getRelHumidity());
         assertNull(rocMessage.getWindSpeed());
+        assertNull(rocMessage.getWindGust());
         assertNull(rocMessage.getWindDirection());
     }
 
@@ -234,12 +238,14 @@ public class ROCMessageDeserializerTest {
                 ",\"temperature\":\"\"" +
                 ",\"relHumidity\":\"\"" +
                 ",\"windSpeed\":\"\"" +
+                ",\"windGust\":\"\"" +
                 ",\"windDirection\":\"" + windDirection + "\",\"predictedWeather\":\"mild\",\"evacuations\":\"0\",\"structuresThreat\":\"0\",\"infrastructuresThreat\":\"0\",\"comments\":\"lkjljklj - Final 1\",\"simplifiedEmail\":true,\"airAttack\":\"none\"" +
                 "}}}\"";
         ROCMessage rocMessage = objectMapper.readValue(rocJsonWithEmptyString, ROCMessage.class);
         assertEquals(rocMessage.getTemperature(), Double.valueOf(0.0));
         assertNull(rocMessage.getRelHumidity());
         assertNull(rocMessage.getWindSpeed());
+        assertNull(rocMessage.getWindGust());
     }
 
     @Test
@@ -263,12 +269,14 @@ public class ROCMessageDeserializerTest {
                 ",\"temperature\": null" +
                 ",\"relHumidity\": null" +
                 ",\"windSpeed\": null" +
+                ",\"windGust\": null" +
                 ",\"windDirection\":\"" + windDirection + "\",\"predictedWeather\":\"mild\",\"evacuations\":\"0\",\"structuresThreat\":\"0\",\"infrastructuresThreat\":\"0\",\"comments\":\"lkjljklj - Final 1\",\"simplifiedEmail\":true,\"airAttack\":\"none\"" +
                 "}}}\"";
         ROCMessage rocMessage = objectMapper.readValue(rocJsonWithEmptyString, ROCMessage.class);
         assertEquals(rocMessage.getTemperature(), Double.valueOf(0.0));
         assertNull(rocMessage.getRelHumidity());
         assertNull(rocMessage.getWindSpeed());
+        assertNull(rocMessage.getWindGust());
     }
 
     @Test
