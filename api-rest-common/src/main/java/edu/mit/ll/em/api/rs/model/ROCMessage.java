@@ -73,6 +73,7 @@ public class ROCMessage implements Cloneable, Comparable {
     private Float relHumidity;
     private String evacuations;
     private Float windSpeed;
+    private Double windGust;
     private String windDirection;
     private String scope;
     private String spreadRate;
@@ -96,7 +97,7 @@ public class ROCMessage implements Cloneable, Comparable {
             String location, String generalLocation, String county, String additionalAffectedCounties, String street, String crossStreet,
             String nearestCommunity, String milesFromNearestCommunity, String directionFromNearestCommunity, String state,
             String sra, String dpa, String jurisdiction,
-            Double temperature, Float relHumidity,  Float windSpeed, String windDirection, String percentageContained,
+            Double temperature, Float relHumidity,  Float windSpeed, Double windGust, String windDirection, String percentageContained,
             String scope, String spreadRate, List<String> fuelTypes, List<String> otherSignificantInfo, String otherFuelTypes, String evacuations, List<String> evacuationsList,
             String structuresThreat, List<String> structuresThreats, String infrastructuresThreat,
             List<String> infrastructuresThreats, List<String> resourcesAssigned, String otherResourcesAssigned, List<String> incidentTypes) {
@@ -120,6 +121,7 @@ public class ROCMessage implements Cloneable, Comparable {
         this.temperature = temperature;
         this.relHumidity = relHumidity;
         this.windSpeed = windSpeed;
+        this.windGust = windGust;
         this.windDirection = windDirection;
         this.percentageContained = percentageContained;
         this.scope = scope;
@@ -337,6 +339,14 @@ public class ROCMessage implements Cloneable, Comparable {
         this.windSpeed = windSpeed;
     }
 
+    public Double getWindGust() {
+        return windGust;
+    }
+
+    public void setWindGust(Double windGust) {
+        this.windGust = windGust;
+    }
+
     public String getWindDirection() {
         return windDirection;
     }
@@ -397,6 +407,7 @@ public class ROCMessage implements Cloneable, Comparable {
             this.setTemperature(weather.getAirTemperature());
             this.setRelHumidity(weather.getHumidity());
             this.setWindSpeed(weather.getWindSpeed());
+            this.setWindGust(weather.getWindGust());
             this.setWindDirection(weather.getDescriptiveWindDirectionAbbreviation());
         }
     }

@@ -540,8 +540,14 @@ public class ReportServiceImpl implements ReportService {
 
             // Wind Speed
             if(rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ) {
-                emailBodyString.append(" @ " + rocMessage.getWindSpeed().intValue() + ", < wind gusts pending > ");
+                emailBodyString.append(" @ " + rocMessage.getWindSpeed().intValue());
             }
+
+            // Wind Gust
+            if(rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null") ) {
+                emailBodyString.append(", gusts to " + rocMessage.getWindGust().intValue());
+            }
+
             emailBodyString.append("</li>");
 
 

@@ -131,6 +131,8 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         Float relHumidity = (relHumidityJsonNode == null || relHumidityJsonNode.isNull() || StringUtils.isBlank(relHumidityJsonNode.asText()) ) ? null : Float.parseFloat(relHumidityJsonNode.asText());
         JsonNode windSpeedJsonNode = reportNode.get("windSpeed");
         Float windSpeed = (windSpeedJsonNode == null || windSpeedJsonNode.isNull() || StringUtils.isBlank(windSpeedJsonNode.asText())) ? null : Float.parseFloat(windSpeedJsonNode.asText());
+        JsonNode windGustJsonNode = reportNode.get("windGust");
+        Double windGust = (windGustJsonNode == null || windGustJsonNode.isNull() || StringUtils.isBlank(windGustJsonNode.asText())) ? null : Double.parseDouble(windGustJsonNode.asText());
         String windDirection = reportNode.get("windDirection") == null ? null : reportNode.get("windDirection").asText();
         JsonNode fuelTypesJSN = reportNode.get("fuelTypes") == null ? null : reportNode.get("fuelTypes");
         List<String> fuelTypes = fuelTypesJSN==null ? null : getJsonNdeAsList(fuelTypesJSN);
@@ -144,7 +146,7 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
 
         return new ROCMessage(dateCreated, reportType, date, startTime,
                 location, generalLocation, county, additionalAffectedCounties, street, crossStreet, nearestCommunity, milesFromNearestCommunity, directionFromNearestCommunity, state,
-                sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windDirection, percentageContained, scope, spreadRate,
+                sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windGust, windDirection, percentageContained, scope, spreadRate,
                 fuelTypes, otherSignificantInfo, otherFuelTypes, evacuations,evacuationsList, structuresThreat,
                 structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst, otherResourcesAssigned, incidentTypesLst);
     }

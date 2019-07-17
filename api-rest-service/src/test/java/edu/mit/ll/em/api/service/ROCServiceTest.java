@@ -79,13 +79,13 @@ public class ROCServiceTest {
     private String otherFuelTypes = "other fuel";
     private Location location = new Location("xx y st, abc city, up state, CA", "def county", "CA");
     private Weather weather = new Weather("objectid2", "location x",
-            80.01, 9.22f, 310.0, 38.85f, "OK", 8.018);
+            80.01, 9.22f, 310.0, 27.22, 38.85f, "OK", 8.018);
     private Jurisdiction jurisdiction = new Jurisdiction("SRA", new DirectProtectionArea("Local", "Contract County", "unitid", "respondid"));
     private ROCLocationBasedData rocLocationBasedData = null;
 
     private Location newLocation = new Location("xx y st, abc city, up state, CA", "xyz county", "CA");
     private Weather newWeather = new Weather("objectid2", "location y",
-            98.01, 6.22f, 20.0, 21.1f, "OK", 9.2);
+            98.01, 6.22f, 27.22, 20.0, 21.1f, "OK", 9.2);
     private Jurisdiction newJurisdiction = new Jurisdiction("LRA", new DirectProtectionArea("Federal", "Fed County", "unitidx", "respondidm"));
     private Form newForm = mock(Form.class);
     private Form update1Form = mock(Form.class);
@@ -223,6 +223,7 @@ public class ROCServiceTest {
         assertEquals(newWeather.getAirTemperature(), rocForm.getMessage().getTemperature());
         assertEquals(newWeather.getHumidity(), rocForm.getMessage().getRelHumidity());
         assertEquals(newWeather.getWindSpeed(), rocForm.getMessage().getWindSpeed());
+        assertEquals(newWeather.getWindGust(), rocForm.getMessage().getWindGust());
         assertEquals(newWeather.getDescriptiveWindDirectionAbbreviation(), rocForm.getMessage().getWindDirection());
     }
 
@@ -306,6 +307,7 @@ public class ROCServiceTest {
         assertEquals(newWeather.getAirTemperature(), rocForm.getMessage().getTemperature());
         assertEquals(newWeather.getHumidity(), rocForm.getMessage().getRelHumidity());
         assertEquals(newWeather.getWindSpeed(), rocForm.getMessage().getWindSpeed());
+        assertEquals(newWeather.getWindGust(), rocForm.getMessage().getWindGust());
         assertEquals(newWeather.getDescriptiveWindDirectionAbbreviation(), rocForm.getMessage().getWindDirection());
 
         verifyZeroInteractions(geocodeAPIGateway);
@@ -332,6 +334,7 @@ public class ROCServiceTest {
         assertEquals(newWeather.getAirTemperature(), rocForm.getMessage().getTemperature());
         assertEquals(newWeather.getHumidity(), rocForm.getMessage().getRelHumidity());
         assertEquals(newWeather.getWindSpeed(), rocForm.getMessage().getWindSpeed());
+        assertEquals(newWeather.getWindGust(), rocForm.getMessage().getWindGust());
         assertEquals(newWeather.getDescriptiveWindDirectionAbbreviation(), rocForm.getMessage().getWindDirection());
 
         verifyZeroInteractions(geocodeAPIGateway);
@@ -377,6 +380,7 @@ public class ROCServiceTest {
         assertEquals(newWeather.getAirTemperature(), rocForm.getMessage().getTemperature());
         assertEquals(newWeather.getHumidity(), rocForm.getMessage().getRelHumidity());
         assertEquals(newWeather.getWindSpeed(), rocForm.getMessage().getWindSpeed());
+        assertEquals(newWeather.getWindGust(), rocForm.getMessage().getWindGust());
         assertEquals(newWeather.getDescriptiveWindDirectionAbbreviation(), rocForm.getMessage().getWindDirection());
     }
 
