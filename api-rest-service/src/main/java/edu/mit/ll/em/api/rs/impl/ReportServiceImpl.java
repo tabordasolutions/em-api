@@ -442,10 +442,6 @@ public class ReportServiceImpl implements ReportService {
                 emailBodyString.append(rocMessage.getNearestCommunity());
             }
 
-            // Jurisdiction
-            if(rocMessage.getNearestCommunity().trim().length() > 0) {
-                emailBodyString.append(rocMessage.getJurisdiction());
-            }
             emailBodyString.append("</div>");
 
 
@@ -453,6 +449,7 @@ public class ReportServiceImpl implements ReportService {
             /* DPA DPA, Ownership, Jurisdiction */
             /* -------------------------------- */
             emailBodyString.append("<div>");
+
             // DPA
             if (rocMessage.getDpa().trim().length() > 0) {
                 emailBodyString.append(rocMessage.getDpa() + " DPA");
@@ -461,6 +458,11 @@ public class ReportServiceImpl implements ReportService {
             // SRA
             if (rocMessage.getSra().trim().length() > 0) {
                 emailBodyString.append(", " + rocMessage.getSra());
+            }
+
+            // Jurisdiction
+            if(rocMessage.getNearestCommunity().trim().length() > 0) {
+                emailBodyString.append(", " + rocMessage.getJurisdiction());
             }
             emailBodyString.append("</div>");
 
