@@ -489,13 +489,13 @@ public class ReportServiceImpl implements ReportService {
 
 
             // Scope
-            if (rocMessage.getScope().trim().length() > 0 && rocMessage.getScope() != null) {
+            if (rocMessage.getScope().trim().length() > 0 && rocMessage.getScope() != null && !rocMessage.getScope().equals("null")) {
                 emailBodyString.append("<li>");
                 emailBodyString.append(rocMessage.getScope() + " acres ");
             }
 
             // Fuel Types
-            if(rocMessage.getFuelTypes() != null) {
+            if(rocMessage.getFuelTypes() != null && !rocMessage.getFuelTypes().equals("null")) {
                 int fuelTypesArraySize = rocMessage.getFuelTypes().size();
                 for (int i = 0; i < fuelTypesArraySize; i++) {
                     emailBodyString.append(rocMessage.getFuelTypes().get(i) + ", ");
@@ -503,7 +503,7 @@ public class ReportServiceImpl implements ReportService {
             }
 
             // Percentage Contained
-            if (rocMessage.getPercentageContained().trim().length() > 0 && rocMessage.getPercentageContained() != null) {
+            if (rocMessage.getPercentageContained().trim().length() > 0 && rocMessage.getPercentageContained() != null && !rocMessage.getPercentageContained().equals("null")) {
                 emailBodyString.append(rocMessage.getPercentageContained() + "% contained");
             }
 
@@ -515,7 +515,7 @@ public class ReportServiceImpl implements ReportService {
             /* -------------- */
 
             // Spread Rate
-            if (rocMessage.getSpreadRate().trim().length() > 0) {
+            if (rocMessage.getSpreadRate().trim().length() > 0 && rocMessage.getSpreadRate() != null && !rocMessage.getSpreadRate().equals("null")) {
                 emailBodyString.append("<li>");
                 emailBodyString.append(rocMessage.getSpreadRate());
                 emailBodyString.append("</li>");
@@ -528,20 +528,22 @@ public class ReportServiceImpl implements ReportService {
             emailBodyString.append("<li>");
 
             // Tempreature
-            emailBodyString.append(rocMessage.getTemperature().intValue() + " degrees, ");
+            if (rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null")) {
+                emailBodyString.append(rocMessage.getTemperature().intValue() + " degrees, ");
+            }
 
             // Humidity
-            if(rocMessage.getRelHumidity() > 0) {
+            if(rocMessage.getRelHumidity() > 0 && rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null")) {
                 emailBodyString.append(rocMessage.getRelHumidity().intValue() + " RH");
             }
 
             // Wind Direction
-            if(rocMessage.getWindDirection().trim().length() > 0) {
+            if(rocMessage.getWindDirection().trim().length() > 0 && rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null")) {
                 emailBodyString.append(", " + " wind " + rocMessage.getWindDirection());
             }
 
             // Wind Speed
-            if(rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ) {
+            if(rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null")) {
                 emailBodyString.append(" @ " + rocMessage.getWindSpeed().intValue());
             }
 
