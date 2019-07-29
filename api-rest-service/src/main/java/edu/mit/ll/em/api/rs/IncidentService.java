@@ -138,7 +138,18 @@ public interface IncidentService {
 			Incident incident,
 			Form form)
 			throws DataAccessException, DuplicateCollabRoomException, Exception;
-	
+
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response postIncident(
+			@PathParam("workspaceId") Integer workspaceId,
+			@QueryParam("orgId") Integer orgId,
+			@QueryParam("userId") Integer userId,
+			Incident incident)
+			throws DataAccessException, DuplicateCollabRoomException, Exception;
+
+
 	@GET
 	@Path(value = "/getincidentbyname")
 	@Produces(MediaType.APPLICATION_JSON)
