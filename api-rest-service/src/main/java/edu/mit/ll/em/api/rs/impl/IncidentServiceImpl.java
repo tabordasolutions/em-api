@@ -384,8 +384,8 @@ public class IncidentServiceImpl implements IncidentService {
 	 *  
 	 *  @see IncidentServiceResponse
 	 *  
-	 */	
-	
+	 */
+
 	public Response postIncident(Integer workspaceId, Integer orgId, Integer userId, Incident incident, Form form)
 			throws DataAccessException, DuplicateCollabRoomException, Exception {
 		
@@ -448,12 +448,6 @@ public class IncidentServiceImpl implements IncidentService {
 					List<String>  disList = orgDao.getOrgAdmins(org.getOrgId());
 
 					Integer formTypeId = form.getFormtypeid();
-
-					if(!formTypeId.equals(1) && disList.size() > 0){
-						/* Create and send email for non-ROC Incidents */
-						String toEmails = disList.toString().substring(1, disList.toString().length()-1) + ", " + newIncidentUsers;
-						createNewIncidentEmail(creator,toEmails, newIncident, workspaceId);
-					}
 				} catch (Exception e) {
 					APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
 					APILogger.getInstance().e(CNAME, e.getMessage());
@@ -470,25 +464,121 @@ public class IncidentServiceImpl implements IncidentService {
 		return response;
 	}
 
-	private void createNewIncidentEmail(User creator, String toEmails, Incident newIncident, Integer workspaceId) {
+
+	/**
+	 *  Creates single Incident
+	 *
+	 *  <p>
+	 *  	TODO: not used by mobile, AND needs fully implemented for use with the ui-framework
+	 *  		incident module. This call simply persists an Incident entity w/o all the
+	 *  		other setup the SA/message does
+	 *  </p>
+	 *
+	 *  @param workspaceId
+	 *  @param incident Incident to be persisted
+	 *
+	 *  @return Response
+	 * @throws Exception
+	 * @throws DuplicateCollabRoomException
+	 * @throws DataAccessException
+	 *
+	 *  @see IncidentServiceResponse
+	 *
+	 */
+	public Response postIncident(Integer workspaceId, Integer orgId, Integer userId, Incident incident)
+			throws DataAccessException, DuplicateCollabRoomException, Exception {
+
+		IncidentServiceResponse incidentResponse = new IncidentServiceResponse();
+		Response response = null;
 		JsonEmail email = null;
 
-		try{
-			String date = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy").format(new Date());
-			String hostname = InetAddress.getLocalHost().getHostName();
-			String alertTopic = String.format("iweb.nics.email.alert");
-			String siteName = workspaceDao.getWorkspaceName(workspaceId);
-
-			email = new JsonEmail(creator.getUsername(),toEmails,"Alert from NewIncident@" + hostname);
-			email.setBody(date + "\n\n" + "A new incident has been created: " + newIncident.getIncidentname() + "\n" +
-					"Creator: " + creator.getUsername() + "\n" +
-					"Location: " + newIncident.getLat() + "," + newIncident.getLon() + "\n" +
-					"Site: " + siteName);
-
-			notifyNewIncidentEmail(email.toJsonObject().toString(),alertTopic);
-		} catch (Exception e) {
-			APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
+		if(incidentDao.getIncidentByName(incident.getIncidentname(), workspaceId) != null){
+			incidentResponse.setMessage(DUPLICATE_NAME);
+			return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 		}
+
+		Incident newIncident = null;
+		try {
+			incident.setCreated(new Date());
+			newIncident = incidentDao.create(incident);
+
+			if(newIncident != null){
+				incidentResponse.getIncidents().add(newIncident);
+				incidentResponse.setMessage(Status.OK.getReasonPhrase());
+				incidentResponse.setCount(incidentResponse.getIncidents().size());
+				response = Response.ok(incidentResponse).status(Status.OK).build();
+			}else{
+				incidentResponse.setMessage(Status.EXPECTATION_FAILED.getReasonPhrase());
+				incidentResponse.setCount(0);
+				return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
+			}
+		} catch (Exception e) {
+			incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+			return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+		//Create default rooms
+		CollabRoom incidentMap = createDefaultCollabRoom(newIncident.getUsersessionid(),
+				APIConfig.getInstance().getConfiguration().getString(APIConfig.INCIDENT_MAP,
+						SADisplayConstants.INCIDENT_MAP));
+		List<Integer> admins = orgDao.getOrgAdmins(orgId,workspaceId);
+		if(!admins.contains(userId)){
+			incidentMap.getAdminUsers().add(userId);
+		}
+		incidentMap.getAdminUsers().addAll(admins);
+
+		CollabService collabRoomEndpoint = new CollabServiceImpl();
+		collabRoomEndpoint.createCollabRoomWithPermissions(newIncident.getIncidentid(),orgId, workspaceId,
+				incidentMap);
+
+		collabRoomEndpoint.createUnsecureCollabRoom(newIncident.getIncidentid(), createDefaultCollabRoom(
+				newIncident.getUsersessionid(), WORKING_MAP));
+
+		if (Status.OK.getStatusCode() == response.getStatus()) {
+			try {
+				String topic = String.format("iweb.NICS.ws.%s.newIncident", workspaceId);
+				notifyIncident(newIncident, topic);
+
+				try {
+
+					String date = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy").format(new Date());
+					String alertTopic = String.format("iweb.nics.email.alert");
+
+					String newIncidentUsers = APIConfig.getInstance().getConfiguration().getString(APIConfig.NEW_INCIDENT_USERS_EMAIL);
+					String hostname = InetAddress.getLocalHost().getHostName();
+
+					User creator = userDao.getUserBySessionId(newIncident.getUsersessionid());
+					Org org = orgDao.getLoggedInOrg(creator.getUserId());
+
+					List<String>  disList = orgDao.getOrgAdmins(org.getOrgId());
+
+
+					/* Create and send email for non-ROC Incidents */
+					String toEmails = disList.toString().substring(1, disList.toString().length()-1) + ", " + newIncidentUsers;
+					String siteName = workspaceDao.getWorkspaceName(workspaceId);
+
+					if(disList.size() > 0){
+						email = new JsonEmail(creator.getUsername(),toEmails,"Alert from NewIncident@" + hostname);
+						email.setBody(date + "\n\n" + "A new incident has been created: " + newIncident.getIncidentname() + "\n" +
+								"Creator: " + creator.getUsername() + "\n" +
+								"Location: " + newIncident.getLat() + "," + newIncident.getLon() + "\n" +
+								"Site: " + siteName);
+						notifyNewIncidentEmail(email.toJsonObject().toString(),alertTopic);
+					}
+				} catch (Exception e) {
+					APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
+					APILogger.getInstance().e(CNAME, e.getMessage());
+					incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+					return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
+				}
+			} catch (Exception e) {
+				APILogger.getInstance().e(CNAME,"Failed to publish a new Incident message event");
+				incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+				return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
+			}
+		}
+
+		return response;
 	}
 
 	private CollabRoom createDefaultCollabRoom(int userSessionId, String name){
