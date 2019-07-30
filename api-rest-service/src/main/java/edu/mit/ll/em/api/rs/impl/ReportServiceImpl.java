@@ -473,9 +473,11 @@ public class ReportServiceImpl implements ReportService {
             // emailBodyString.append();
 
             // Start Time
-            emailBodyString.append("<div>");
-            emailBodyString.append("<b>Start time:</b> " + rocMessage.getStartTime());
-            emailBodyString.append("</div>");
+            if(rocMessage.getReportType().equals("NEW")) {
+                emailBodyString.append("<div>");
+                emailBodyString.append("<b>Start time:</b> " + rocMessage.getStartTime());
+                emailBodyString.append("</div>");
+            }
 
             /* =================== */
             /* Start Unsorted List */
@@ -534,7 +536,7 @@ public class ReportServiceImpl implements ReportService {
 
             // Humidity
             if(rocMessage.getRelHumidity() > 0 && rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null")) {
-                emailBodyString.append(rocMessage.getRelHumidity().intValue() + " RH");
+                emailBodyString.append(rocMessage.getRelHumidity().intValue() + "% RH");
             }
 
             // Wind Direction
