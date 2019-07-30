@@ -500,7 +500,7 @@ public class ReportServiceImpl implements ReportService {
             if(rocMessage.getFuelTypes() != null && !rocMessage.getFuelTypes().equals("null")) {
                 int fuelTypesArraySize = rocMessage.getFuelTypes().size();
                 for (int i = 0; i < fuelTypesArraySize; i++) {
-                    emailBodyString.append(rocMessage.getFuelTypes().get(i) + ", ");
+                    emailBodyString.append(rocMessage.getFuelTypes().get(i).toLowerCase() + ", ");
                 }
             }
 
