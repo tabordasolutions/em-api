@@ -144,7 +144,8 @@ public class ROCService {
                         existingROCMessage.getGeneralLocation(),
                         existingROCMessage.getFuelTypes(),
                         existingROCMessage.getOtherFuelTypes(),
-                        existingROCMessage.getOtherSignificantInfo()
+                        existingROCMessage.getOtherSignificantInfo(),
+                        existingROCMessage.getIncidentTypes()
                 )
                 .buildReportDates(new Date(), existingROCMessage.getDate(), existingROCMessage.getStartTime())
                 .buildLocationBasedData(rocLocationBasedData)
@@ -160,7 +161,7 @@ public class ROCService {
         String rocStartTime = "0000";
 
         ROCMessage rocMessage = new ROCMessageBuilder()
-                .buildReportDetails("NEW", null, null, null, null, null, null, null, null,null, null)
+                .buildReportDetails("NEW", null, null, null, null, null, null, null, null,null, null, null)
                 .buildReportDates(dateCreated, dateCreated, rocStartTime)
                 .buildLocationBasedData(rocLocationBasedData)
                 .build();

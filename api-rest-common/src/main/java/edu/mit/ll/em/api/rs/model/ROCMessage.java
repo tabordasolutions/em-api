@@ -48,7 +48,6 @@ public class ROCMessage implements Cloneable, Comparable {
     private String reportType;
     private Date date;
     private String startTime;
-    // private List<IncidentType> incidentTypes;
     private List<String> incidentTypes;
 
     //Location info pre populated based on incident location
