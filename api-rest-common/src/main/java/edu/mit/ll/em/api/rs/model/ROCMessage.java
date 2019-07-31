@@ -90,6 +90,11 @@ public class ROCMessage implements Cloneable, Comparable {
     private String otherResourcesAssigned;
     private List<String> otherSignificantInfo;
 
+    private String otherEvacuations;
+    private String otherStructuresThreat;
+    private String otherInfrastructuresThreat;
+    private String otherOtherSignificantInfo;
+
     public ROCMessage() { }
 
     public ROCMessage(Date dateCreated, String reportType, Date date, String startTime,
@@ -99,7 +104,8 @@ public class ROCMessage implements Cloneable, Comparable {
             Double temperature, Float relHumidity,  Float windSpeed, Double windGust, String windDirection, String percentageContained,
             String scope, String spreadRate, List<String> fuelTypes, List<String> otherSignificantInfo, String otherFuelTypes, String evacuations, List<String> evacuationsList,
             String structuresThreat, List<String> structuresThreats, String infrastructuresThreat,
-            List<String> infrastructuresThreats, List<String> resourcesAssigned, String otherResourcesAssigned, List<String> incidentTypes) {
+            List<String> infrastructuresThreats, List<String> resourcesAssigned, String otherResourcesAssigned, List<String> incidentTypes,
+            String otherEvacuations, String otherStructuresThreat, String otherInfrastructuresThreat, String otherOtherSignificantInfo) {
         this.dateCreated = dateCreated;
         this.reportType = reportType;
         this.date = date;
@@ -137,6 +143,10 @@ public class ROCMessage implements Cloneable, Comparable {
         this.otherResourcesAssigned = otherResourcesAssigned;
         this.otherSignificantInfo = otherSignificantInfo;
         this.incidentTypes = incidentTypes;
+        this.otherEvacuations = otherEvacuations;
+        this.otherStructuresThreat = otherStructuresThreat;
+        this.otherInfrastructuresThreat = otherInfrastructuresThreat;
+        this.otherOtherSignificantInfo = otherOtherSignificantInfo;
     }
 
     @JsonFormat
@@ -397,6 +407,46 @@ public class ROCMessage implements Cloneable, Comparable {
     public void setOtherResourcesAssigned(String otherResourcesAssigned) {
         this.otherResourcesAssigned = otherResourcesAssigned;
     }
+
+    // otherEvacuations
+    public String getOtherEvacuations() {
+        return otherEvacuations;
+    }
+
+    public void setOtherEvacuations(String otherEvacuations) {
+        this.otherEvacuations = otherEvacuations;
+    }
+
+    // otherStructuresThreat
+    public String getOtherStructuresThreat() {
+        return otherStructuresThreat;
+    }
+
+    public void setOtherStructuresThreat(String otherStructuresThreat) {
+        this.otherStructuresThreat = otherStructuresThreat;
+    }
+
+    // otherInfrastructuresThreat
+    public String getOtherInfrastructuresThreat() {
+        return otherInfrastructuresThreat;
+    }
+
+    public void setOtherInfrastructuresThreat(String otherInfrastructuresThreat) {
+        this.otherInfrastructuresThreat = otherInfrastructuresThreat;
+    }
+
+    // otherOtherSignificantInfo
+    public String getOtherOtherSignificantInfo() {
+        return otherOtherSignificantInfo;
+    }
+
+    public void setOtherOtherSignificantInfo(String otherOtherSignificantInfo) {
+        this.otherOtherSignificantInfo = otherOtherSignificantInfo;
+    }
+
+
+
+    /* ************************ */
 
     public List<String> getIncidentTypes() { return incidentTypes; }
     public void setIncidentTypes(List<String> incidentTypes) { this.incidentTypes = incidentTypes; }
