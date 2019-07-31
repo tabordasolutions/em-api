@@ -353,23 +353,6 @@ public class ReportServiceImpl implements ReportService {
         return response;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void createNewROCIncidentEmail(User creator, String toEmails, Incident newIncident, Form form) {
         JsonEmail email = null;
 
@@ -500,7 +483,11 @@ public class ReportServiceImpl implements ReportService {
             if(rocMessage.getFuelTypes() != null && !rocMessage.getFuelTypes().equals("null")) {
                 int fuelTypesArraySize = rocMessage.getFuelTypes().size();
                 for (int i = 0; i < fuelTypesArraySize; i++) {
-                    emailBodyString.append(rocMessage.getFuelTypes().get(i).toLowerCase() + ", ");
+                    if(rocMessage.getFuelTypes().get(i).equalsIgnoreCase("Other")){
+                        emailBodyString.append(rocMessage.getOtherFuelTypes() + ", ");
+                    } else {
+                        emailBodyString.append(rocMessage.getFuelTypes().get(i).toLowerCase() + ", ");
+                    }
                 }
             }
 
@@ -567,7 +554,11 @@ public class ReportServiceImpl implements ReportService {
                 if(structureThreatArraySize > 0) {
                     for (int i = 0; i < structureThreatArraySize; i++) {
                         emailBodyString.append("<li>");
-                        emailBodyString.append(rocMessage.getStructuresThreats().get(i));
+                        if(rocMessage.getStructuresThreats().get(i).equalsIgnoreCase("Other")){
+                            emailBodyString.append(rocMessage.getOtherStructuresThreat());
+                        } else {
+                            emailBodyString.append(rocMessage.getStructuresThreats().get(i));
+                        }
                         emailBodyString.append("</li>");
                     }
                 }
@@ -584,7 +575,12 @@ public class ReportServiceImpl implements ReportService {
                 if(infraStructureThreatArraySize > 0) {
                     for (int i = 0; i < infraStructureThreatArraySize; i++) {
                         emailBodyString.append("<li>");
-                        emailBodyString.append(rocMessage.getInfrastructuresThreats().get(i));
+                        if(rocMessage.getInfrastructuresThreats().get(i).equalsIgnoreCase("Other")){
+                            // otherInfrastructuresThreat
+                            emailBodyString.append(rocMessage.getOtherInfrastructuresThreat());
+                        } else {
+                            emailBodyString.append(rocMessage.getInfrastructuresThreats().get(i));
+                        }
                         emailBodyString.append("</li>");
                     }
                 }
@@ -601,7 +597,13 @@ public class ReportServiceImpl implements ReportService {
                 if(evacuationsListArraySize > 0) {
                     for (int i = 0; i < evacuationsListArraySize; i++) {
                         emailBodyString.append("<li>");
-                        emailBodyString.append(rocMessage.getEvacuationsList().get(i));
+                        if(rocMessage.getEvacuationsList().get(i).equalsIgnoreCase("Other")){
+                            // otherEvacuations
+                            emailBodyString.append(rocMessage.getOtherEvacuations());
+                        } else {
+                            emailBodyString.append(rocMessage.getEvacuationsList().get(i));
+                        }
+
                         emailBodyString.append("</li>");
                     }
                 }
@@ -618,7 +620,12 @@ public class ReportServiceImpl implements ReportService {
                 if(otherSignificantInfoArraySize > 0) {
                     for (int i = 0; i < otherSignificantInfoArraySize; i++) {
                         emailBodyString.append("<li>");
-                        emailBodyString.append(rocMessage.getOtherSignificantInfo().get(i));
+                        if(rocMessage.getOtherSignificantInfo().get(i).equalsIgnoreCase("Other")){
+                            emailBodyString.append(rocMessage.getOtherOtherSignificantInfo());
+                        } else {
+                            emailBodyString.append(rocMessage.getOtherSignificantInfo().get(i));
+                        }
+
                         emailBodyString.append("</li>");
                     }
                 }
@@ -635,7 +642,13 @@ public class ReportServiceImpl implements ReportService {
                 if(resourcesAssignedArraySize > 0) {
                     for (int i = 0; i < resourcesAssignedArraySize; i++) {
                         emailBodyString.append("<li>");
-                        emailBodyString.append(rocMessage.getResourcesAssigned().get(i));
+                        // otherResourcesAssigned
+                        if(rocMessage.getResourcesAssigned().get(i).equalsIgnoreCase("Other")){
+                            emailBodyString.append(rocMessage.getOtherResourcesAssigned());
+                        } else {
+                            emailBodyString.append(rocMessage.getResourcesAssigned().get(i));
+                        }
+
                         emailBodyString.append("</li>");
                     }
                 }

@@ -143,12 +143,17 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         String otherFuelTypes = reportNode.get("otherFuelTypes") == null ? null : reportNode.get("otherFuelTypes").asText();
         String otherResourcesAssigned = reportNode.get("otherResourcesAssigned") == null ? null : reportNode.get("otherResourcesAssigned").asText();
 
+        String otherEvacuations = reportNode.get("otherEvacuations") == null ? null : reportNode.get("otherEvacuations").asText();
+        String otherStructuresThreat = reportNode.get("otherStructuresThreat") == null ? null : reportNode.get("otherStructuresThreat").asText();
+        String otherInfrastructuresThreat = reportNode.get("otherInfrastructuresThreat") == null ? null : reportNode.get("otherInfrastructuresThreat").asText();
+        String otherOtherSignificantInfo = reportNode.get("otherOtherSignificantInfo") == null ? null : reportNode.get("otherOtherSignificantInfo").asText();
 
         return new ROCMessage(dateCreated, reportType, date, startTime,
                 location, generalLocation, county, additionalAffectedCounties, street, crossStreet, nearestCommunity, milesFromNearestCommunity, directionFromNearestCommunity, state,
                 sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windGust, windDirection, percentageContained, scope, spreadRate,
                 fuelTypes, otherSignificantInfo, otherFuelTypes, evacuations,evacuationsList, structuresThreat,
-                structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst, otherResourcesAssigned, incidentTypesLst);
+                structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst, otherResourcesAssigned, incidentTypesLst,
+                otherEvacuations, otherStructuresThreat, otherInfrastructuresThreat, otherOtherSignificantInfo);
     }
 
     private List<String> getJsonNdeAsList(JsonNode jsonNode){
