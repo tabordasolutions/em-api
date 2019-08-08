@@ -388,10 +388,17 @@ public class ReportServiceImpl implements ReportService {
             /* Email Body String building Starts Here */
             /* ************************************** */
             StringBuilder emailBodyString = new StringBuilder();
-            emailBodyString.append("<html><body><div>");
+            emailBodyString.append("<html>");
+            emailBodyString.append("<head>");
+            emailBodyString.append("<style>");
+            emailBodyString.append("ul { padding: 0; list-style-type: none; }");
+            emailBodyString.append("</style>");
+            emailBodyString.append("</head>");
+            emailBodyString.append("<body><div>");
+
 
             /* Disclaimer */
-            emailBodyString.append("<b>&quot;Intel - for internal use only. Numbers subject to change.&quot;</b>");
+            emailBodyString.append("&quot;Intel - for internal use only. Numbers subject to change.&quot;");
             emailBodyString.append("<br/><br/>");
 
 
@@ -475,18 +482,20 @@ public class ReportServiceImpl implements ReportService {
 
             // Scope
             if (rocMessage.getScope().trim().length() > 0 && rocMessage.getScope() != null && !rocMessage.getScope().equals("null")) {
-                emailBodyString.append("<li>");
+                emailBodyString.append("<li>&bull; ");
                 emailBodyString.append(rocMessage.getScope() + " acres ");
             }
 
             // Fuel Types
-            if(rocMessage.getFuelTypes() != null && !rocMessage.getFuelTypes().equals("null")) {
-                int fuelTypesArraySize = rocMessage.getFuelTypes().size();
-                for (int i = 0; i < fuelTypesArraySize; i++) {
-                    if(rocMessage.getFuelTypes().get(i).equalsIgnoreCase("Other")){
-                        emailBodyString.append(rocMessage.getOtherFuelTypes() + ", ");
-                    } else {
-                        emailBodyString.append(rocMessage.getFuelTypes().get(i).toLowerCase() + ", ");
+            if(rocMessage.getReportType().equals("FINAL")) {
+                if (rocMessage.getFuelTypes() != null && !rocMessage.getFuelTypes().equals("null")) {
+                    int fuelTypesArraySize = rocMessage.getFuelTypes().size();
+                    for (int i = 0; i < fuelTypesArraySize; i++) {
+                        if (rocMessage.getFuelTypes().get(i).equalsIgnoreCase("Other")) {
+                            emailBodyString.append(rocMessage.getOtherFuelTypes() + ", ");
+                        } else {
+                            emailBodyString.append(rocMessage.getFuelTypes().get(i).toLowerCase() + ", ");
+                        }
                     }
                 }
             }
@@ -505,7 +514,7 @@ public class ReportServiceImpl implements ReportService {
 
             // Spread Rate
             if (rocMessage.getSpreadRate().trim().length() > 0 && rocMessage.getSpreadRate() != null && !rocMessage.getSpreadRate().equals("null")) {
-                emailBodyString.append("<li>");
+                emailBodyString.append("<li>&bull; ");
                 emailBodyString.append(rocMessage.getSpreadRate());
                 emailBodyString.append("</li>");
             }
@@ -514,7 +523,7 @@ public class ReportServiceImpl implements ReportService {
             /* ------------------------------------------------------------------------------------------------- */
             /* Temperature degrees, Relative Humidity% RH, wind Wind Direction @ Wind Speed, gusts to Wind Gusts */
             /* ------------------------------------------------------------------------------------------------- */
-            emailBodyString.append("<li>");
+            emailBodyString.append("<li>&bull; ");
 
             // Tempreature
             if (rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null")) {
@@ -553,7 +562,7 @@ public class ReportServiceImpl implements ReportService {
 
                 if(structureThreatArraySize > 0) {
                     for (int i = 0; i < structureThreatArraySize; i++) {
-                        emailBodyString.append("<li>");
+                        emailBodyString.append("<li>&bull; ");
                         if(rocMessage.getStructuresThreats().get(i).equalsIgnoreCase("Other")){
                             emailBodyString.append(rocMessage.getOtherStructuresThreat());
                         } else {
@@ -574,7 +583,7 @@ public class ReportServiceImpl implements ReportService {
 
                 if(infraStructureThreatArraySize > 0) {
                     for (int i = 0; i < infraStructureThreatArraySize; i++) {
-                        emailBodyString.append("<li>");
+                        emailBodyString.append("<li>&bull; ");
                         if(rocMessage.getInfrastructuresThreats().get(i).equalsIgnoreCase("Other")){
                             // otherInfrastructuresThreat
                             emailBodyString.append(rocMessage.getOtherInfrastructuresThreat());
@@ -596,7 +605,7 @@ public class ReportServiceImpl implements ReportService {
 
                 if(evacuationsListArraySize > 0) {
                     for (int i = 0; i < evacuationsListArraySize; i++) {
-                        emailBodyString.append("<li>");
+                        emailBodyString.append("<li>&bull; ");
                         if(rocMessage.getEvacuationsList().get(i).equalsIgnoreCase("Other")){
                             // otherEvacuations
                             emailBodyString.append(rocMessage.getOtherEvacuations());
@@ -619,7 +628,7 @@ public class ReportServiceImpl implements ReportService {
 
                 if(otherSignificantInfoArraySize > 0) {
                     for (int i = 0; i < otherSignificantInfoArraySize; i++) {
-                        emailBodyString.append("<li>");
+                        emailBodyString.append("<li>&bull; ");
                         if(rocMessage.getOtherSignificantInfo().get(i).equalsIgnoreCase("Other")){
                             emailBodyString.append(rocMessage.getOtherOtherSignificantInfo());
                         } else {
@@ -641,7 +650,7 @@ public class ReportServiceImpl implements ReportService {
 
                 if(resourcesAssignedArraySize > 0) {
                     for (int i = 0; i < resourcesAssignedArraySize; i++) {
-                        emailBodyString.append("<li>");
+                        emailBodyString.append("<li>&bull; ");
                         // otherResourcesAssigned
                         if(rocMessage.getResourcesAssigned().get(i).equalsIgnoreCase("Other")){
                             emailBodyString.append(rocMessage.getOtherResourcesAssigned());
