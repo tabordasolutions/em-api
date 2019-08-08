@@ -487,10 +487,14 @@ public class ReportServiceImpl implements ReportService {
             }
 
             // Fuel Types
-            if(rocMessage.getReportType().equals("FINAL")) {
+            if(!rocMessage.getReportType().equals("FINAL")) {
                 if (rocMessage.getFuelTypes() != null && !rocMessage.getFuelTypes().equals("null")) {
                     int fuelTypesArraySize = rocMessage.getFuelTypes().size();
                     for (int i = 0; i < fuelTypesArraySize; i++) {
+                        if(i == fuelTypesArraySize - 1) {
+                            emailBodyString.append(" and ");
+                        }
+
                         if (rocMessage.getFuelTypes().get(i).equalsIgnoreCase("Other")) {
                             emailBodyString.append(rocMessage.getOtherFuelTypes() + ", ");
                         } else {
