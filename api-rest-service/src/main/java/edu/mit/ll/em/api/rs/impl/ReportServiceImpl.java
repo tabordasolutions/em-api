@@ -379,7 +379,29 @@ public class ReportServiceImpl implements ReportService {
                 }
             }
 
-            emailSubject = emailSubject + rocMessage.getCounty() + " County, " + convertToTitleCaseIteratingChars(rocMessage.getReportType());
+            emailSubject = emailSubject + rocMessage.getCounty();
+
+            if (rocMessage.getAdditionalAffectedCounties() != null && !rocMessage.getAdditionalAffectedCounties().equals("null") && rocMessage.getAdditionalAffectedCounties().trim().length() > 0) {
+                List<String> additionalCountiesArrayList = new ArrayList<>(Arrays.asList(rocMessage.getAdditionalAffectedCounties().split("\\s*,\\s*")));
+                int additionalCountiesArrayListSize = additionalCountiesArrayList.size();
+
+                if(additionalCountiesArrayList.size() > 0) {
+                    for (int i = 0; i < additionalCountiesArrayListSize; i++) {
+                        if(i == additionalCountiesArrayListSize - 1) {
+                            emailSubject = emailSubject + " and ";
+                        } else {
+                            emailSubject = emailSubject + ", ";
+                        }
+
+                        emailSubject = emailSubject + additionalCountiesArrayList.get(i);
+                    }
+                }
+                emailSubject = emailSubject + " Counties, ";
+            } else {
+                emailSubject = emailSubject + " County, ";
+            }
+
+            emailSubject = emailSubject + convertToTitleCaseIteratingChars(rocMessage.getReportType());
 
             email = new JsonEmail(creator.getUsername(), toEmails + ", nikhil.devre@tabordasolutions.com", emailSubject);
 
@@ -465,7 +487,7 @@ public class ReportServiceImpl implements ReportService {
             // Start Time
             if(rocMessage.getReportType().equals("NEW")) {
                 emailBodyString.append("<div>");
-                emailBodyString.append("<b>Start time:</b> " + rocMessage.getStartTime());
+                emailBodyString.append("Start time: " + rocMessage.getStartTime());
                 emailBodyString.append("</div>");
             }
 
