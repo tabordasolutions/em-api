@@ -126,14 +126,22 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         List<String> resourcesAssignedLst =  resourcesAssignedChild==null ? null : getJsonNdeAsList(resourcesAssignedChild);
 
         String jurisdiction = reportNode.get("jurisdiction") == null ? null : reportNode.get("jurisdiction").asText();
-        Double temperature = reportNode.get("temperature") == null ? null : reportNode.get("temperature").asDouble();
+
+        JsonNode temperatureJsonNode = reportNode.get("temperature");
+        Double temperature = (temperatureJsonNode == null || temperatureJsonNode.isNull() || StringUtils.isBlank(temperatureJsonNode.asText())) ? null : Double.parseDouble(temperatureJsonNode.asText());
+
         JsonNode relHumidityJsonNode = reportNode.get("relHumidity");
         Float relHumidity = (relHumidityJsonNode == null || relHumidityJsonNode.isNull() || StringUtils.isBlank(relHumidityJsonNode.asText()) ) ? null : Float.parseFloat(relHumidityJsonNode.asText());
+
         JsonNode windSpeedJsonNode = reportNode.get("windSpeed");
         Float windSpeed = (windSpeedJsonNode == null || windSpeedJsonNode.isNull() || StringUtils.isBlank(windSpeedJsonNode.asText())) ? null : Float.parseFloat(windSpeedJsonNode.asText());
+
         JsonNode windGustJsonNode = reportNode.get("windGust");
         Double windGust = (windGustJsonNode == null || windGustJsonNode.isNull() || StringUtils.isBlank(windGustJsonNode.asText())) ? null : Double.parseDouble(windGustJsonNode.asText());
-        String windDirection = reportNode.get("windDirection") == null ? null : reportNode.get("windDirection").asText();
+
+        JsonNode windDirectionJsonNode = reportNode.get("windDirection");
+        String windDirection = (windDirectionJsonNode == null || windDirectionJsonNode.isNull() || StringUtils.isBlank(windDirectionJsonNode.asText())) ? null : windDirectionJsonNode.asText();
+
         JsonNode fuelTypesJSN = reportNode.get("fuelTypes") == null ? null : reportNode.get("fuelTypes");
         List<String> fuelTypes = fuelTypesJSN==null ? null : getJsonNdeAsList(fuelTypesJSN);
 
