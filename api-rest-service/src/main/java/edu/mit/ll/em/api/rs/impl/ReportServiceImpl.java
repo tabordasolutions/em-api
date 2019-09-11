@@ -551,10 +551,10 @@ public class ReportServiceImpl implements ReportService {
             /* ------------------------------------------------------------------------------------------------- */
 
             if (
-                    rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") &&
-                    rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") &&
-                    rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") &&
-                    rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") &&
+                    rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") ||
+                    rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") ||
+                    rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") ||
+                    rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ||
                     rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null")
             ) {
                 emailBodyString.append("<li>&bull; ");
@@ -562,12 +562,12 @@ public class ReportServiceImpl implements ReportService {
 
             // Tempreature
             if (rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null")) {
-                emailBodyString.append(rocMessage.getTemperature() + " degrees, ");
+                emailBodyString.append(rocMessage.getTemperature() + " degrees");
             }
 
             // Humidity
             if(rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null")) {
-                emailBodyString.append(rocMessage.getRelHumidity().intValue() + "% RH");
+                emailBodyString.append(", " + rocMessage.getRelHumidity().intValue() + "% RH");
             }
 
             // Wind Direction
@@ -586,10 +586,10 @@ public class ReportServiceImpl implements ReportService {
             }
 
             if (
-                    rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") &&
-                    rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") &&
-                    rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") &&
-                    rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") &&
+                    rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") ||
+                    rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") ||
+                    rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") ||
+                    rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ||
                     rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null")
             ) {
                 emailBodyString.append("</li>");
