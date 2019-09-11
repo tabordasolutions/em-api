@@ -549,20 +549,29 @@ public class ReportServiceImpl implements ReportService {
             /* ------------------------------------------------------------------------------------------------- */
             /* Temperature degrees, Relative Humidity% RH, wind Wind Direction @ Wind Speed, gusts to Wind Gusts */
             /* ------------------------------------------------------------------------------------------------- */
-            emailBodyString.append("<li>&bull; ");
+
+            if (
+                    rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") &&
+                    rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") &&
+                    rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") &&
+                    rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") &&
+                    rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null")
+            ) {
+                emailBodyString.append("<li>&bull; ");
+            }
 
             // Tempreature
             if (rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null")) {
-                emailBodyString.append(rocMessage.getTemperature().intValue() + " degrees, ");
+                emailBodyString.append(rocMessage.getTemperature() + " degrees, ");
             }
 
             // Humidity
-            if(rocMessage.getRelHumidity() > 0 && rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null")) {
+            if(rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null")) {
                 emailBodyString.append(rocMessage.getRelHumidity().intValue() + "% RH");
             }
 
             // Wind Direction
-            if(rocMessage.getWindDirection().trim().length() > 0 && rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null")) {
+            if(rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null")) {
                 emailBodyString.append(", " + " wind " + rocMessage.getWindDirection());
             }
 
@@ -576,7 +585,15 @@ public class ReportServiceImpl implements ReportService {
                 emailBodyString.append(", gusts to " + rocMessage.getWindGust().intValue());
             }
 
-            emailBodyString.append("</li>");
+            if (
+                    rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") &&
+                    rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") &&
+                    rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") &&
+                    rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") &&
+                    rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null")
+            ) {
+                emailBodyString.append("</li>");
+            }
 
 
             /* --------------------------------- */
