@@ -128,16 +128,16 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         String jurisdiction = reportNode.get("jurisdiction") == null ? null : reportNode.get("jurisdiction").asText();
 
         JsonNode temperatureJsonNode = reportNode.get("temperature");
-        Double temperature = (temperatureJsonNode == null || temperatureJsonNode.isNull() || StringUtils.isBlank(temperatureJsonNode.asText())) ? null : Double.parseDouble(temperatureJsonNode.asText());
+        Double temperature = (temperatureJsonNode == null || temperatureJsonNode.isNull() || temperatureJsonNode.asText().equals("null") || StringUtils.isBlank(temperatureJsonNode.asText())) ? null : Double.parseDouble(temperatureJsonNode.asText());
 
         JsonNode relHumidityJsonNode = reportNode.get("relHumidity");
-        Float relHumidity = (relHumidityJsonNode == null || relHumidityJsonNode.isNull() || StringUtils.isBlank(relHumidityJsonNode.asText()) ) ? null : Float.parseFloat(relHumidityJsonNode.asText());
+        Float relHumidity = (relHumidityJsonNode == null || relHumidityJsonNode.isNull() || relHumidityJsonNode.asText().equals("null") || StringUtils.isBlank(relHumidityJsonNode.asText()) ) ? null : Float.parseFloat(relHumidityJsonNode.asText());
 
         JsonNode windSpeedJsonNode = reportNode.get("windSpeed");
-        Float windSpeed = (windSpeedJsonNode == null || windSpeedJsonNode.isNull() || StringUtils.isBlank(windSpeedJsonNode.asText())) ? null : Float.parseFloat(windSpeedJsonNode.asText());
+        Float windSpeed = (windSpeedJsonNode == null || windSpeedJsonNode.isNull() || windSpeedJsonNode.asText().equals("null") || StringUtils.isBlank(windSpeedJsonNode.asText())) ? null : Float.parseFloat(windSpeedJsonNode.asText());
 
         JsonNode windGustJsonNode = reportNode.get("windGust");
-        Double windGust = (windGustJsonNode == null || windGustJsonNode.isNull() || StringUtils.isBlank(windGustJsonNode.asText())) ? null : Double.parseDouble(windGustJsonNode.asText());
+        Double windGust = (windGustJsonNode == null || windGustJsonNode.isNull() || windGustJsonNode.asText().equals("null") || StringUtils.isBlank(windGustJsonNode.asText())) ? null : Double.parseDouble(windGustJsonNode.asText());
 
         JsonNode windDirectionJsonNode = reportNode.get("windDirection");
         String windDirection = (windDirectionJsonNode == null || windDirectionJsonNode.isNull() || StringUtils.isBlank(windDirectionJsonNode.asText())) ? null : windDirectionJsonNode.asText();
