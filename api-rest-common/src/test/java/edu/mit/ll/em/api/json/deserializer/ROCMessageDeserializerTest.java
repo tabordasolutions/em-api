@@ -249,6 +249,37 @@ public class ROCMessageDeserializerTest {
     }
 
     @Test
+    public void deserializeROCMessageCanHandelNullStrings() throws IOException {
+        String rocJsonWithNullString = "{\"message\":{\"datecreated\":\"" + dateCreatedStr + "\"" +
+                ",\"report\":{\"reportType\":\"" + reportType + "\"" +
+                ",\"date\":\"" + startDateStr + "\",\"starttime\":\"" + rocStartTime + "\"" +
+                ",\"formTypeId\":1,\"reportBy\":\"sneha nagole\",\"email\":\"sneha.nagole@tabordasolutions.com\"" +
+                ",\"additionalAffectedCounties\":\"" + additionalAffectedCounties + "\",\"county\":\"" + county + "\"" +
+                ",\"state\":\"" + state + "\"" +
+                ",\"location\":\"" + location + "\"" +
+                ",\"generalLocation\":\"" + generalLocation + "\"" +
+                ",\"sra\":\"" + sra + "\"" +
+                ",\"dpa\":\"" + dpa + "\"" +
+                ",\"jurisdiction\":\"" + jurisdiction + "\"" +
+                ",\"incidentType\":\"" + incidentType + "\"" +
+                ",\"fuelTypes\":\"" + fuelTypes + "\"" +
+//                "," + fuelTypes +
+                ",\"otherFuelTypes\":\"" + otherFuelTypes + "\"" +
+                ",\"scope\":\"2\",\"spreadRate\":\"2\",\"percentContained\":\"1\"" +
+                ",\"temperature\":\"null\"" +
+                ",\"relHumidity\":\"null\"" +
+                ",\"windSpeed\":\"null\"" +
+                ",\"windGust\":\"null\"" +
+                ",\"windDirection\":\"" + windDirection + "\",\"predictedWeather\":\"mild\",\"evacuations\":\"0\",\"structuresThreat\":\"0\",\"infrastructuresThreat\":\"0\",\"comments\":\"lkjljklj - Final 1\",\"simplifiedEmail\":true,\"airAttack\":\"none\"" +
+                "}}}\"";
+        ROCMessage rocMessage = objectMapper.readValue(rocJsonWithNullString, ROCMessage.class);
+        assertNull(rocMessage.getTemperature());
+        assertNull(rocMessage.getRelHumidity());
+        assertNull(rocMessage.getWindSpeed());
+        assertNull(rocMessage.getWindGust());
+    }
+
+    @Test
     public void deserializeROCMessageCanHandelNulls() throws IOException {
         String rocJsonWithEmptyString = "{\"message\":{\"datecreated\":\"" + dateCreatedStr + "\"" +
                 ",\"report\":{\"reportType\":\"" + reportType + "\"" +
