@@ -355,6 +355,7 @@ public class ReportServiceImpl implements ReportService {
 
     private void createNewROCIncidentEmail(User creator, String toEmails, Incident newIncident, Form form) {
         JsonEmail email = null;
+        Boolean prefixComma = false;
 
         try{
             String alertTopic = String.format("iweb.nics.email.alert");
@@ -567,16 +568,26 @@ public class ReportServiceImpl implements ReportService {
             // Tempreature
             if (rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null")) {
                 emailBodyString.append(rocMessage.getTemperature() + " degrees");
+                prefixComma = true;
             }
 
             // Humidity
             if(rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null")) {
-                emailBodyString.append(", " + rocMessage.getRelHumidity().intValue() + "% RH");
+                if(prefixComma) {
+                    emailBodyString.append(", " + rocMessage.getRelHumidity().intValue() + "% RH");
+                } else {
+                    emailBodyString.append(rocMessage.getRelHumidity().intValue() + "% RH");
+                    prefixComma = true;
+                }
             }
 
             // Wind Direction
             if(rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null")) {
-                emailBodyString.append(", " + " wind " + rocMessage.getWindDirection());
+                if(prefixComma) {
+                    emailBodyString.append(", wind " + rocMessage.getWindDirection());
+                } else {
+                    emailBodyString.append(" wind " + rocMessage.getWindDirection());
+                }
             }
 
             // Wind Speed
