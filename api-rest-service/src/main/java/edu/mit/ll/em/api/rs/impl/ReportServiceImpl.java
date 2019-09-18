@@ -441,7 +441,11 @@ public class ReportServiceImpl implements ReportService {
 
             // Miles from nearest community
             if(rocMessage.getMilesFromNearestCommunity().trim().length() > 0) {
-                emailBodyString.append(rocMessage.getMilesFromNearestCommunity()  + " miles ");
+                if(rocMessage.getMilesFromNearestCommunity().equals("1")) {
+                    emailBodyString.append(rocMessage.getMilesFromNearestCommunity()  + " mile ");
+                } else {
+                    emailBodyString.append(rocMessage.getMilesFromNearestCommunity()  + " miles ");
+                }
             }
 
             // Direction from Nearest Community
