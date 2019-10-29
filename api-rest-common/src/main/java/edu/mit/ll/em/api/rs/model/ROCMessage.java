@@ -94,6 +94,7 @@ public class ROCMessage implements Cloneable, Comparable {
     private String otherStructuresThreat;
     private String otherInfrastructuresThreat;
     private String otherOtherSignificantInfo;
+    private String orgPrefix;
 
     public ROCMessage() { }
 
@@ -105,10 +106,11 @@ public class ROCMessage implements Cloneable, Comparable {
             String scope, String spreadRate, List<String> fuelTypes, List<String> otherSignificantInfo, String otherFuelTypes, String evacuations, List<String> evacuationsList,
             String structuresThreat, List<String> structuresThreats, String infrastructuresThreat,
             List<String> infrastructuresThreats, List<String> resourcesAssigned, String otherResourcesAssigned, List<String> incidentTypes,
-            String otherEvacuations, String otherStructuresThreat, String otherInfrastructuresThreat, String otherOtherSignificantInfo) {
+            String otherEvacuations, String otherStructuresThreat, String otherInfrastructuresThreat, String otherOtherSignificantInfo, String orgPrefix) {
         this.dateCreated = dateCreated;
         this.reportType = reportType;
         this.date = date;
+        this.orgPrefix = orgPrefix;
         this.startTime = startTime;
         this.location = location;
         this.generalLocation = generalLocation;
@@ -178,6 +180,17 @@ public class ROCMessage implements Cloneable, Comparable {
     public void setDate(Date date) {
         this.date = date;
     }
+
+
+
+    public String getOrgPrefix() {
+        return orgPrefix;
+    }
+
+    public void setOrgPrefix(String orgPrefix) {
+        this.orgPrefix = orgPrefix;
+    }
+
 
     public String getStartTime() {
         return startTime;

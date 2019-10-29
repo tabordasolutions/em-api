@@ -368,6 +368,7 @@ public class ReportServiceImpl implements ReportService {
 
             /* Subject Line */
             String emailSubject = newIncident.getIncidentname() + ", ";
+            emailSubject = emailSubject.replaceAll(rocMessage.getOrgPrefix(), "");
 
             /* Subject Line - Incident Types */
             List<IncidentType> incidentTypes = incidentDao.getIncidentTypesByIncidentId(newIncident.getIncidentid());
