@@ -83,7 +83,7 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
         } catch(ParseException e) {
             date = null;
         }
-
+        String orgPrefix = reportNode.get("orgPrefix") == null ? null : reportNode.get("orgPrefix").asText();
         String startTime = reportNode.get("startTime") == null ? null : reportNode.get("startTime").asText();
         String location = reportNode.get("location") == null ? null : reportNode.get("location").asText();
         String generalLocation = reportNode.get("generalLocation") == null ? null : reportNode.get("generalLocation").asText();
@@ -161,7 +161,7 @@ public class ROCMessageDeserializer extends StdDeserializer<ROCMessage>  {
                 sra, dpa, jurisdiction, temperature, relHumidity, windSpeed, windGust, windDirection, percentageContained, scope, spreadRate,
                 fuelTypes, otherSignificantInfo, otherFuelTypes, evacuations,evacuationsList, structuresThreat,
                 structuresThreatsLst, infrastructuresThreat, infrastructuresThreatsLst, resourcesAssignedLst, otherResourcesAssigned, incidentTypesLst,
-                otherEvacuations, otherStructuresThreat, otherInfrastructuresThreat, otherOtherSignificantInfo);
+                otherEvacuations, otherStructuresThreat, otherInfrastructuresThreat, otherOtherSignificantInfo, orgPrefix);
     }
 
     private List<String> getJsonNdeAsList(JsonNode jsonNode){

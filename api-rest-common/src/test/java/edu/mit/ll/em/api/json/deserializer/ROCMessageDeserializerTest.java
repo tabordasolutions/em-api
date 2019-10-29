@@ -49,6 +49,7 @@ import static org.junit.Assert.assertTrue;
 public class ROCMessageDeserializerTest {
 
     private SimpleDateFormat dateCreatedFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final String orgPrefix = "CA o1";
     private static final SimpleDateFormat startDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     private String dateCreatedStr = "2018-09-10 10:32:16";
     private String reportType = "FINAL";
@@ -101,7 +102,9 @@ public class ROCMessageDeserializerTest {
 
    private String rocJson = "{\"message\":{\"datecreated\":\"" + dateCreatedStr + "\"" +
             ",\"report\":{\"reportType\":\"" + reportType + "\"" +
-            ",\"date\":\"" + startDateStr + "\",\"starttime\":\"" + rocStartTime + "\"" +
+           ",\"orgPrefix\":\"" + orgPrefix + "\"" +
+            ",\"date\":\"" + startDateStr +
+            "\",\"starttime\":\"" + rocStartTime + "\"" +
             ",\"formTypeId\":1,\"reportBy\":\"sneha nagole\",\"email\":\"sneha.nagole@tabordasolutions.com\"" +
             ",\"additionalAffectedCounties\":\"" + additionalAffectedCounties + "\",\"county\":\"" + county + "\"" +
             ",\"state\":\"" + state + "\"" +
@@ -112,7 +115,6 @@ public class ROCMessageDeserializerTest {
             ",\"jurisdiction\":\"" + jurisdiction + "\"" +
             ",\"incidentType\":\"" + incidentType + "\"" +
             ",\"fuelTypes\":\"" + fuelTypes + "\"" +
-//           ","+fuelTypes+
             ",\"otherFuelTypes\":\"" + otherFuelTypes + "\"" +
             ",\"scope\":\"2\",\"spreadRate\":\"2\",\"percentContained\":\"1\"" +
             ",\"temperature\":\"" + temperature + "\"" +
@@ -166,6 +168,7 @@ public class ROCMessageDeserializerTest {
         assertEquals(rocMessage.getFuelTypes(), fuelTypesList);
         assertEquals(rocMessage.getOtherFuelTypes(), otherFuelTypes);
         assertEquals(rocMessage.getDate(), startDate);
+        assertEquals(rocMessage.getOrgPrefix(), orgPrefix);
         assertEquals(rocMessage.getStartTime(), rocStartTime);
         assertEquals(rocMessage.getLocation(), location);
         assertEquals(rocMessage.getCounty(), county);
@@ -221,7 +224,9 @@ public class ROCMessageDeserializerTest {
     public void deserializeROCMessageCanHandelEmptyStrings() throws IOException {
         String rocJsonWithEmptyString = "{\"message\":{\"datecreated\":\"" + dateCreatedStr + "\"" +
                 ",\"report\":{\"reportType\":\"" + reportType + "\"" +
-                ",\"date\":\"" + startDateStr + "\",\"starttime\":\"" + rocStartTime + "\"" +
+                ",\"orgPrefix\":\"" + orgPrefix + "\"" +
+                ",\"date\":\"" + startDateStr +
+                "\",\"starttime\":\"" + rocStartTime + "\"" +
                 ",\"formTypeId\":1,\"reportBy\":\"sneha nagole\",\"email\":\"sneha.nagole@tabordasolutions.com\"" +
                 ",\"additionalAffectedCounties\":\"" + additionalAffectedCounties + "\",\"county\":\"" + county + "\"" +
                 ",\"state\":\"" + state + "\"" +
@@ -252,7 +257,9 @@ public class ROCMessageDeserializerTest {
     public void deserializeROCMessageCanHandelNullStrings() throws IOException {
         String rocJsonWithNullString = "{\"message\":{\"datecreated\":\"" + dateCreatedStr + "\"" +
                 ",\"report\":{\"reportType\":\"" + reportType + "\"" +
-                ",\"date\":\"" + startDateStr + "\",\"starttime\":\"" + rocStartTime + "\"" +
+                ",\"orgPrefix\":\"" + orgPrefix + "\"" +
+                ",\"date\":\"" + startDateStr +
+                "\",\"starttime\":\"" + rocStartTime + "\"" +
                 ",\"formTypeId\":1,\"reportBy\":\"sneha nagole\",\"email\":\"sneha.nagole@tabordasolutions.com\"" +
                 ",\"additionalAffectedCounties\":\"" + additionalAffectedCounties + "\",\"county\":\"" + county + "\"" +
                 ",\"state\":\"" + state + "\"" +
@@ -263,7 +270,6 @@ public class ROCMessageDeserializerTest {
                 ",\"jurisdiction\":\"" + jurisdiction + "\"" +
                 ",\"incidentType\":\"" + incidentType + "\"" +
                 ",\"fuelTypes\":\"" + fuelTypes + "\"" +
-//                "," + fuelTypes +
                 ",\"otherFuelTypes\":\"" + otherFuelTypes + "\"" +
                 ",\"scope\":\"2\",\"spreadRate\":\"2\",\"percentContained\":\"1\"" +
                 ",\"temperature\":\"null\"" +
@@ -283,7 +289,9 @@ public class ROCMessageDeserializerTest {
     public void deserializeROCMessageCanHandelNulls() throws IOException {
         String rocJsonWithEmptyString = "{\"message\":{\"datecreated\":\"" + dateCreatedStr + "\"" +
                 ",\"report\":{\"reportType\":\"" + reportType + "\"" +
-                ",\"date\":\"" + startDateStr + "\",\"starttime\":\"" + rocStartTime + "\"" +
+                ",\"orgPrefix\":\"" + orgPrefix + "\"" +
+                ",\"date\":\"" + startDateStr +
+                "\",\"starttime\":\"" + rocStartTime + "\"" +
                 ",\"formTypeId\":1,\"reportBy\":\"sneha nagole\",\"email\":\"sneha.nagole@tabordasolutions.com\"" +
                 ",\"additionalAffectedCounties\":\"" + additionalAffectedCounties + "\",\"county\":\"" + county + "\"" +
                 ",\"state\":\"" + state + "\"" +
