@@ -568,7 +568,8 @@ public class ReportServiceImpl implements ReportService {
 
             // Tempreature
             if (rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null")) {
-                emailBodyString.append(rocMessage.getTemperature() + " degrees");
+                int temperatureInEmailMessage = (int) Math.round(rocMessage.getTemperature());
+                emailBodyString.append(temperatureInEmailMessage + " degrees");
                 prefixComma = true;
             }
 
