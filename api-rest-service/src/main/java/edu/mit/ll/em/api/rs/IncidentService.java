@@ -128,6 +128,7 @@ public interface IncidentService {
 			@PathParam("workspaceId") Integer workspaceId,
 			Collection<Incident> incidents);*/
 
+	/*
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -138,6 +139,8 @@ public interface IncidentService {
 			Incident incident,
 			Form form)
 			throws DataAccessException, DuplicateCollabRoomException, Exception;
+			
+	 */
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

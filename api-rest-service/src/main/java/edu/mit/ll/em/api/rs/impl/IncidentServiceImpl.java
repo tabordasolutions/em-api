@@ -386,6 +386,7 @@ public class IncidentServiceImpl implements IncidentService {
 	 *  
 	 */
 
+	/*
 	public Response postIncident(Integer workspaceId, Integer orgId, Integer userId, Incident incident, Form form)
 			throws DataAccessException, DuplicateCollabRoomException, Exception {
 
@@ -524,6 +525,8 @@ public class IncidentServiceImpl implements IncidentService {
 		
 		return response;
 	}
+
+	 */
 
 
 	/**

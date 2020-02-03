@@ -247,6 +247,7 @@ public class ReportServiceImpl implements ReportService {
         return makeUnsupportedOpRequestResponse();
     }
 
+    /*
     public Response postIncidentAndROC(int orgId, Form form) {
         ReportServiceResponse reportServiceResponse = new ReportServiceResponse();
         boolean isIncidentPersisted = false;
@@ -283,6 +284,8 @@ public class ReportServiceImpl implements ReportService {
             return Response.ok(new APIResponse(Status.INTERNAL_SERVER_ERROR.getStatusCode(), errorMessage)).build();
         }
     }
+
+    */
 
     private Response persistReportOnIncident(Form form, Incident incident) throws Exception {
         form.setIncidentid(incident.getIncidentid());
