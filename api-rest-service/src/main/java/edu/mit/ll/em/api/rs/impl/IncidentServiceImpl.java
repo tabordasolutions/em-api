@@ -388,11 +388,15 @@ public class IncidentServiceImpl implements IncidentService {
 
 	public Response postIncident(Integer workspaceId, Integer orgId, Integer userId, Incident incident, Form form)
 			throws DataAccessException, DuplicateCollabRoomException, Exception {
-		
+
+		APILogger.getInstance().e(CNAME,"postIncident for ROC Incident Creation called.");
+
 		IncidentServiceResponse incidentResponse = new IncidentServiceResponse();
 		Response response = null;
 
 		if(incidentDao.getIncidentByName(incident.getIncidentname(), workspaceId) != null){
+			APILogger.getInstance().e(CNAME,"Duplicate ROC Incident Name.");
+
 			incidentResponse.setMessage(DUPLICATE_NAME);
 			return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 		}
@@ -401,19 +405,33 @@ public class IncidentServiceImpl implements IncidentService {
 		try {
 			incident.setCreated(new Date());
 			newIncident = incidentDao.create(incident);
-			
+
+			APILogger.getInstance().e(CNAME,"ROC incidentDao.create(incident called.");
+
+
 			if(newIncident != null){
+
+				APILogger.getInstance().e(CNAME,"ROC newIncident is not null.");
+
 				incidentResponse.getIncidents().add(newIncident);
 				incidentResponse.setMessage(Status.OK.getReasonPhrase());
 				incidentResponse.setCount(incidentResponse.getIncidents().size());
 				response = Response.ok(incidentResponse).status(Status.OK).build();
 			}else{
+
+				APILogger.getInstance().e(CNAME,"ROC newIncident is null. Something probably went wrong in incidentDao.");
+
 				incidentResponse.setMessage(Status.EXPECTATION_FAILED.getReasonPhrase());
 				incidentResponse.setCount(0);
 				return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 		} catch (Exception e) {
-			incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+
+			APILogger.getInstance().e(CNAME,"ROC exception in postIncident before Creating default Collaboration Rooms.");
+
+			// incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+			incidentResponse.setMessage("ROC exception postIncident failed before Creating default Collaboration Rooms: " + e.getMessage());
+
 			return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 		
@@ -421,42 +439,93 @@ public class IncidentServiceImpl implements IncidentService {
 		CollabRoom incidentMap = createDefaultCollabRoom(newIncident.getUsersessionid(), 
 				APIConfig.getInstance().getConfiguration().getString(APIConfig.INCIDENT_MAP, 
 						SADisplayConstants.INCIDENT_MAP));
+
+		APILogger.getInstance().e(CNAME,"ROC createDefaultCollabRoom() called.");
+
+
 		List<Integer> admins = orgDao.getOrgAdmins(orgId,workspaceId);
+
+		APILogger.getInstance().e(CNAME,"ROC orgDao.getOrgAdmins(orgId,workspaceId) called.");
+
+
 		if(!admins.contains(userId)){
+
+			APILogger.getInstance().e(CNAME,"ROC - No userId in admins list found");
+
 			incidentMap.getAdminUsers().add(userId);
+
+			APILogger.getInstance().e(CNAME,"ROC - incidentMap.getAdminUsers().add(userId)  complete.");
+
 		}
 		incidentMap.getAdminUsers().addAll(admins);
-		
+
+		APILogger.getInstance().e(CNAME,"ROC - incidentMap.getAdminUsers().addAll(admins)  complete.");
+
+
 		CollabService collabRoomEndpoint = new CollabServiceImpl();
+
+		APILogger.getInstance().e(CNAME,"ROC - collabRoomEndpoint created. ");
+
+
 		collabRoomEndpoint.createCollabRoomWithPermissions(newIncident.getIncidentid(),orgId, workspaceId,
 				incidentMap);
-		
+
+		APILogger.getInstance().e(CNAME,"ROC - createCollabRoomWithPermissions() called. ");
+
+
 		collabRoomEndpoint.createUnsecureCollabRoom(newIncident.getIncidentid(), createDefaultCollabRoom(
 				newIncident.getUsersessionid(), WORKING_MAP));
-		
+
+		APILogger.getInstance().e(CNAME,"ROC - createUnsecureCollabRoom() called. ");
+
+
 		if (Status.OK.getStatusCode() == response.getStatus()) {
 			try {
 				String topic = String.format("iweb.NICS.ws.%s.newIncident", workspaceId);
+
+				APILogger.getInstance().e(CNAME,"ROC - Topic string created before calling notifyIncident(newIncident, topic) ");
+
 				notifyIncident(newIncident, topic);
-				
+
+				APILogger.getInstance().e(CNAME,"ROC - notifyIncident(newIncident, topic) called ");
+
+
 				try {
 					String newIncidentUsers = APIConfig.getInstance().getConfiguration().getString(APIConfig.NEW_INCIDENT_USERS_EMAIL);
 
+					APILogger.getInstance().e(CNAME,"ROC - newIncidentUsers list created. ");
+
+
 					User creator = userDao.getUserBySessionId(newIncident.getUsersessionid());
-					Org org = orgDao.getLoggedInOrg(creator.getUserId());		
+
+					APILogger.getInstance().e(CNAME,"ROC - userDao.getUserBySessionId(newIncident.getUsersessionid()) called. ");
+
+					Org org = orgDao.getLoggedInOrg(creator.getUserId());
+
+					APILogger.getInstance().e(CNAME,"ROC - orgDao.getLoggedInOrg(creator.getUserId()) called. ");
+
 
 					List<String>  disList = orgDao.getOrgAdmins(org.getOrgId());
 
+					APILogger.getInstance().e(CNAME,"ROC - orgDao.getOrgAdmins(org.getOrgId() called. ");
+
+
 					Integer formTypeId = form.getFormtypeid();
+
+					APILogger.getInstance().e(CNAME,"ROC - form.getFormtypeid() called. ");
+
+
 				} catch (Exception e) {
 					APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
 					APILogger.getInstance().e(CNAME, e.getMessage());
-					incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+					// incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+					incidentResponse.setMessage("ROC - Failed to send new Incident email alerts: " + e.getMessage());
 					return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 				}
 			} catch (Exception e) {
 				APILogger.getInstance().e(CNAME,"Failed to publish a new Incident message event");
-				incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+				// incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+				incidentResponse.setMessage("ROC - Failed to publish a new Incident message event: " + e.getMessage());
 				return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 		}
@@ -488,11 +557,14 @@ public class IncidentServiceImpl implements IncidentService {
 	public Response postIncident(Integer workspaceId, Integer orgId, Integer userId, Incident incident)
 			throws DataAccessException, DuplicateCollabRoomException, Exception {
 
+		APILogger.getInstance().e(CNAME,"postIncident for NON-ROC Incident Creation called.");
+
 		IncidentServiceResponse incidentResponse = new IncidentServiceResponse();
 		Response response = null;
 		JsonEmail email = null;
 
 		if(incidentDao.getIncidentByName(incident.getIncidentname(), workspaceId) != null){
+			APILogger.getInstance().e(CNAME,"Duplicate NON-ROC Incident Name.");
 			incidentResponse.setMessage(DUPLICATE_NAME);
 			return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 		}
@@ -502,18 +574,31 @@ public class IncidentServiceImpl implements IncidentService {
 			incident.setCreated(new Date());
 			newIncident = incidentDao.create(incident);
 
+			APILogger.getInstance().e(CNAME,"NON-ROC incidentDao.create(incident called.");
+
+
 			if(newIncident != null){
+
+				APILogger.getInstance().e(CNAME,"NON-ROC newIncident is not null.");
+
 				incidentResponse.getIncidents().add(newIncident);
 				incidentResponse.setMessage(Status.OK.getReasonPhrase());
 				incidentResponse.setCount(incidentResponse.getIncidents().size());
 				response = Response.ok(incidentResponse).status(Status.OK).build();
 			}else{
+
+				APILogger.getInstance().e(CNAME,"NON-ROC newIncident is null. Something probably went wrong in incidentDao.");
+
+
 				incidentResponse.setMessage(Status.EXPECTATION_FAILED.getReasonPhrase());
 				incidentResponse.setCount(0);
 				return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 		} catch (Exception e) {
-			incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+
+			APILogger.getInstance().e(CNAME,"NON-ROC exception in postIncident before Creating default Collaboration Rooms.");
+
+			incidentResponse.setMessage("NON-ROC exception postIncident failed before Creating default Collaboration Rooms: " + e.getMessage());
 			return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 
@@ -521,23 +606,56 @@ public class IncidentServiceImpl implements IncidentService {
 		CollabRoom incidentMap = createDefaultCollabRoom(newIncident.getUsersessionid(),
 				APIConfig.getInstance().getConfiguration().getString(APIConfig.INCIDENT_MAP,
 						SADisplayConstants.INCIDENT_MAP));
+
+		APILogger.getInstance().e(CNAME,"NON-ROC createDefaultCollabRoom() called.");
+
+
 		List<Integer> admins = orgDao.getOrgAdmins(orgId,workspaceId);
+
+		APILogger.getInstance().e(CNAME,"NON-ROC orgDao.getOrgAdmins(orgId,workspaceId) called.");
+
+
 		if(!admins.contains(userId)){
+
+			APILogger.getInstance().e(CNAME,"NON-ROC - No userId in admins list found");
+
 			incidentMap.getAdminUsers().add(userId);
+
+			APILogger.getInstance().e(CNAME,"NON-ROC - incidentMap.getAdminUsers().add(userId)  complete.");
+
 		}
 		incidentMap.getAdminUsers().addAll(admins);
 
+		APILogger.getInstance().e(CNAME,"NON-ROC - incidentMap.getAdminUsers().addAll(admins)  complete.");
+
+
 		CollabService collabRoomEndpoint = new CollabServiceImpl();
+
+		APILogger.getInstance().e(CNAME,"NON-ROC - collabRoomEndpoint created. ");
+
+
 		collabRoomEndpoint.createCollabRoomWithPermissions(newIncident.getIncidentid(),orgId, workspaceId,
 				incidentMap);
+
+		APILogger.getInstance().e(CNAME,"NON-ROC - createCollabRoomWithPermissions() called. ");
+
 
 		collabRoomEndpoint.createUnsecureCollabRoom(newIncident.getIncidentid(), createDefaultCollabRoom(
 				newIncident.getUsersessionid(), WORKING_MAP));
 
+		APILogger.getInstance().e(CNAME,"NON-ROC - createUnsecureCollabRoom() called. ");
+
+
 		if (Status.OK.getStatusCode() == response.getStatus()) {
 			try {
 				String topic = String.format("iweb.NICS.ws.%s.newIncident", workspaceId);
+
+				APILogger.getInstance().e(CNAME,"NON-ROC - Topic string created before calling notifyIncident(newIncident, topic) ");
+
 				notifyIncident(newIncident, topic);
+
+				APILogger.getInstance().e(CNAME,"NON-ROC - notifyIncident(newIncident, topic) called ");
+
 
 				try {
 
@@ -545,35 +663,62 @@ public class IncidentServiceImpl implements IncidentService {
 					String alertTopic = String.format("iweb.nics.email.alert");
 
 					String newIncidentUsers = APIConfig.getInstance().getConfiguration().getString(APIConfig.NEW_INCIDENT_USERS_EMAIL);
+
+					APILogger.getInstance().e(CNAME,"NON-ROC - newIncidentUsers list created. ");
+
 					String hostname = InetAddress.getLocalHost().getHostName();
 
 					User creator = userDao.getUserBySessionId(newIncident.getUsersessionid());
+
+					APILogger.getInstance().e(CNAME,"NON-ROC - userDao.getUserBySessionId(newIncident.getUsersessionid()) called. ");
+
 					Org org = orgDao.getLoggedInOrg(creator.getUserId());
 
+					APILogger.getInstance().e(CNAME,"NON-ROC - orgDao.getLoggedInOrg(creator.getUserId()) called. ");
+
+
 					List<String>  disList = orgDao.getOrgAdmins(org.getOrgId());
+
+					APILogger.getInstance().e(CNAME,"NON-ROC - orgDao.getOrgAdmins(org.getOrgId() called. ");
 
 
 					/* Create and send email for non-ROC Incidents */
 					String toEmails = disList.toString().substring(1, disList.toString().length()-1) + ", " + newIncidentUsers;
+
+					APILogger.getInstance().e(CNAME,"NON-ROC - newIncidentUsers list formed. ");
+
 					String siteName = workspaceDao.getWorkspaceName(workspaceId);
+
+					APILogger.getInstance().e(CNAME,"NON-ROC - workspaceDao.getWorkspaceName(workspaceId) called. ");
 
 					if(disList.size() > 0){
 						email = new JsonEmail(creator.getUsername(),toEmails,"Alert from NewIncident@" + hostname);
+
+						APILogger.getInstance().e(CNAME,"NON-ROC - new JsonEmail() called. ");
+
 						email.setBody(date + "\n\n" + "A new incident has been created: " + newIncident.getIncidentname() + "\n" +
 								"Creator: " + creator.getUsername() + "\n" +
 								"Location: " + newIncident.getLat() + "," + newIncident.getLon() + "\n" +
 								"Site: " + siteName);
+
+						APILogger.getInstance().e(CNAME,"NON-ROC - email.setBody complete. Ready to notify New Incident Email.");
+
 						notifyNewIncidentEmail(email.toJsonObject().toString(),alertTopic);
+
+						APILogger.getInstance().e(CNAME,"NON-ROC - notifyNewIncidentEmail() called.");
+
 					}
 				} catch (Exception e) {
 					APILogger.getInstance().e(CNAME,"Failed to send new Incident email alerts");
 					APILogger.getInstance().e(CNAME, e.getMessage());
-					incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+					// incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+					incidentResponse.setMessage("NON-ROC - Failed to send new Incident email alerts: " + e.getMessage());
 					return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 				}
 			} catch (Exception e) {
 				APILogger.getInstance().e(CNAME,"Failed to publish a new Incident message event");
-				incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+				// incidentResponse.setMessage("postIncident failed: " + e.getMessage());
+				incidentResponse.setMessage("NON-ROC - Failed to publish a new Incident message event: " + e.getMessage());
 				return Response.ok(incidentResponse).status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 		}
