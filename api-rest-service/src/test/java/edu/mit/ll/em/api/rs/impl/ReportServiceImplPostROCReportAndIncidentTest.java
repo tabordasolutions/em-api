@@ -98,6 +98,7 @@ public class ReportServiceImplPostROCReportAndIncidentTest {
         when(user.getUserId()).thenReturn(userId);
     }
 
+    /*
     @Test
     public void postROCReportAndIncidentReturnsErrorResponseGivenInvalidUserSession() {
         form.setUsersessionid(-1);
@@ -116,6 +117,8 @@ public class ReportServiceImplPostROCReportAndIncidentTest {
         assertEquals("Unauthorized, session with userSessionId " + form.getUsersessionid() + " is not active.", apiResponse.getMessage());
         assertTrue(Response.Status.UNAUTHORIZED.getStatusCode() == apiResponse.getStatus());
     }
+
+
 
     @Test
     public void postROCReportAndIncidentReturnsValidationErrorsGivenNullForm() throws Exception {
@@ -143,6 +146,8 @@ public class ReportServiceImplPostROCReportAndIncidentTest {
         assertEquals(response.getStatus(), returnedResponse.getStatus());
         assertEquals(apiResponse, (APIResponse)returnedResponse.getEntity());
     }
+
+
 
     @Test
     public void postROCReportAndIncidentReturnsErrorResponseWhenSuccessfullyPersistsGivenIncidentButFailsToCreateROC() throws Exception {
@@ -218,6 +223,8 @@ public class ReportServiceImplPostROCReportAndIncidentTest {
         assertEquals(persistedForm, reportServiceResponse.getReports().iterator().next());
         assertEquals(1, reportServiceResponse.getCount());
     }
+
+     */
 
     @After
     public void tearDown() {
