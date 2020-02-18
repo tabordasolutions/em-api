@@ -64,11 +64,14 @@ public interface ReportService {
 	public Response putReports(@PathParam("reportType") int reportType,
                                Collection<Report> reports);
 
+	/*
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{orgId}/IncidentAndROC")
 	public Response postIncidentAndROC(@PathParam("orgId") int orgId, Form form);
+
+	*/
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
