@@ -50,7 +50,7 @@
   </appender>
 
   <root>
-    <level value="ALL"/>
+    <level value="DEBUG"/>
     <appender-ref ref="CORE"/>
     <appender-ref ref="CONSOLE"/>
   </root>
