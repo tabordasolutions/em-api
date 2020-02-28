@@ -247,6 +247,7 @@ public class ReportServiceImpl implements ReportService {
         return makeUnsupportedOpRequestResponse();
     }
 
+    /*
     public Response postIncidentAndROC(int orgId, Form form) {
         ReportServiceResponse reportServiceResponse = new ReportServiceResponse();
         boolean isIncidentPersisted = false;
@@ -283,6 +284,8 @@ public class ReportServiceImpl implements ReportService {
             return Response.ok(new APIResponse(Status.INTERNAL_SERVER_ERROR.getStatusCode(), errorMessage)).build();
         }
     }
+
+    */
 
     private Response persistReportOnIncident(Form form, Incident incident) throws Exception {
         form.setIncidentid(incident.getIncidentid());
@@ -545,10 +548,12 @@ public class ReportServiceImpl implements ReportService {
             /* -------------- */
 
             // Spread Rate
-            if (rocMessage.getSpreadRate().trim().length() > 0 && rocMessage.getSpreadRate() != null && !rocMessage.getSpreadRate().equals("null")) {
-                emailBodyString.append("<li>&bull; ");
-                emailBodyString.append(rocMessage.getSpreadRate());
-                emailBodyString.append("</li>");
+            if(rocMessage.getReportType().equals("NEW")) {
+                if (rocMessage.getSpreadRate().trim().length() > 0 && rocMessage.getSpreadRate() != null && !rocMessage.getSpreadRate().equals("null")) {
+                    emailBodyString.append("<li>&bull; ");
+                    emailBodyString.append(rocMessage.getSpreadRate());
+                    emailBodyString.append("</li>");
+                }
             }
 
 
@@ -556,59 +561,62 @@ public class ReportServiceImpl implements ReportService {
             /* Temperature degrees, Relative Humidity% RH, wind Wind Direction @ Wind Speed, gusts to Wind Gusts */
             /* ------------------------------------------------------------------------------------------------- */
 
-            if (
-                    rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") ||
-                    rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") ||
-                    rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") ||
-                    rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ||
-                    rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null")
-            ) {
-                emailBodyString.append("<li>&bull; ");
-            }
+            if(rocMessage.getReportType().equals("NEW")) {
+                if (
+                        rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") ||
+                                rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") ||
+                                rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") ||
+                                rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ||
+                                rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null")
+                ) {
+                    emailBodyString.append("<li>&bull; ");
+                }
 
-            // Tempreature
-            if (rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null")) {
-                emailBodyString.append(rocMessage.getTemperature() + " degrees");
-                prefixComma = true;
-            }
-
-            // Humidity
-            if(rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null")) {
-                if(prefixComma) {
-                    emailBodyString.append(", " + rocMessage.getRelHumidity().intValue() + "% RH");
-                } else {
-                    emailBodyString.append(rocMessage.getRelHumidity().intValue() + "% RH");
+                // Tempreature
+                if (rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null")) {
+                    int temperatureInEmailMessage = (int) Math.round(rocMessage.getTemperature());
+                    emailBodyString.append(temperatureInEmailMessage + " degrees");
                     prefixComma = true;
                 }
-            }
 
-            // Wind Direction
-            if(rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null")) {
-                if(prefixComma) {
-                    emailBodyString.append(", wind " + rocMessage.getWindDirection());
-                } else {
-                    emailBodyString.append(" wind " + rocMessage.getWindDirection());
+                // Humidity
+                if (rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null")) {
+                    if (prefixComma) {
+                        emailBodyString.append(", " + rocMessage.getRelHumidity().intValue() + "% RH");
+                    } else {
+                        emailBodyString.append(rocMessage.getRelHumidity().intValue() + "% RH");
+                        prefixComma = true;
+                    }
                 }
-            }
 
-            // Wind Speed
-            if(rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null")) {
-                emailBodyString.append(" @ " + rocMessage.getWindSpeed().intValue());
-            }
+                // Wind Direction
+                if (rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null")) {
+                    if (prefixComma) {
+                        emailBodyString.append(", wind " + rocMessage.getWindDirection());
+                    } else {
+                        emailBodyString.append(" wind " + rocMessage.getWindDirection());
+                    }
+                }
 
-            // Wind Gust
-            if(rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null") ) {
-                emailBodyString.append(", gusts to " + rocMessage.getWindGust().intValue());
-            }
+                // Wind Speed
+                if (rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null")) {
+                    emailBodyString.append(" @ " + rocMessage.getWindSpeed().intValue());
+                }
 
-            if (
-                    rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") ||
-                    rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") ||
-                    rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") ||
-                    rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ||
-                    rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null")
-            ) {
-                emailBodyString.append("</li>");
+                // Wind Gust
+                if (rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null")) {
+                    emailBodyString.append(", gusts to " + rocMessage.getWindGust().intValue());
+                }
+
+                if (
+                        rocMessage.getTemperature() != null && !rocMessage.getTemperature().equals("null") ||
+                                rocMessage.getRelHumidity() != null && !rocMessage.getRelHumidity().equals("null") ||
+                                rocMessage.getWindDirection() != null && !rocMessage.getWindDirection().equals("null") ||
+                                rocMessage.getWindSpeed() != null && !rocMessage.getWindSpeed().equals("null") ||
+                                rocMessage.getWindGust() != null && !rocMessage.getWindGust().equals("null")
+                ) {
+                    emailBodyString.append("</li>");
+                }
             }
 
 
