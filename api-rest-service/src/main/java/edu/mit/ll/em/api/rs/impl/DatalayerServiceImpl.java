@@ -718,6 +718,7 @@ public class DatalayerServiceImpl implements DatalayerService {
         }
 	}
 
+    
 	private String buildGenerateTokenUrl(String internalUrl) {
         if(StringUtils.isBlank(internalUrl)) {
             return null;
@@ -731,7 +732,7 @@ public class DatalayerServiceImpl implements DatalayerService {
         return generateTokenUrl.toString();
     }
 
-	private Response requestToken(String internalUrl, String username, String password) {
+	private Response requestToken1(String internalUrl, String username, String password) {
         String generateTokenUrl  = this.buildGenerateTokenUrl(internalUrl);
         if(generateTokenUrl == null) {
             logger.error("Unable to construct generateToken request Url from service with internalUrl " + internalUrl);
@@ -755,6 +756,36 @@ public class DatalayerServiceImpl implements DatalayerService {
         }
 	}
 
+    private Response requestToken(String internalUrl, String username, String password){
+        int index = internalUrl.indexOf("rest/services");
+        if(index == -1){
+            index = internalUrl.indexOf("services");
+        }
+
+        if(index > -1){
+            StringBuffer url = new StringBuffer(internalUrl.substring(0, index));
+            url.append("tokens/generateToken?");
+            url.append("username=");
+            url.append(username);
+            url.append("&password=");
+            url.append(password);
+            url.append("&f=json");
+
+            try {
+                WebTarget target = jerseyClient.target(url.toString());
+                Builder builder = target.request("json");
+                Response response =  builder.get();
+                return response;
+            } catch(Exception e){
+                logger.error("Failed to generate token from service url : " + url, e);
+                return Response.serverError().entity("Unable to generate token from service url: " + url + ", Error: " + e.getMessage()).build();
+            }
+        }
+
+        logger.error("Unable to construct generateToken request Url from service with internalUrl " + internalUrl);
+        return Response.serverError().entity("Unable to construct generateToken request Url from service with internalUrl : " + internalUrl).status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+	
 	private byte[] writeAttachmentWithDigest(Attachment attachment, Path path, String digestAlgorithm) throws IOException, NoSuchAlgorithmException {
 		try(
 			InputStream is = attachment.getDataHandler().getInputStream();
