@@ -70,6 +70,8 @@ public class UserProfileResponse {
 	private boolean isSuperUser;
 	
 	private boolean isAdminUser;
+
+	private boolean isGISUser;
 	
 	public String getMessage() {
 		return message;
@@ -88,7 +90,8 @@ public class UserProfileResponse {
 				", orgName=" + orgName + 
 				", message=" + message + 
 				", isSuperUser=" + isSuperUser + 
-				", isAdminUser=" + isAdminUser + 
+				", isAdminUser=" + isAdminUser +
+				", isGISUser=" + isGISUser +
 		"]";
 	}	
 	
@@ -106,6 +109,14 @@ public class UserProfileResponse {
 	
 	public boolean getIsAdminUser(){
 		return isAdminUser;
+	}
+
+	public void setIsGISUser(boolean isGISUser){
+		this.isGISUser = isGISUser;
+	}
+
+	public boolean getIsGISUser(){
+		return isGISUser;
 	}
 	
 	public void setIncidentTypes(Collection<IncidentType> incidentTypes){
