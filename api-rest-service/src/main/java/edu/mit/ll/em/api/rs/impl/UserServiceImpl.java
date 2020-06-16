@@ -687,6 +687,7 @@ public class UserServiceImpl implements UserService {
 			profileResponse.setSysRoleId(userOrg.getSystemroleid());
 			profileResponse.setIsSuperUser(userOrgDao.isUserRole(username, SADisplayConstants.SUPER_ROLE_ID));
 			profileResponse.setIsAdminUser(userOrgDao.isUserRole(username, SADisplayConstants.ADMIN_ROLE_ID));
+			profileResponse.setIsGISUser(userOrgDao.isUserRole(username, SADisplayConstants.GIS_ROLE_ID));
 			profileResponse.setMessage("ok");
 			
 			response = Response.ok(profileResponse).status(Status.OK).build();
