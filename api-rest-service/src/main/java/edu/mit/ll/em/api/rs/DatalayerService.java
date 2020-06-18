@@ -43,6 +43,11 @@ import edu.mit.ll.nics.common.entity.datalayer.Datasource;
 public interface DatalayerService {
 	
 	@GET
+	@Path("/layer/{datalayerId}/datasource")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getDatalayerDatasources(@PathParam("datalayerId") String datalayerId);
+
+	@GET
 	@Path("/{folderId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDatalayers(@PathParam("folderId") String folderId);
