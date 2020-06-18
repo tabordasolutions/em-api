@@ -177,6 +177,21 @@ public class DatalayerServiceImpl implements DatalayerService {
         return this.webServerURL;
     }
 
+    @Override
+    public Response getDatalayerDatasources(String datalayerid) {
+        DatalayerServiceResponse datalayerResponse = new DatalayerServiceResponse();
+        try{
+            datalayerResponse.setDatasources(datalayerDao.getDatalayerDatasources(datalayerid));
+        }catch(Exception e){
+            logger.error("Failed to retrieve data layers", e);
+            datalayerResponse.setMessage("Failed to retrieve data layers");
+            return Response.ok(datalayerResponse).status(Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return Response.ok(datalayerResponse).status(Status.OK).build();
+    }
+
+
 	@Override
 	public Response getTrackingLayers(int workspaceId) {
 		FieldMapResponse response = new FieldMapResponse();
