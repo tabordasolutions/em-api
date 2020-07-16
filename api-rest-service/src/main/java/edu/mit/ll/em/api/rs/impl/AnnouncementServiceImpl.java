@@ -70,6 +70,11 @@ public class AnnouncementServiceImpl implements AnnouncementService {
 	}
 
 	@Override
+	public Response getAnnouncements(int workspaceId) {
+		return getAnnouncements( workspaceId, null);
+	}
+	
+	@Override
 	public Response getAnnouncements(int workspaceId, String username) {
 		LogServiceResponse logResponse = new LogServiceResponse();
 		logResponse.setResults(logDao.getLogs(workspaceId, SADisplayConstants.ANNOUNCEMENTS_LOG_TYPE));
