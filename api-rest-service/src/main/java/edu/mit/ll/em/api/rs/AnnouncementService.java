@@ -59,6 +59,11 @@ public interface AnnouncementService {
 			@PathParam("workspaceId") int workspaceId,
 			@HeaderParam("CUSTOM-uid") String username);
 	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAnnouncements(
+			@PathParam("workspaceId") int workspaceId);
+	
 	@DELETE
 	@Path("/{logId}")
 	@Produces(MediaType.APPLICATION_JSON)
