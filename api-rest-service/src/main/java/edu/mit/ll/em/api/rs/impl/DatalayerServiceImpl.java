@@ -70,6 +70,7 @@ import org.forgerock.openam.utils.StringUtils;
 import org.geotools.data.FileDataStore;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.json.JSONObject;
 import org.opengis.referencing.FactoryException;
 
 import edu.mit.ll.em.api.dataaccess.ShapefileDAO;
@@ -710,7 +711,7 @@ public class DatalayerServiceImpl implements DatalayerService {
 	}
 
 	public Response getToken(String url, String username, String password){
-		return Response.ok(this.requestToken(url, username, password).readEntity(String.class)).build();
+		return Response.ok(this.requestToken(url, username, password)).build();
 	}
 
 	public Response getToken(String datasourceId){
@@ -726,8 +727,8 @@ public class DatalayerServiceImpl implements DatalayerService {
         }
 
 		if(!CollectionUtils.isEmpty(data) && data.get(0) != null){
-			Response response = this.requestToken((String) data.get(0).get(SADisplayConstants.INTERNAL_URL), (String) data.get(0).get(SADisplayConstants.USER_NAME), (String) data.get(0).get(SADisplayConstants.PASSWORD));
-            return response;
+			String tokenResponse = this.requestToken((String) data.get(0).get(SADisplayConstants.INTERNAL_URL), (String) data.get(0).get(SADisplayConstants.USER_NAME), (String) data.get(0).get(SADisplayConstants.PASSWORD));
+            return Response.ok(tokenResponse).build();
 		} else {
             return Response.serverError().entity("Authentication details not found for dataSource with Id : " + datasourceId).build();
         }
@@ -771,34 +772,47 @@ public class DatalayerServiceImpl implements DatalayerService {
         }
 	}
 
-    private Response requestToken(String internalUrl, String username, String password){
+    private String requestToken(String internalUrl, String username, String password){
         int index = internalUrl.indexOf("rest/services");
         if(index == -1){
             index = internalUrl.indexOf("services");
         }
 
-        if(index > -1){
-            StringBuffer url = new StringBuffer(internalUrl.substring(0, index));
-            url.append("tokens/generateToken?");
-            url.append("username=");
-            url.append(username);
-            url.append("&password=");
-            url.append(password);
-            url.append("&f=json");
+        try {
+            if(index > -1){
+                String tokenServiceURL = internalUrl.substring(0, index) + "tokens/generateToken";
+                
+                StringBuffer url = new StringBuffer(tokenServiceURL);
+                url.append("?username=");url.append(username);
+                url.append("&password=");url.append(password);
+                url.append("&f=json");
 
-            try {
                 WebTarget target = jerseyClient.target(url.toString());
-                Builder builder = target.request("json");
-                Response response =  builder.get();
-                return response;
-            } catch(Exception e){
-                logger.error("Failed to generate token from service url : " + url, e);
-                return Response.serverError().entity("Unable to generate token from service url: " + url + ", Error: " + e.getMessage()).build();
+                Builder builder = target.request();
+                Response response = builder.get();
+                JSONObject tokenResponse = new JSONObject(response.readEntity(String.class));
+                if (tokenResponse.has("token")) {
+                	return tokenResponse.toString(1);
+                } else {
+                if (tokenResponse.has("error")
+                	&& tokenResponse.getJSONObject("error").has("code")
+            		&& (tokenResponse.getJSONObject("error").getInt("code") == 405)) {
+        				Form form = new Form();
+        				form.param("username", username);
+        				form.param("password", password);
+         				form.param("f", "json");
+        		        target = jerseyClient.target(tokenServiceURL);
+        		        response = target.request().post(Entity.form(form));
+        		        tokenResponse = new JSONObject(response.readEntity(String.class));
+        	            if (tokenResponse.has("token")) {
+        	            	return tokenResponse.toString(1);
+        	            }            		
+                	}
+                } 
             }
-        }
-
-        logger.error("Unable to construct generateToken request Url from service with internalUrl " + internalUrl);
-        return Response.serverError().entity("Unable to construct generateToken request Url from service with internalUrl : " + internalUrl).status(Status.INTERNAL_SERVER_ERROR).build();
+        	
+        } catch (Exception ex) {}
+        return null;
     }
 	
 	private byte[] writeAttachmentWithDigest(Attachment attachment, Path path, String digestAlgorithm) throws IOException, NoSuchAlgorithmException {
