@@ -273,7 +273,9 @@ public class DatalayerServiceImpl implements DatalayerService {
 			String datalayerId = datalayerDao.insertDataLayer(dataSourceId, datalayer);
 
 			//Currently always uploads to Data
-			Rootfolder folder = folderDao.getRootFolder("Data", workspaceId);
+			String rootFolder = "Data";
+			rootFolder = datalayer.getRootFolder();
+			Rootfolder folder = folderDao.getRootFolder(rootFolder, workspaceId);
 			int nextFolderIndex = datalayerDao.getNextDatalayerFolderIndex(folder.getFolderid());
 				
 			datalayerDao.insertDataLayerFolder(folder.getFolderid(), datalayerId, nextFolderIndex);
