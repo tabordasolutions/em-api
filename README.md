@@ -1,3 +1,5 @@
+![alt tag](https://www.yourkit.com/images/yklogo.png)
+
 # NICS Emergency Mangement API
 
 ## Synopsis
