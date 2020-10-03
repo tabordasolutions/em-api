@@ -1,4 +1,4 @@
-[![alt tag](https://www.yourkit.com/images/yklogo.png)](https://https://www.yourkit.com/)
+[![alt tag](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com)
 # NICS Emergency Mangement API
 
 ## Synopsis
